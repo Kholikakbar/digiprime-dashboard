@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { DollarSign, Package, ShoppingCart, Activity, TrendingUp, Users } from 'lucide-react'
 
+import { DashboardCharts } from '@/components/dashboard/dashboard-charts'
+
 export const dynamic = 'force-dynamic'
 
 async function getStats() {
@@ -51,6 +53,75 @@ async function getStats() {
     }
 }
 
+async function getChartsData() {
+    const supabase = await createClient()
+
+    // 1. Revenue Trend (Last 7 Days)
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+    const { data: recentOrders } = await supabase
+        .from('orders')
+        .select('total_price, order_date, status')
+        .eq('status', 'COMPLETED')
+        .gte('order_date', sevenDaysAgo.toISOString())
+        .order('order_date', { ascending: true })
+
+    // Process daily revenue
+    const revenueMap = new Map<string, number>()
+    // Initialize last 7 days with 0
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date()
+        d.setDate(d.getDate() - i)
+        // Format: 'Jan 20' or '20 Jan'
+        const key = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+        revenueMap.set(key, 0)
+    }
+
+    recentOrders?.forEach(order => {
+        const d = new Date(order.order_date)
+        const key = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+        if (revenueMap.has(key)) {
+            revenueMap.set(key, (revenueMap.get(key) || 0) + Number(order.total_price))
+        }
+    })
+
+    const revenueData = Array.from(revenueMap).map(([date, revenue]) => ({ date, revenue }))
+
+
+    // 2. Sales by Product
+    const { data: productSales } = await supabase
+        .from('orders')
+        .select('quantity, products(name)')
+        .eq('status', 'COMPLETED')
+
+    const productMap = new Map<string, number>()
+    productSales?.forEach((order: any) => {
+        const productName = order.products?.name || 'Unknown'
+        productMap.set(productName, (productMap.get(productName) || 0) + order.quantity)
+    })
+
+    const salesByProductData = Array.from(productMap)
+        .map(([name, sales]) => ({ name, sales }))
+        .sort((a, b) => b.sales - a.sales)
+        .slice(0, 5) // Top 5
+
+    // 3. Order Status Distribution
+    const { data: statusData } = await supabase
+        .from('orders')
+        .select('status')
+
+    const statusMap = new Map<string, number>()
+    statusData?.forEach(order => {
+        const status = order.status
+        statusMap.set(status, (statusMap.get(status) || 0) + 1)
+    })
+
+    const orderStatusData = Array.from(statusMap).map(([name, value]) => ({ name, value }))
+
+    return { revenueData, salesByProductData, orderStatusData }
+}
+
 async function getRecentOrders() {
     const supabase = await createClient()
     const { data } = await supabase
@@ -82,6 +153,7 @@ export default async function DashboardPage() {
     const stats = await getStats()
     const recentOrders = await getRecentOrders()
     const lowStockProducts = await getStockAlerts()
+    const chartsData = await getChartsData()
 
     return (
         <div className="space-y-8">
@@ -172,6 +244,13 @@ export default async function DashboardPage() {
                     <p className="text-[10px] text-muted-foreground mt-1">Available for sale</p>
                 </div>
             </div>
+
+            {/* CHARTS SECTION */}
+            <DashboardCharts
+                revenueData={chartsData.revenueData}
+                salesByProductData={chartsData.salesByProductData}
+                orderStatusData={chartsData.orderStatusData}
+            />
 
             {/* Recent Activity / Charts Section */}
             <div className="grid gap-6 md:grid-cols-7">

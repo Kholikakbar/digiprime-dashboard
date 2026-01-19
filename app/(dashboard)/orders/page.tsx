@@ -8,22 +8,28 @@ export default async function OrdersPage() {
 
     return (
         <div className="space-y-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600">Orders</h2>
                     <p className="text-muted-foreground mt-1">Track and manage Shopee orders.</p>
                 </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <div className="mr-2">
+
+                <div className="flex flex-col-reverse sm:flex-row gap-3 w-full md:w-auto">
+                    {/* Search & Filter */}
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <div className="relative flex-1 sm:w-64">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <input placeholder="Search order ID..." className="pl-9 pr-4 py-2 rounded-lg border border-border bg-card text-sm w-full outline-none focus:ring-2 focus:ring-primary/20" />
+                        </div>
+                        <button className="p-2 border border-border bg-card rounded-lg hover:bg-muted shrink-0">
+                            <Filter className="h-4 w-4 text-muted-foreground" />
+                        </button>
+                    </div>
+
+                    {/* New Order Button */}
+                    <div className="w-full sm:w-auto">
                         <CreateOrderDialog products={products} />
                     </div>
-                    <div className="relative flex-1 sm:flex-none">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <input placeholder="Search order ID..." className="pl-9 pr-4 py-2 rounded-lg border border-border bg-card text-sm w-full sm:w-64" />
-                    </div>
-                    <button className="p-2 border border-border bg-card rounded-lg hover:bg-muted">
-                        <Filter className="h-4 w-4 text-muted-foreground" />
-                    </button>
                 </div>
             </div>
 

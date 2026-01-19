@@ -43,7 +43,7 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
         return (
             <button
                 onClick={() => setIsOpen(true)}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-primary/25 flex items-center gap-2"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-primary/25 flex items-center justify-center gap-2 w-full sm:w-auto"
             >
                 <Plus className="h-4 w-4" />
                 New Order
@@ -52,8 +52,8 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl border border-border animation-scale-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4">
+            <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl border border-border animation-scale-in max-h-[90vh] overflow-y-auto">
                 <div className="p-6 border-b border-border/50">
                     <h2 className="text-xl font-bold">Create New Order</h2>
                     <p className="text-sm text-muted-foreground">Manually record an offline or external order.</p>

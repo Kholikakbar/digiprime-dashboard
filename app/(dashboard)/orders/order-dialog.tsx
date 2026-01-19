@@ -53,42 +53,42 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4">
-            <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl border border-border animation-scale-in max-h-[90vh] overflow-y-auto">
+            <div className="bg-card w-full max-w-lg md:max-w-2xl rounded-2xl shadow-2xl border border-border animation-scale-in max-h-[90vh] overflow-y-auto">
                 <div className="p-6 border-b border-border/50">
                     <h2 className="text-xl font-bold">Create New Order</h2>
                     <p className="text-sm text-muted-foreground">Manually record an offline or external order.</p>
                 </div>
 
                 <form action={handleSubmit} className="p-6 space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
                             <label className="text-sm font-medium mb-1.5 block">Shopee Order No</label>
                             <input
                                 name="shopee_order_no"
                                 required
                                 placeholder="e.g. 230101ABC123"
-                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                             />
                         </div>
 
-                        <div className="col-span-2">
+                        <div>
                             <label className="text-sm font-medium mb-1.5 block">Buyer Username</label>
                             <input
                                 name="buyer_username"
                                 required
                                 placeholder="e.g. johndoe"
-                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                             />
                         </div>
 
-                        <div className="col-span-2">
+                        <div className="col-span-1 md:col-span-2">
                             <label className="text-sm font-medium mb-1.5 block">Product</label>
                             <div className="relative">
-                                <Package className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Package className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                 <select
                                     name="product_id"
                                     required
-                                    className="w-full bg-muted/30 border border-border rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none appearance-none"
+                                    className="w-full bg-muted/30 border border-border rounded-lg pl-9 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none appearance-none transition-all"
                                     onChange={handleProductChange}
                                 >
                                     <option value="">Select a product...</option>
@@ -102,14 +102,14 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
                         <div>
                             <label className="text-sm font-medium mb-1.5 block">Total Price</label>
                             <div className="relative">
-                                <span className="absolute left-3 top-2 text-sm text-muted-foreground">Rp</span>
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">Rp</span>
                                 <input
                                     id="price-input"
                                     name="total_price"
                                     type="number"
                                     required
                                     placeholder="0"
-                                    className="w-full bg-muted/30 border border-border rounded-lg pl-9 pr-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                                    className="w-full bg-muted/30 border border-border rounded-lg pl-9 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -118,7 +118,7 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
                             <label className="text-sm font-medium mb-1.5 block">Status</label>
                             <select
                                 name="status"
-                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                                 defaultValue="COMPLETED"
                             >
                                 <option value="PENDING">Pending</option>

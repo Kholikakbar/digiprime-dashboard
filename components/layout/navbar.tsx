@@ -1,6 +1,8 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
+import { Notifications } from '@/components/layout/notifications'
+
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -109,19 +111,22 @@ export function Navbar({ user }: { user: any }) {
                     <Menu className="h-6 w-6" />
                 </button>
 
-                <div className="hidden md:flex items-center bg-muted/40 rounded-xl px-4 py-2 border border-border/50 w-full max-w-md focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+                <form onSubmit={(e) => {
+                    e.preventDefault()
+                    // @ts-ignore
+                    const query = e.target.search.value
+                    if (query) router.push(`/search?q=${query}`)
+                }} className="hidden md:flex items-center bg-muted/40 rounded-xl px-4 py-2 border border-border/50 w-full max-w-md focus-within:ring-2 focus-within:ring-primary/20 transition-all">
                     <Search className="h-4 w-4 text-muted-foreground mr-3" />
                     <input
+                        name="search"
                         placeholder="Search orders, products, or stock..."
                         className="bg-transparent border-none focus:outline-none text-sm w-full placeholder:text-muted-foreground"
                     />
-                </div>
+                </form>
 
                 <div className="ml-auto flex items-center gap-2 sm:gap-4">
-                    <button className="relative p-2.5 rounded-xl hover:bg-muted transition-colors border border-transparent hover:border-border/50">
-                        <Bell className="h-5 w-5 text-muted-foreground" />
-                        <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-red-500 border border-background"></span>
-                    </button>
+                    <Notifications />
 
                     <div className="flex items-center gap-3 pl-4 border-l border-border/50">
                         <div className="flex flex-col items-end hidden sm:flex">

@@ -1,24 +1,87 @@
 import { createClient } from '@/lib/supabase/server'
 import { DollarSign, Package, ShoppingCart, Activity, TrendingUp, Users } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 async function getStats() {
     const supabase = await createClient()
+    const now = new Date()
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
 
-    // Placeholder for real data fetching
-    // const { count: stockAccounts } = await supabase.from('stock_accounts').select('*', { count: 'exact', head: true }).eq('status', 'AVAILABLE')
+    // 1. Total Revenue (Month) - Sum of completed orders since start of month
+    // Note: In a real app we might use a dedicated Transactions table or RPC for sum.
+    // Here we fetch completed orders for the month and calculate sum in JS (okay for MVP).
+    const { data: monthOrders } = await supabase
+        .from('orders')
+        .select('total_price')
+        .eq('status', 'COMPLETED')
+        .gte('order_date', firstDayOfMonth)
+
+    const salesMonth = monthOrders?.reduce((sum, order) => sum + (Number(order.total_price) || 0), 0) || 0
+
+    // 2. Active Orders (Pending/Processing)
+    const { count: pendingOrders } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .in('status', ['PENDING', 'PROCESSING'])
+
+    // 3. Completed Orders (All time or Month? Usually all time for "completed orders" stat, but let's stick to total)
+    const { count: completedOrders } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'COMPLETED')
+
+    // 4. Stock Counts
+    const { count: stockAccounts } = await supabase
+        .from('stock_accounts')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'AVAILABLE')
+
+    const { count: stockCredits } = await supabase
+        .from('stock_credits')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'AVAILABLE')
 
     return {
-        salesToday: 450000,
-        salesMonth: 12500000,
-        stockAccounts: 42,
-        stockCredits: 156,
-        pendingOrders: 5,
-        completedOrders: 128
+        salesMonth,
+        stockAccounts: stockAccounts || 0,
+        stockCredits: stockCredits || 0,
+        pendingOrders: pendingOrders || 0,
+        completedOrders: completedOrders || 0
     }
+}
+
+async function getRecentOrders() {
+    const supabase = await createClient()
+    const { data } = await supabase
+        .from('orders')
+        .select('id, shopee_order_no, total_price, status, order_date, products(name, type)')
+        .order('order_date', { ascending: false })
+        .limit(3)
+
+    return data || []
+}
+
+async function getStockAlerts() {
+    // Determine low stock by checking actual counts in stock tables
+    // This is a bit heavy, strictly for MVP we might just check 'products' if we had a count trigger.
+    // For now, let's just fetch products and their counts if possible, or skip complex logic.
+    // Let's rely on the 'stock_count' column in products table, assuming we will add a trigger later.
+    const supabase = await createClient()
+    const { data } = await supabase
+        .from('products')
+        .select('id, name, stock_count, type')
+        .lt('stock_count', 10)
+        .eq('is_active', true)
+        .limit(3)
+
+    return data || []
 }
 
 export default async function DashboardPage() {
     const stats = await getStats()
+    const recentOrders = await getRecentOrders()
+    const lowStockProducts = await getStockAlerts()
 
     return (
         <div className="space-y-8">
@@ -52,7 +115,7 @@ export default async function DashboardPage() {
                     </div>
                     <p className="text-xs text-green-600 flex items-center font-medium">
                         <TrendingUp className="h-3 w-3 mr-1" />
-                        +20.1% from last month
+                        +0% from last month
                     </p>
                 </div>
 
@@ -86,9 +149,9 @@ export default async function DashboardPage() {
                         {stats.stockAccounts} <span className="text-sm font-normal text-muted-foreground">units</span>
                     </div>
                     <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">
-                        <div className="bg-pink-500 h-1.5 rounded-full" style={{ width: '45%' }}></div>
+                        <div className="bg-pink-500 h-1.5 rounded-full" style={{ width: '50%' }}></div>
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-1">45% capacity</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Available for sale</p>
                 </div>
 
                 {/* Card 4 */}
@@ -104,12 +167,11 @@ export default async function DashboardPage() {
                         {stats.stockCredits} <span className="text-sm font-normal text-muted-foreground">units</span>
                     </div>
                     <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">
-                        <div className="bg-orange-500 h-1.5 rounded-full" style={{ width: '80%' }}></div>
+                        <div className="bg-orange-500 h-1.5 rounded-full" style={{ width: '50%' }}></div>
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-1">High availability</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Available for sale</p>
                 </div>
             </div>
-
 
             {/* Recent Activity / Charts Section */}
             <div className="grid gap-6 md:grid-cols-7">
@@ -119,44 +181,64 @@ export default async function DashboardPage() {
                         <button className="text-sm text-primary hover:underline">View All</button>
                     </div>
                     <div className="space-y-4">
-                        {/* Mock List */}
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/30 hover:bg-muted/50 transition-colors">
-                                <div className="flex items-center gap-4">
-                                    <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold text-sm">
-                                        PA
+                        {recentOrders.length === 0 ? (
+                            <p className="text-muted-foreground text-sm text-center py-8">No recent orders found.</p>
+                        ) : (
+                            recentOrders.map((order: any) => (
+                                <div key={order.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-xl border border-border/30 hover:bg-muted/50 transition-colors">
+                                    <div className="flex items-center gap-4">
+                                        <div className={`h-10 w-10 rounded-lg flex items-center justify-center font-bold text-sm ${order.products?.type === 'ACCOUNT' ? 'bg-blue-500/10 text-blue-600' : 'bg-orange-500/10 text-orange-600'}`}>
+                                            {order.products?.type === 'ACCOUNT' ? 'AC' : 'CR'}
+                                        </div>
+                                        <div>
+                                            <p className="font-medium text-sm">Order #{order.shopee_order_no}</p>
+                                            <p className="text-xs text-muted-foreground">{order.products?.name || 'Unknown Product'}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-medium text-sm">Order #23049{i}</p>
-                                        <p className="text-xs text-muted-foreground">Pipit AI Premium Account</p>
+                                    <div className="text-right">
+                                        <p className="font-bold text-sm">Rp {Number(order.total_price).toLocaleString('id-ID')}</p>
+                                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${order.status === 'COMPLETED' ? 'bg-green-400/10 text-green-500 ring-green-400/20' :
+                                            order.status === 'PENDING' ? 'bg-yellow-400/10 text-yellow-500 ring-yellow-400/20' :
+                                                'bg-gray-400/10 text-gray-500 ring-gray-400/20'
+                                            }`}>
+                                            {order.status}
+                                        </span>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="font-bold text-sm">Rp 45,000</p>
-                                    <span className="inline-flex items-center rounded-full bg-yellow-400/10 px-2 py-0.5 text-xs font-medium text-yellow-500 ring-1 ring-inset ring-yellow-400/20">
-                                        Pending
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
                 </div>
 
                 <div className="col-span-3 rounded-2xl border border-border/40 bg-card p-6 shadow-sm">
                     <h3 className="font-semibold text-lg mb-4">Stock Alerts</h3>
                     <div className="space-y-4">
-                        <div className="p-4 rounded-xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-900/50">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Activity className="h-4 w-4 text-red-600" />
-                                <h4 className="text-sm font-semibold text-red-700 dark:text-red-400">Low Stock Warning</h4>
+                        {lowStockProducts.length === 0 ? (
+                            <div className="p-4 rounded-xl border border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-900/50">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Activity className="h-4 w-4 text-green-600" />
+                                    <h4 className="text-sm font-semibold text-green-700 dark:text-green-400">All Good</h4>
+                                </div>
+                                <p className="text-xs text-green-600/80 dark:text-green-300">
+                                    Stock levels are healthy.
+                                </p>
                             </div>
-                            <p className="text-xs text-red-600/80 dark:text-red-300">
-                                Pipit AI Account (Basic) is running low (Only 2 left).
-                            </p>
-                            <button className="mt-3 text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1.5 rounded-lg font-medium transition-colors dark:bg-red-900/40 dark:text-red-300">
-                                Replenish Stock
-                            </button>
-                        </div>
+                        ) : (
+                            lowStockProducts.map((product) => (
+                                <div key={product.id} className="p-4 rounded-xl border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-900/50">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <Activity className="h-4 w-4 text-red-600" />
+                                        <h4 className="text-sm font-semibold text-red-700 dark:text-red-400">Low Stock Warning</h4>
+                                    </div>
+                                    <p className="text-xs text-red-600/80 dark:text-red-300">
+                                        {product.name} is running low ({product.stock_count} left).
+                                    </p>
+                                    <button className="mt-3 text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1.5 rounded-lg font-medium transition-colors dark:bg-red-900/40 dark:text-red-300">
+                                        Replenish Stock
+                                    </button>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
             </div>

@@ -52,7 +52,7 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4">
             <div className="bg-card w-full max-w-lg md:max-w-2xl rounded-2xl shadow-2xl border border-border animation-scale-in max-h-[90vh] overflow-y-auto">
                 <div className="p-6 border-b border-border/50">
                     <h2 className="text-xl font-bold">Create New Order</h2>

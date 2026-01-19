@@ -44,7 +44,12 @@ export default async function DashboardPage() {
                             <DollarSign className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-2xl font-bold mb-1 relative">Rp {stats.salesMonth.toLocaleString('id-ID')}</div>
+                    <div
+                        className="text-xl md:text-2xl font-bold mb-1 relative truncate"
+                        title={`Rp ${stats.salesMonth.toLocaleString('id-ID')}`}
+                    >
+                        Rp {stats.salesMonth.toLocaleString('id-ID')}
+                    </div>
                     <p className="text-xs text-green-600 flex items-center font-medium">
                         <TrendingUp className="h-3 w-3 mr-1" />
                         +20.1% from last month
@@ -55,13 +60,15 @@ export default async function DashboardPage() {
                 <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground">Active Orders</span>
-                        <div className="p-2 bg-violet-500/10 rounded-lg text-violet-500">
+                        <span className="text-sm font-medium text-muted-foreground mr-2 truncate">Active Orders</span>
+                        <div className="p-2 bg-violet-500/10 rounded-lg text-violet-500 shrink-0">
                             <ShoppingCart className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-2xl font-bold mb-1 relative">{stats.pendingOrders} <span className="text-sm font-normal text-muted-foreground">pending</span></div>
-                    <p className="text-xs text-muted-foreground">
+                    <div className="text-xl md:text-2xl font-bold mb-1 relative truncate" title={`${stats.pendingOrders} pending`}>
+                        {stats.pendingOrders} <span className="text-sm font-normal text-muted-foreground">pending</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">
                         {stats.completedOrders} completed orders
                     </p>
                 </div>
@@ -70,12 +77,14 @@ export default async function DashboardPage() {
                 <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground">Account Stock</span>
-                        <div className="p-2 bg-pink-500/10 rounded-lg text-pink-500">
+                        <span className="text-sm font-medium text-muted-foreground mr-2 truncate">Account Stock</span>
+                        <div className="p-2 bg-pink-500/10 rounded-lg text-pink-500 shrink-0">
                             <Users className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-2xl font-bold mb-1 relative">{stats.stockAccounts} <span className="text-sm font-normal text-muted-foreground">units</span></div>
+                    <div className="text-xl md:text-2xl font-bold mb-1 relative truncate">
+                        {stats.stockAccounts} <span className="text-sm font-normal text-muted-foreground">units</span>
+                    </div>
                     <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">
                         <div className="bg-pink-500 h-1.5 rounded-full" style={{ width: '45%' }}></div>
                     </div>
@@ -86,12 +95,14 @@ export default async function DashboardPage() {
                 <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground">Credit Stock</span>
-                        <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500">
+                        <span className="text-sm font-medium text-muted-foreground mr-2 truncate">Credit Stock</span>
+                        <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500 shrink-0">
                             <Package className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-2xl font-bold mb-1 relative">{stats.stockCredits} <span className="text-sm font-normal text-muted-foreground">units</span></div>
+                    <div className="text-xl md:text-2xl font-bold mb-1 relative truncate">
+                        {stats.stockCredits} <span className="text-sm font-normal text-muted-foreground">units</span>
+                    </div>
                     <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">
                         <div className="bg-orange-500 h-1.5 rounded-full" style={{ width: '80%' }}></div>
                     </div>

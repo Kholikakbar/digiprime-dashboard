@@ -1,8 +1,10 @@
-import { getOrders } from './actions'
+import { getOrders, getProductsForOrder } from './actions'
 import { ShoppingCart, Search, Filter } from 'lucide-react'
+import { CreateOrderDialog } from './order-dialog'
 
 export default async function OrdersPage() {
     const orders = await getOrders()
+    const products = await getProductsForOrder()
 
     return (
         <div className="space-y-8">
@@ -12,6 +14,9 @@ export default async function OrdersPage() {
                     <p className="text-muted-foreground mt-1">Track and manage Shopee orders.</p>
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <div className="mr-2">
+                        <CreateOrderDialog products={products} />
+                    </div>
                     <div className="relative flex-1 sm:flex-none">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <input placeholder="Search order ID..." className="pl-9 pr-4 py-2 rounded-lg border border-border bg-card text-sm w-full sm:w-64" />
@@ -53,8 +58,8 @@ export default async function OrdersPage() {
                                         <td className="px-6 py-4">{order.products?.name || 'Unknown Product'}</td>
                                         <td className="px-6 py-4 text-center">
                                             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${order.status === 'COMPLETED' ? 'bg-green-500/10 text-green-700' :
-                                                    order.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-700' :
-                                                        'bg-gray-100 text-gray-700'
+                                                order.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-700' :
+                                                    'bg-gray-100 text-gray-700'
                                                 }`}>
                                                 {order.status}
                                             </span>

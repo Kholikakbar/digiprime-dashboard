@@ -45,7 +45,7 @@ export default async function DashboardPage() {
                         </div>
                     </div>
                     <div
-                        className="text-xl md:text-2xl font-bold mb-1 relative truncate"
+                        className="text-2xl font-bold mb-1 relative tracking-tight"
                         title={`Rp ${stats.salesMonth.toLocaleString('id-ID')}`}
                     >
                         Rp {stats.salesMonth.toLocaleString('id-ID')}
@@ -60,15 +60,15 @@ export default async function DashboardPage() {
                 <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground mr-2 truncate">Active Orders</span>
+                        <span className="text-sm font-medium text-muted-foreground mr-2">Active Orders</span>
                         <div className="p-2 bg-violet-500/10 rounded-lg text-violet-500 shrink-0">
                             <ShoppingCart className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-xl md:text-2xl font-bold mb-1 relative truncate" title={`${stats.pendingOrders} pending`}>
+                    <div className="text-2xl font-bold mb-1 relative tracking-tight" title={`${stats.pendingOrders} pending`}>
                         {stats.pendingOrders} <span className="text-sm font-normal text-muted-foreground">pending</span>
                     </div>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-xs text-muted-foreground">
                         {stats.completedOrders} completed orders
                     </p>
                 </div>
@@ -77,12 +77,12 @@ export default async function DashboardPage() {
                 <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground mr-2 truncate">Account Stock</span>
+                        <span className="text-sm font-medium text-muted-foreground mr-2">Account Stock</span>
                         <div className="p-2 bg-pink-500/10 rounded-lg text-pink-500 shrink-0">
                             <Users className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-xl md:text-2xl font-bold mb-1 relative truncate">
+                    <div className="text-2xl font-bold mb-1 relative tracking-tight">
                         {stats.stockAccounts} <span className="text-sm font-normal text-muted-foreground">units</span>
                     </div>
                     <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">
@@ -95,12 +95,12 @@ export default async function DashboardPage() {
                 <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground mr-2 truncate">Credit Stock</span>
+                        <span className="text-sm font-medium text-muted-foreground mr-2">Credit Stock</span>
                         <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500 shrink-0">
                             <Package className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-xl md:text-2xl font-bold mb-1 relative truncate">
+                    <div className="text-2xl font-bold mb-1 relative tracking-tight">
                         {stats.stockCredits} <span className="text-sm font-normal text-muted-foreground">units</span>
                     </div>
                     <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">
@@ -109,6 +109,7 @@ export default async function DashboardPage() {
                     <p className="text-[10px] text-muted-foreground mt-1">High availability</p>
                 </div>
             </div>
+
 
             {/* Recent Activity / Charts Section */}
             <div className="grid gap-6 md:grid-cols-7">

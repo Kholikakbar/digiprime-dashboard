@@ -1,5 +1,5 @@
 import { getStocks } from './actions'
-import { AddStockDialog } from './stock-dialog'
+import { StockDialog } from './stock-dialog'
 import { Mail, CircleDollarSign } from 'lucide-react'
 import { StockActions } from './stock-actions'
 
@@ -13,7 +13,7 @@ export default async function StockPage() {
                     <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600">Stock Management</h2>
                     <p className="text-muted-foreground mt-1">Monitor and replenish your digital inventory.</p>
                 </div>
-                <AddStockDialog products={products} />
+                <StockDialog products={products} />
             </div>
 
             <div className="grid gap-8 lg:grid-cols-2">
@@ -52,7 +52,7 @@ export default async function StockPage() {
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
-                                                    <StockActions item={item} type="ACCOUNT" />
+                                                    <StockActions item={item} type="ACCOUNT" products={products} />
                                                 </td>
                                             </tr>
                                         ))
@@ -98,7 +98,7 @@ export default async function StockPage() {
                                                     </span>
                                                 </td>
                                                 <td className="px-4 py-3 text-right">
-                                                    <StockActions item={item} type="CREDIT" />
+                                                    <StockActions item={item} type="CREDIT" products={products} />
                                                 </td>
                                             </tr>
                                         ))

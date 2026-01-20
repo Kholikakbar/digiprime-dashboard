@@ -75,6 +75,54 @@ export async function addStockCredit(prevState: any, formData: FormData) {
     return { success: true }
 }
 
+export async function updateStockAccount(id: string, formData: FormData) {
+    const supabase = await createClient()
+
+    const product_id = formData.get('product_id') as string
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const additional_info = formData.get('additional_info') as string
+    const status = formData.get('status') as string
+
+    const { error } = await supabase
+        .from('stock_accounts')
+        .update({
+            product_id,
+            email,
+            password,
+            additional_info,
+            status
+        })
+        .eq('id', id)
+
+    if (error) return { error: error.message }
+    revalidatePath('/stock')
+    return { success: true }
+}
+
+export async function updateStockCredit(id: string, formData: FormData) {
+    const supabase = await createClient()
+
+    const product_id = formData.get('product_id') as string
+    const amount = Number(formData.get('amount'))
+    const code = formData.get('code') as string
+    const status = formData.get('status') as string
+
+    const { error } = await supabase
+        .from('stock_credits')
+        .update({
+            product_id,
+            amount,
+            code,
+            status
+        })
+        .eq('id', id)
+
+    if (error) return { error: error.message }
+    revalidatePath('/stock')
+    return { success: true }
+}
+
 export async function deleteStockAccount(id: string) {
     const supabase = await createClient()
     const { error } = await supabase.from('stock_accounts').delete().eq('id', id)

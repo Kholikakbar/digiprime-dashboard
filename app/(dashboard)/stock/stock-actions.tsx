@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { Eye, Edit, Trash2 } from 'lucide-react'
 import { deleteStockAccount, deleteStockCredit } from './actions'
 import { ViewStockDialog } from './view-stock-dialog'
+import { StockDialog } from './stock-dialog'
 
-export function StockActions({ item, type }: { item: any, type: 'ACCOUNT' | 'CREDIT' }) {
+export function StockActions({ item, type, products }: { item: any, type: 'ACCOUNT' | 'CREDIT', products: any[] }) {
     const [showView, setShowView] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 
@@ -31,13 +32,20 @@ export function StockActions({ item, type }: { item: any, type: 'ACCOUNT' | 'CRE
                 >
                     <Eye className="h-3.5 w-3.5" />
                 </button>
-                <button
-                    onClick={() => alert('Editing stock is not supported yet. Please delete and recreate if needed.')}
-                    className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground"
-                    title="Edit"
-                >
-                    <Edit className="h-3.5 w-3.5" />
-                </button>
+
+                <StockDialog
+                    products={products}
+                    item={{ ...item, type }}
+                    trigger={
+                        <button
+                            className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground"
+                            title="Edit"
+                        >
+                            <Edit className="h-3.5 w-3.5" />
+                        </button>
+                    }
+                />
+
                 <button
                     onClick={handleDelete}
                     disabled={isDeleting}

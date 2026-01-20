@@ -52,43 +52,43 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
     }
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm px-4">
-            <div className="bg-card w-full max-w-lg md:max-w-2xl rounded-2xl shadow-2xl border border-border animation-scale-in max-h-[90vh] overflow-y-auto">
-                <div className="p-6 border-b border-border/50">
-                    <h2 className="text-xl font-bold">Create New Order</h2>
-                    <p className="text-sm text-muted-foreground">Manually record an offline or external order.</p>
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="bg-card w-full max-w-lg md:max-w-2xl rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-border/50 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto relative">
+                <div className="p-6 border-b border-border/50 bg-gradient-to-r from-primary/5 to-purple-500/5">
+                    <h2 className="text-xl font-bold text-foreground">Create New Order</h2>
+                    <p className="text-sm text-muted-foreground mt-1">Manually record an offline or external order.</p>
                 </div>
 
-                <form action={handleSubmit} className="p-6 space-y-4">
+                <form action={handleSubmit} className="p-6 space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label className="text-sm font-medium mb-1.5 block">Shopee Order No</label>
+                            <label className="text-sm font-medium mb-2 block text-foreground">Shopee Order No</label>
                             <input
                                 name="shopee_order_no"
                                 required
                                 placeholder="e.g. 230101ABC123"
-                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80"
                             />
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium mb-1.5 block">Buyer Username</label>
+                            <label className="text-sm font-medium mb-2 block text-foreground">Buyer Username</label>
                             <input
                                 name="buyer_username"
                                 required
                                 placeholder="e.g. johndoe"
-                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80"
                             />
                         </div>
 
                         <div className="col-span-1 md:col-span-2">
-                            <label className="text-sm font-medium mb-1.5 block">Product</label>
+                            <label className="text-sm font-medium mb-2 block text-foreground">Product</label>
                             <div className="relative">
-                                <Package className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Package className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
                                 <select
                                     name="product_id"
                                     required
-                                    className="w-full bg-muted/30 border border-border rounded-lg pl-9 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none appearance-none transition-all"
+                                    className="w-full bg-background border-2 border-border rounded-lg pl-10 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none appearance-none transition-all hover:border-border/80 cursor-pointer"
                                     onChange={handleProductChange}
                                 >
                                     <option value="">Select a product...</option>
@@ -100,25 +100,25 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium mb-1.5 block">Total Price</label>
+                            <label className="text-sm font-medium mb-2 block text-foreground">Total Price</label>
                             <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">Rp</span>
+                                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium pointer-events-none z-10">Rp</span>
                                 <input
                                     id="price-input"
                                     name="total_price"
                                     type="number"
                                     required
                                     placeholder="0"
-                                    className="w-full bg-muted/30 border border-border rounded-lg pl-9 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                    className="w-full bg-background border-2 border-border rounded-lg pl-10 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="text-sm font-medium mb-1.5 block">Status</label>
+                            <label className="text-sm font-medium mb-2 block text-foreground">Status</label>
                             <select
                                 name="status"
-                                className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80 cursor-pointer"
                                 defaultValue="COMPLETED"
                             >
                                 <option value="PENDING">Pending</option>
@@ -128,18 +128,18 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-end gap-3 pt-4">
+                    <div className="flex items-center justify-end gap-3 pt-6 border-t border-border/30 mt-6">
                         <button
                             type="button"
                             onClick={() => setIsOpen(false)}
-                            className="px-4 py-2 text-sm font-medium hover:bg-muted rounded-lg transition-colors"
+                            className="px-5 py-2.5 text-sm font-medium bg-muted/50 hover:bg-muted border border-border rounded-lg transition-all duration-200 hover:shadow-md"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-primary/25 flex items-center gap-2"
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98]"
                         >
                             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                             Create Order

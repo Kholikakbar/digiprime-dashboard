@@ -1,6 +1,7 @@
 import { getStocks } from './actions'
 import { AddStockDialog } from './stock-dialog'
-import { Layers, Mail, Key, Hash, CircleDollarSign } from 'lucide-react'
+import { Mail, CircleDollarSign } from 'lucide-react'
+import { StockActions } from './stock-actions'
 
 export default async function StockPage() {
     const { accounts, credits, products } = await getStocks()
@@ -33,23 +34,25 @@ export default async function StockPage() {
                                     <tr>
                                         <th className="px-4 py-3">Product</th>
                                         <th className="px-4 py-3">Email</th>
-                                        {/* <th className="px-4 py-3">Password</th> */}
                                         <th className="px-4 py-3 text-right">Status</th>
+                                        <th className="px-4 py-3 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border/20">
                                     {accounts.length === 0 ? (
-                                        <tr><td colSpan={3} className="px-4 py-8 text-center text-muted-foreground">No accounts in stock.</td></tr>
+                                        <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">No accounts in stock.</td></tr>
                                     ) : (
                                         accounts.map((item: any) => (
-                                            <tr key={item.id} className="hover:bg-muted/30 transition-colors">
+                                            <tr key={item.id} className="hover:bg-muted/30 transition-colors group">
                                                 <td className="px-4 py-3 font-medium">{item.products?.name}</td>
-                                                <td className="px-4 py-3 text-muted-foreground">{item.email}</td>
-                                                {/* <td className="px-4 py-3 font-mono text-xs opacity-50">******</td> */}
+                                                <td className="px-4 py-3 text-muted-foreground break-all max-w-[150px] truncate">{item.email}</td>
                                                 <td className="px-4 py-3 text-right">
                                                     <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${item.status === 'AVAILABLE' ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'}`}>
                                                         {item.status}
                                                     </span>
+                                                </td>
+                                                <td className="px-4 py-3 text-right">
+                                                    <StockActions item={item} type="ACCOUNT" />
                                                 </td>
                                             </tr>
                                         ))
@@ -78,20 +81,24 @@ export default async function StockPage() {
                                         <th className="px-4 py-3">Product</th>
                                         <th className="px-4 py-3">Amount</th>
                                         <th className="px-4 py-3 text-right">Status</th>
+                                        <th className="px-4 py-3 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border/20">
                                     {credits.length === 0 ? (
-                                        <tr><td colSpan={3} className="px-4 py-8 text-center text-muted-foreground">No credits in stock.</td></tr>
+                                        <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">No credits in stock.</td></tr>
                                     ) : (
                                         credits.map((item: any) => (
-                                            <tr key={item.id} className="hover:bg-muted/30 transition-colors">
+                                            <tr key={item.id} className="hover:bg-muted/30 transition-colors group">
                                                 <td className="px-4 py-3 font-medium">{item.products?.name}</td>
                                                 <td className="px-4 py-3 font-mono">{item.amount}</td>
                                                 <td className="px-4 py-3 text-right">
                                                     <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${item.status === 'AVAILABLE' ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'}`}>
                                                         {item.status}
                                                     </span>
+                                                </td>
+                                                <td className="px-4 py-3 text-right">
+                                                    <StockActions item={item} type="CREDIT" />
                                                 </td>
                                             </tr>
                                         ))

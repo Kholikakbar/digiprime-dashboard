@@ -53,8 +53,8 @@ export function AddStockDialog({ products }: { products: any[] }) {
                             type="button"
                             onClick={() => setType('ACCOUNT')}
                             className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 ${type === 'ACCOUNT'
-                                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30'
-                                    : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+                                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
                                 }`}
                         >
                             Account
@@ -63,8 +63,8 @@ export function AddStockDialog({ products }: { products: any[] }) {
                             type="button"
                             onClick={() => setType('CREDIT')}
                             className={`flex-1 py-2.5 text-sm font-semibold rounded-md transition-all duration-200 ${type === 'CREDIT'
-                                    ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30'
-                                    : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
+                                ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
                                 }`}
                         >
                             Credit

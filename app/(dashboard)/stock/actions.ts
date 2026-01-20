@@ -74,3 +74,17 @@ export async function addStockCredit(prevState: any, formData: FormData) {
     revalidatePath('/stock')
     return { success: true }
 }
+
+export async function deleteStockAccount(id: string) {
+    const supabase = await createClient()
+    const { error } = await supabase.from('stock_accounts').delete().eq('id', id)
+    if (error) throw new Error(error.message)
+    revalidatePath('/stock')
+}
+
+export async function deleteStockCredit(id: string) {
+    const supabase = await createClient()
+    const { error } = await supabase.from('stock_credits').delete().eq('id', id)
+    if (error) throw new Error(error.message)
+    revalidatePath('/stock')
+}

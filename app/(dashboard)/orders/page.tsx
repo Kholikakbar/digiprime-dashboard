@@ -1,6 +1,7 @@
 import { getOrders, getProductsForOrder } from './actions'
 import { ShoppingCart, Search, Filter } from 'lucide-react'
-import { CreateOrderDialog } from './order-dialog'
+import { OrderDialog } from './order-dialog'
+import { OrderRow } from './order-row'
 
 export default async function OrdersPage() {
     const orders = await getOrders()
@@ -28,7 +29,7 @@ export default async function OrdersPage() {
 
                     {/* New Order Button */}
                     <div className="w-full sm:w-auto">
-                        <CreateOrderDialog products={products} />
+                        <OrderDialog products={products} />
                     </div>
                 </div>
             </div>
@@ -43,12 +44,13 @@ export default async function OrdersPage() {
                                 <th className="px-6 py-4 text-left">Product</th>
                                 <th className="px-6 py-4 text-center">Status</th>
                                 <th className="px-6 py-4 text-right">Date</th>
+                                <th className="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border/20">
                             {orders.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center">
+                                    <td colSpan={6} className="px-6 py-12 text-center">
                                         <div className="flex flex-col items-center justify-center text-muted-foreground">
                                             <ShoppingCart className="h-10 w-10 mb-3 opacity-20" />
                                             <p>No orders found yet.</p>
@@ -58,22 +60,7 @@ export default async function OrdersPage() {
                                 </tr>
                             ) : (
                                 orders.map((order: any) => (
-                                    <tr key={order.id} className="hover:bg-muted/30 transition-colors">
-                                        <td className="px-6 py-4 font-mono font-medium">{order.shopee_order_no}</td>
-                                        <td className="px-6 py-4">{order.buyer_username}</td>
-                                        <td className="px-6 py-4">{order.products?.name || 'Unknown Product'}</td>
-                                        <td className="px-6 py-4 text-center">
-                                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${order.status === 'COMPLETED' ? 'bg-green-500/10 text-green-700' :
-                                                order.status === 'PENDING' ? 'bg-yellow-500/10 text-yellow-700' :
-                                                    'bg-gray-100 text-gray-700'
-                                                }`}>
-                                                {order.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right text-muted-foreground">
-                                            {new Date(order.order_date).toLocaleDateString()}
-                                        </td>
-                                    </tr>
+                                    <OrderRow key={order.id} order={order} products={products} />
                                 ))
                             )}
                         </tbody>

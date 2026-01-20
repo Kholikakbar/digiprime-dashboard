@@ -40,6 +40,32 @@ export async function createProduct(prevState: any, formData: FormData) {
     return { success: true }
 }
 
+export async function updateProduct(id: string, formData: FormData) {
+    const supabase = await createClient()
+
+    const name = formData.get('name') as string
+    const type = formData.get('type') as string
+    const price = Number(formData.get('price'))
+    const description = formData.get('description') as string
+
+    const { error } = await supabase
+        .from('products')
+        .update({
+            name,
+            type,
+            price,
+            description
+        })
+        .eq('id', id)
+
+    if (error) {
+        return { error: error.message }
+    }
+
+    revalidatePath('/products')
+    return { success: true }
+}
+
 export async function deleteProduct(id: string) {
     const supabase = await createClient()
     const { error } = await supabase.from('products').delete().eq('id', id)

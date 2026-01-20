@@ -43,10 +43,10 @@ export function OrderRow({ order, products }: OrderRowProps) {
                     {new Date(order.order_date).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center justify-end gap-1">
                         <button
                             onClick={() => setShowView(true)}
-                            className="p-2 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground"
+                            className="p-2 hover:bg-primary/10 hover:text-primary rounded-md text-muted-foreground transition-colors"
                             title="View"
                         >
                             <Eye className="h-4 w-4" />
@@ -57,7 +57,7 @@ export function OrderRow({ order, products }: OrderRowProps) {
                             products={products}
                             trigger={
                                 <button
-                                    className="p-2 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground"
+                                    className="p-2 hover:bg-blue-500/10 hover:text-blue-600 rounded-md text-muted-foreground transition-colors"
                                     title="Edit"
                                 >
                                     <Edit className="h-4 w-4" />
@@ -68,7 +68,7 @@ export function OrderRow({ order, products }: OrderRowProps) {
                         <button
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="p-2 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive disabled:opacity-50"
+                            className="p-2 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive disabled:opacity-50 transition-colors"
                             title="Delete"
                         >
                             <Trash2 className={`h-4 w-4 ${isDeleting ? 'animate-pulse' : ''}`} />

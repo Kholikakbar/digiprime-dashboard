@@ -40,7 +40,7 @@ export function ProductCard({ product }: { product: Product }) {
         <>
             <div className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card p-6 shadow-sm hover:shadow-md transition-all">
                 {/* Action Buttons */}
-                <div className="absolute top-4 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm rounded-lg p-1 border border-border/50">
+                <div className="absolute top-4 right-4 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg p-1 border border-border/50 shadow-sm">
                     <button
                         onClick={() => setShowView(true)}
                         className="p-2 hover:bg-primary/10 hover:text-primary rounded-lg transition-all duration-200 text-muted-foreground"

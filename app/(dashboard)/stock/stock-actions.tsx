@@ -24,10 +24,10 @@ export function StockActions({ item, type, products }: { item: any, type: 'ACCOU
 
     return (
         <>
-            <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center justify-end gap-1">
                 <button
                     onClick={() => setShowView(true)}
-                    className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground"
+                    className="p-1.5 hover:bg-primary/10 hover:text-primary rounded-md text-muted-foreground transition-colors"
                     title="View"
                 >
                     <Eye className="h-3.5 w-3.5" />
@@ -38,7 +38,7 @@ export function StockActions({ item, type, products }: { item: any, type: 'ACCOU
                     item={{ ...item, type }}
                     trigger={
                         <button
-                            className="p-1.5 hover:bg-muted rounded-md text-muted-foreground hover:text-foreground"
+                            className="p-1.5 hover:bg-blue-500/10 hover:text-blue-600 rounded-md text-muted-foreground transition-colors"
                             title="Edit"
                         >
                             <Edit className="h-3.5 w-3.5" />
@@ -49,7 +49,7 @@ export function StockActions({ item, type, products }: { item: any, type: 'ACCOU
                 <button
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    className="p-1.5 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive disabled:opacity-50"
+                    className="p-1.5 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive disabled:opacity-50 transition-colors"
                     title="Delete"
                 >
                     <Trash2 className={`h-3.5 w-3.5 ${isDeleting ? 'animate-pulse' : ''}`} />

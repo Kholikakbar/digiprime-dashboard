@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Mail, Key, Info, Package, Hash, CircleDollarSign } from 'lucide-react'
+import { X, Mail, Key, Info, Package, Hash, CircleDollarSign, Eye } from 'lucide-react'
 
 interface StockItem {
     id: string
@@ -152,6 +152,3 @@ export function ViewStockDialog({ item, onClose }: ViewStockDialogProps) {
 
     return mounted && dialogContent && createPortal(dialogContent, document.body)
 }
-
-// Reuse Eye icon but need to import properly if not available in scope
-import { Eye } from 'lucide-react'

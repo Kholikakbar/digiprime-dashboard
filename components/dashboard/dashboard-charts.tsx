@@ -52,7 +52,6 @@ const CustomTooltip = ({ active, payload, label, currency = false }: any) => {
     return null
 }
 
-// Custom shape for horizontal bars with pointy ends (like the reference image top-left)
 const PointyBar = (props: any) => {
     const { x, y, width, height, fill } = props;
     const arrowWidth = 15;
@@ -78,7 +77,6 @@ export function DashboardCharts({
     return (
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
 
-            {/* 1. MOUNTAIN REVENUE CHART (Style inspired by bottom-right of reference) */}
             <div className="col-span-full lg:col-span-2 rounded-[2rem] border-4 border-slate-50 bg-white p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden group">
                 <div className="absolute -right-20 -top-20 w-64 h-64 bg-slate-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-700" />
 
@@ -145,7 +143,6 @@ export function DashboardCharts({
                 </div>
             </div>
 
-            {/* 2. INFOGRAPHIC PIE (Style inspired by pie charts in reference) */}
             <div className="rounded-[2rem] border-4 border-slate-50 bg-white p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] flex flex-col group">
                 <div className="flex items-center gap-4 mb-10">
                     <div className="h-14 w-14 bg-gradient-to-br from-rose-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg shadow-rose-200 text-white -rotate-3">
@@ -185,7 +182,6 @@ export function DashboardCharts({
                             />
                         </PieChart>
                     </ResponsiveContainer>
-                    {/* Center Label */}
                     <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
                         <p className="text-3xl font-black text-slate-800 tracking-tighter">
                             {orderStatusData.reduce((a, b) => a + b.value, 0)}
@@ -195,7 +191,6 @@ export function DashboardCharts({
                 </div>
             </div>
 
-            {/* 3. ARROW BARS (Style inspired by top-left bar charts in reference) */}
             <div className="col-span-full rounded-[2rem] border-4 border-slate-50 bg-white p-8 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] mt-4 group">
                 <div className="flex items-center justify-between mb-12">
                     <div className="flex items-center gap-4">
@@ -215,7 +210,6 @@ export function DashboardCharts({
                             layout="vertical"
                             data={salesByProductData}
                             margin={{ top: 0, right: 60, left: 40, bottom: 20 }}
-                            barGap={20}
                         >
                             <CartesianGrid strokeDasharray="10 10" horizontal={true} vertical={false} stroke="#f1f5f9" />
                             <XAxis type="number" hide />
@@ -225,7 +219,7 @@ export function DashboardCharts({
                                 axisLine={false}
                                 tickLine={false}
                                 width={140}
-                                tick={{ fontSize: 13, fill: '#1e293b', fontWeight: 900, italic: true }}
+                                tick={{ fontSize: 13, fill: '#1e293b', fontWeight: 900, fontStyle: 'italic' }}
                             />
                             <Tooltip
                                 content={<CustomTooltip />}

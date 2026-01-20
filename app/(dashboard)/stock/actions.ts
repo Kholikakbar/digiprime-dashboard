@@ -44,12 +44,7 @@ export async function addStockAccount(prevState: any, formData: FormData) {
     })
 
     // Update product stock count (denormalized)
-    if (!error) {
-        await supabase.rpc('increment_stock', { p_id: product_id })
-        // Note: we might need to create this RPC or just rely on count queries. 
-        // For simplicity in this mvp, we might skip the denormalized update or do it manually.
-        // Let's just revalidate.
-    }
+    // For simplicity in this mvp, we rely on revalidating data which will show correct counts.
 
     if (error) return { error: error.message }
     revalidatePath('/stock')

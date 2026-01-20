@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { Plus, Loader2, Calendar as CalendarIcon, Package, DollarSign } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
+import { Plus, Loader2, Package } from 'lucide-react'
 import { createOrder } from './actions'
 
 interface Product {
@@ -14,14 +15,17 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState<string>('')
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+        return () => setMounted(false)
+    }, [])
 
     const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedProduct(e.target.value)
         const prod = products.find(p => p.id === e.target.value)
         if (prod) {
-            // Auto fill price if possible, but form doesn't expose dom ref easily here without ref
-            // We'll let user check price or maybe controlled input for price
-            // For simplicity, let's just keep price manual or force default
             const priceInput = document.getElementById('price-input') as HTMLInputElement
             if (priceInput) priceInput.value = prod.price.toString()
         }
@@ -39,21 +43,18 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
         }
     }
 
-    if (!isOpen) {
-        return (
-            <button
-                onClick={() => setIsOpen(true)}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-primary/25 flex items-center justify-center gap-2 w-full sm:w-auto"
+    const dialogContent = isOpen && mounted ? (
+        <div
+            className="fixed top-0 left-0 right-0 bottom-0 z-[999999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200"
+            style={{ position: 'fixed', inset: 0 }}
+            onClick={(e) => {
+                if (e.target === e.currentTarget) setIsOpen(false)
+            }}
+        >
+            <div
+                className="bg-card w-full max-w-lg md:max-w-2xl rounded-2xl shadow-[0_25px_80px_rgba(0,0,0,0.5)] border-2 border-border animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto relative"
+                onClick={(e) => e.stopPropagation()}
             >
-                <Plus className="h-4 w-4" />
-                New Order
-            </button>
-        )
-    }
-
-    return (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="bg-card w-full max-w-lg md:max-w-2xl rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.3)] border border-border/50 animate-in zoom-in-95 duration-300 max-h-[90vh] overflow-y-auto relative">
                 <div className="p-6 border-b border-border/50 bg-gradient-to-r from-primary/5 to-purple-500/5">
                     <h2 className="text-xl font-bold text-foreground">Create New Order</h2>
                     <p className="text-sm text-muted-foreground mt-1">Manually record an offline or external order.</p>
@@ -148,5 +149,18 @@ export function CreateOrderDialog({ products }: { products: Product[] }) {
                 </form>
             </div>
         </div>
+    ) : null
+
+    return (
+        <>
+            <button
+                onClick={() => setIsOpen(true)}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-primary/25 flex items-center justify-center gap-2 w-full sm:w-auto"
+            >
+                <Plus className="h-4 w-4" />
+                New Order
+            </button>
+            {mounted && dialogContent && createPortal(dialogContent, document.body)}
+        </>
     )
 }

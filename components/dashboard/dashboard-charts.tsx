@@ -51,20 +51,23 @@ const CustomTooltip = ({ active, payload, label, currency = false }: any) => {
     return null
 }
 
-// More refined Arrow Bar
-const ArrowBar = (props: any) => {
+// Vertical Arrow Bar Shape
+const VerticalArrowBar = (props: any) => {
     const { x, y, width, height, fill } = props;
-    if (width <= 0) return null;
-    const arrowWidth = Math.min(width * 0.1, 12);
+    if (height <= 0) return null;
+
+    // The tip is at the top (lowest y value)
+    const arrowHeight = Math.min(height * 0.2, 15);
 
     return (
         <g>
             <path
-                d={`M${x},${y} L${x + width - arrowWidth},${y} L${x + width},${y + height / 2} L${x + width - arrowWidth},${y + height} L${x},${y + height} Z`}
+                d={`M${x},${y + height} L${x + width},${y + height} L${x + width},${y + arrowHeight} L${x + width / 2},${y} L${x},${y + arrowHeight} Z`}
                 fill={fill}
-                className="transition-all duration-500"
+                className="transition-all duration-500 hover:opacity-80"
             />
-            <rect x={x} y={y} width={4} height={height} fill="rgba(0,0,0,0.1)" />
+            {/* Subtle bottom accent */}
+            <rect x={x} y={y + height - 4} width={width} height={4} fill="rgba(0,0,0,0.1)" />
         </g>
     );
 };
@@ -80,10 +83,10 @@ export function DashboardCharts({
 }) {
     return (
         <div className="space-y-8 mb-12">
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
                 {/* 1. REVENUE TREND - Smooth & Elegant */}
-                <div className="lg:col-span-2 rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                <div className="md:col-span-1 lg:col-span-2 rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
                     <div className="flex items-center justify-between mb-8 relative z-10">
                         <div className="flex items-center gap-3">
                             <div className="h-10 w-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
@@ -94,7 +97,7 @@ export function DashboardCharts({
                                 <p className="text-xs text-slate-500">Weekly financial overview</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-1 text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full uppercase tracking-tighter">
+                        <div className="hidden sm:flex items-center gap-1 text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full uppercase tracking-tighter">
                             <Activity className="h-3 w-3" /> Growth +12%
                         </div>
                     </div>
@@ -132,6 +135,7 @@ export function DashboardCharts({
                                     fill="url(#colorRev)"
                                     dot={{ r: 4, fill: '#fff', stroke: '#6366f1', strokeWidth: 2 }}
                                     activeDot={{ r: 6, strokeWidth: 0, fill: '#6366f1' }}
+                                    animationDuration={1500}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -185,7 +189,7 @@ export function DashboardCharts({
                 </div>
             </div>
 
-            {/* 3. PRODUCT VELOCITY - Pro Infographic Style */}
+            {/* 3. PRODUCT VELOCITY - Vertical Arrow Bars */}
             <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-3">
@@ -205,36 +209,37 @@ export function DashboardCharts({
                 <div className="h-[350px] w-full mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
-                            layout="vertical"
                             data={salesByProductData}
-                            margin={{ top: 0, right: 50, left: 40, bottom: 0 }}
-                            barSize={32}
+                            margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
                         >
-                            <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
-                            <XAxis type="number" hide />
-                            <YAxis
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                            <XAxis
                                 dataKey="name"
-                                type="category"
                                 axisLine={false}
                                 tickLine={false}
-                                width={120}
-                                tick={{ fontSize: 12, fill: '#475569', fontWeight: 700 }}
+                                tick={{ fontSize: 11, fill: '#64748b', fontWeight: 600 }}
+                                dy={10}
+                            />
+                            <YAxis
+                                axisLine={false}
+                                tickLine={false}
+                                tick={{ fontSize: 11, fill: '#64748b' }}
                             />
                             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(241, 245, 249, 0.4)' }} />
                             <Bar
                                 dataKey="sales"
-                                shape={<ArrowBar />}
+                                shape={<VerticalArrowBar />}
                                 animationDuration={1500}
-                                animationBegin={300}
+                                barSize={40}
                             >
                                 {salesByProductData.map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                                 <LabelList
                                     dataKey="sales"
-                                    position="right"
-                                    style={{ fill: '#64748b', fontSize: '13px', fontWeight: 800 }}
-                                    offset={12}
+                                    position="top"
+                                    style={{ fill: '#64748b', fontSize: '12px', fontWeight: 700 }}
+                                    offset={10}
                                 />
                             </Bar>
                         </BarChart>

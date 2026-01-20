@@ -71,6 +71,7 @@
   html {
     scroll-behavior: smooth;
   }
+
   body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -80,8 +81,5 @@
 @layer utilities {
   .glass {
     @apply bg-white/10 backdrop-blur-lg border border-white/20 shadow-xl;
-  }
-  .page-transition {
-    @apply animate-in fade-in slide-in-from-bottom-2 duration-700 ease-out fill-mode-forwards;
   }
 }

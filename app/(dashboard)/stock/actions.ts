@@ -3,6 +3,18 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
+export async function getAvailableStockAccounts(productId: string) {
+    const supabase = await createClient()
+    const { data } = await supabase
+        .from('stock_accounts')
+        .select('id, email, additional_info')
+        .eq('product_id', productId)
+        .eq('status', 'AVAILABLE')
+        .order('created_at', { ascending: true }) // FIFO
+
+    return data || []
+}
+
 export async function getStocks() {
     const supabase = await createClient()
 

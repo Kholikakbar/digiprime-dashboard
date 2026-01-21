@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { Plus, Loader2, Package, X, Calendar, User, Hash, Wallet } from 'lucide-react'
 import { createOrder, updateOrder } from './actions'
+import { getAvailableStockAccounts } from '../stock/actions'
 
 interface Product {
     id: string
     name: string
     price: number
+    type: string
 }
 
 interface Order {
@@ -31,6 +33,8 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
     const [isOpen, setIsOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [mounted, setMounted] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+    const [availableStocks, setAvailableStocks] = useState<any[]>([])
 
     useEffect(() => {
         setMounted(true)
@@ -39,11 +43,22 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
 
     const isEditing = !!order?.id
 
-    const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const prod = products.find(p => p.id === e.target.value)
+    const handleProductChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const prod = products.find(p => p.id === e.target.value) || null
+        setSelectedProduct(prod)
+
         if (prod) {
             const priceInput = document.getElementById('price-input') as HTMLInputElement
             if (priceInput) priceInput.value = prod.price.toString()
+
+            if (prod.type === 'ACCOUNT') {
+                const stocks = await getAvailableStockAccounts(prod.id)
+                setAvailableStocks(stocks)
+            } else {
+                setAvailableStocks([])
+            }
+        } else {
+            setAvailableStocks([])
         }
     }
 
@@ -131,11 +146,44 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                                 >
                                     <option value="">Select a product...</option>
                                     {products.map(p => (
-                                        <option key={p.id} value={p.id}>{p.name}</option>
+                                        <option key={p.id} value={p.id}>{p.name} ({p.type})</option>
                                     ))}
                                 </select>
                             </div>
                         </div>
+
+                        {selectedProduct?.type === 'ACCOUNT' && !isEditing && (
+                            <div className="col-span-1 md:col-span-2 space-y-2 animate-in fade-in slide-in-from-top-2">
+                                <label className="text-sm font-medium flex items-center gap-2 text-foreground">
+                                    <Package className="h-3.5 w-3.5 text-muted-foreground" /> Select Stock (Auto-Assign)
+                                </label>
+                                <select
+                                    name="stock_account_id"
+                                    className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80 cursor-pointer"
+                                >
+                                    <option value="">Auto-select oldest available</option>
+                                    {availableStocks.map(stock => (
+                                        <option key={stock.id} value={stock.id}>
+                                            {stock.email} {stock.additional_info ? `(${stock.additional_info})` : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p className="text-[10px] text-muted-foreground">Found {availableStocks.length} available accounts.</p>
+                            </div>
+                        )}
+
+                        {selectedProduct?.type === 'CREDIT' && (
+                            <div className="col-span-1 md:col-span-2 space-y-2 animate-in fade-in slide-in-from-top-2">
+                                <label className="text-sm font-medium flex items-center gap-2 text-foreground">
+                                    <Hash className="h-3.5 w-3.5 text-muted-foreground" /> Referral Link / Code / Target ID
+                                </label>
+                                <input
+                                    name="fulfillment_info"
+                                    placeholder="e.g. https://instagram.com/username or PromoCode123"
+                                    className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80"
+                                />
+                            </div>
+                        )}
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium flex items-center gap-2 text-foreground">

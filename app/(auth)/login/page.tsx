@@ -1,23 +1,49 @@
 import { LoginForm } from './login-form'
+import Image from 'next/image'
 
 export default function LoginPage() {
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
-            <div className="w-full max-w-md space-y-6 bg-card p-8 shadow-2xl rounded-xl border border-border/50 glass-card">
-                <div className="flex flex-col space-y-2 text-center">
-                    <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-2 text-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="m9 12 2 2 4-4" /></svg>
+        <div className="relative flex min-h-screen flex-col items-center justify-center p-4 overflow-hidden bg-background">
+            {/* Mesh Gradient Background */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,_var(--tw-gradient-stops))] from-primary/20 via-background to-background pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,_var(--tw-gradient-stops))] from-purple-500/20 via-background to-background pointer-events-none" />
+            <div className="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] pointer-events-none mix-blend-multiply dark:mix-blend-screen animate-in fade-in duration-1000" />
+            <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[150px] pointer-events-none mix-blend-multiply dark:mix-blend-screen animate-in fade-in duration-1000" />
+
+            <div className="w-full max-w-md z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div className="glass-panel p-8 rounded-[2.5rem] border border-white/20 dark:border-white/10 shadow-2xl space-y-8">
+                    <div className="flex flex-col space-y-2 text-center">
+                        <div className="relative w-20 h-20 mx-auto mb-4 group">
+                            <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl group-hover:bg-primary/30 transition-all duration-500 scale-75" />
+                            <div className="relative glass-card w-full h-full rounded-2xl flex items-center justify-center border border-white/40 dark:border-white/20 p-2">
+                                <Image
+                                    src="/logo.png"
+                                    alt="DigiPrime"
+                                    width={64}
+                                    height={64}
+                                    className="object-contain"
+                                    priority
+                                />
+                            </div>
+                        </div>
+                        <h1 className="text-4xl font-black tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70">
+                            DigiPrime Admin
+                        </h1>
+                        <p className="text-sm text-muted-foreground/80 font-medium">
+                            Secure access for authorized personnel only.
+                        </p>
                     </div>
-                    <h1 className="text-2xl font-bold tracking-tight text-foreground">DigiPrime Admin</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Secure access for authorized personnel only (Super Admin, Admin).
-                    </p>
-                </div>
-                <LoginForm />
-                <div className="mt-4 text-center text-xs text-muted-foreground">
-                    &copy; 2026 DigiPrime. All rights reserved.
+
+                    <LoginForm />
+
+                    <div className="pt-4 text-center">
+                        <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em]">
+                            &copy; 2026 DigiPrime Portal v2.0
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     )
 }
+

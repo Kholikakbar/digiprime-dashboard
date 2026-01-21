@@ -1,8 +1,8 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useState, useActionState } from 'react'
 import { login } from './actions'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Eye, EyeOff } from 'lucide-react'
 
 const initialState = {
     error: '',
@@ -10,6 +10,7 @@ const initialState = {
 
 export function LoginForm() {
     const [state, action, isPending] = useActionState(login, initialState)
+    const [showPassword, setShowPassword] = useState(false)
 
     return (
         <form action={action} className="space-y-6">
@@ -31,14 +32,27 @@ export function LoginForm() {
                     <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest px-1" htmlFor="password">
                         Password
                     </label>
-                    <input
-                        className="flex h-12 w-full rounded-2xl border border-white/40 dark:border-white/10 bg-white/40 dark:bg-black/20 px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none backdrop-blur-sm"
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder="••••••••"
-                        required
-                    />
+                    <div className="relative group/pass">
+                        <input
+                            className="flex h-12 w-full rounded-2xl border border-white/40 dark:border-white/10 bg-white/40 dark:bg-black/20 pl-4 pr-12 py-2 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none backdrop-blur-sm"
+                            id="password"
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="••••••••"
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
+                        >
+                            {showPassword ? (
+                                <EyeOff className="h-4 w-4" />
+                            ) : (
+                                <Eye className="h-4 w-4" />
+                            )}
+                        </button>
+                    </div>
                 </div>
             </div>
 

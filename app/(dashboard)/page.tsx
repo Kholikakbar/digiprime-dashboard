@@ -182,7 +182,7 @@ export default async function DashboardPage() {
                 <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground">Total Revenue (Month)</span>
+                        <span className="text-sm font-medium text-muted-foreground">Total Revenue</span>
                         <div className="p-2 bg-primary/10 rounded-lg text-primary">
                             <DollarSign className="h-4 w-4" />
                         </div>
@@ -195,7 +195,7 @@ export default async function DashboardPage() {
                     </div>
                     <p className="text-xs text-green-600 flex items-center font-medium">
                         <TrendingUp className="h-3 w-3 mr-1" />
-                        +0% from last month
+                        +0% last month
                     </p>
                 </div>
 
@@ -220,7 +220,7 @@ export default async function DashboardPage() {
                 <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground mr-2">Account Stock</span>
+                        <span className="text-sm font-medium text-muted-foreground mr-2">Akun Stock</span>
                         <div className="p-2 bg-pink-500/10 rounded-lg text-pink-500 shrink-0">
                             <Users className="h-4 w-4" />
                         </div>
@@ -238,7 +238,7 @@ export default async function DashboardPage() {
                 <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
-                        <span className="text-sm font-medium text-muted-foreground mr-2">Credit Stock</span>
+                        <span className="text-sm font-medium text-muted-foreground mr-2">Kredit Stock</span>
                         <div className="p-2 bg-orange-500/10 rounded-lg text-orange-500 shrink-0">
                             <Package className="h-4 w-4" />
                         </div>

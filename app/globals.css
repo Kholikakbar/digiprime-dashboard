@@ -153,19 +153,3 @@
 .slide-in-from-bottom-2 {
   animation-name: slideInFromBottom;
 }
-
-
-
-.animate-in {
-  animation-duration: 700ms;
-  animation-timing-function: ease-out;
-  animation-fill-mode: forwards;
-}
-
-.fade-in {
-  animation-name: fadeIn;
-}
-
-.slide-in-from-bottom-3 {
-  animation-name: slideInFromBottom;
-}

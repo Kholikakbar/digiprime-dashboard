@@ -141,8 +141,17 @@ export function Navbar({ user }: { user: any }) {
                             <span className="text-sm font-medium leading-none mb-1">{user?.user_metadata?.full_name || user?.email?.split('@')[0]}</span>
                             <span className="text-xs text-muted-foreground">Full Access</span>
                         </div>
-                        <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-violet-500 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-primary/20 ring-2 ring-background">
-                            {user?.email?.charAt(0).toUpperCase()}
+                        <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-violet-500 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-primary/20 ring-2 ring-background overflow-hidden relative">
+                            {user?.user_metadata?.avatar_url ? (
+                                <Image
+                                    src={user.user_metadata.avatar_url}
+                                    alt="Avatar"
+                                    fill
+                                    className="object-cover"
+                                />
+                            ) : (
+                                user?.email?.charAt(0).toUpperCase()
+                            )}
                         </div>
                     </div>
 

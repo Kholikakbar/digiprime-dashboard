@@ -58,7 +58,7 @@ export function Navbar({ user }: { user: any }) {
             <div className={`fixed inset-y-0 left-0 z-50 w-72 bg-card border-r border-border shadow-2xl transition-transform duration-300 ease-in-out md:hidden flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="p-4 flex items-center justify-between border-b border-border/50">
                     <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
-                        <div className="relative w-8 h-8">
+                        <div className="relative w-10 h-10">
                             <Image
                                 src="/logo.png"
                                 alt="DigiPrime"

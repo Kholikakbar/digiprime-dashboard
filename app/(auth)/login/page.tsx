@@ -14,7 +14,7 @@ export default function LoginPage() {
                 <div className="glass-panel p-8 rounded-[2.5rem] border border-white/20 dark:border-white/10 shadow-2xl space-y-8">
                     <div className="flex flex-col space-y-2 text-center pb-2">
                         <h1 className="text-4xl font-black tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70">
-                            DigiPrime Admin
+                            Login Dashboard
                         </h1>
                         <p className="text-sm text-muted-foreground/80 font-medium">
                             Secure access for authorized personnel only.

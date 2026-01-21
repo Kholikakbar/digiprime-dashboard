@@ -71,7 +71,7 @@ export function LoginForm() {
                     <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                     <span className="flex items-center">
-                        Secure Authentication
+                        Login
                     </span>
                 )}
                 <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform translate-y-full group-hover:translate-y-0" />

@@ -14,12 +14,18 @@ export function StockActions({ item, type, products }: { item: any, type: 'ACCOU
         if (!confirm('Are you sure you want to delete this stock item?')) return
 
         setIsDeleting(true)
-        if (type === 'ACCOUNT') {
-            await deleteStockAccount(item.id)
-        } else {
-            await deleteStockCredit(item.id)
+        try {
+            if (type === 'ACCOUNT') {
+                await deleteStockAccount(item.id)
+            } else {
+                await deleteStockCredit(item.id)
+            }
+        } catch (error) {
+            console.error('Delete failed:', error)
+            alert('Failed to delete stock item')
+        } finally {
+            setIsDeleting(false)
         }
-        setIsDeleting(false)
     }
 
     return (

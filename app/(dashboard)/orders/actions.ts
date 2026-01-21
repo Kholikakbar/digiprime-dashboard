@@ -108,10 +108,9 @@ export async function deleteOrder(id: string) {
 
     if (error) {
         console.error('Error deleting order:', error)
-        return { error: error.message }
+        throw new Error(error.message)
     }
 
     revalidatePath('/orders')
     revalidatePath('/')
-    return { success: true }
 }

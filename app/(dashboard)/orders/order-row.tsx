@@ -21,8 +21,14 @@ export function OrderRow({ order, products }: OrderRowProps) {
         }
 
         setIsDeleting(true)
-        await deleteOrder(order.id)
-        setIsDeleting(false)
+        try {
+            await deleteOrder(order.id)
+        } catch (error) {
+            console.error('Delete failed:', error)
+            alert('Failed to delete order')
+        } finally {
+            setIsDeleting(false)
+        }
     }
 
     return (

@@ -68,6 +68,41 @@ export async function updateProduct(id: string, formData: FormData) {
 
 export async function deleteProduct(id: string) {
     const supabase = await createClient()
+
+    // Delete related stock accounts
+    const { error: stockAccountsError } = await supabase
+        .from('stock_accounts')
+        .delete()
+        .eq('product_id', id)
+
+    if (stockAccountsError) {
+        console.error('Error deleting stock accounts:', stockAccountsError)
+        throw new Error('Failed to delete related stock accounts')
+    }
+
+    // Delete related stock credits
+    const { error: stockCreditsError } = await supabase
+        .from('stock_credits')
+        .delete()
+        .eq('product_id', id)
+
+    if (stockCreditsError) {
+        console.error('Error deleting stock credits:', stockCreditsError)
+        throw new Error('Failed to delete related stock credits')
+    }
+
+    // Delete related orders
+    const { error: ordersError } = await supabase
+        .from('orders')
+        .delete()
+        .eq('product_id', id)
+
+    if (ordersError) {
+        console.error('Error deleting orders:', ordersError)
+        throw new Error('Failed to delete related orders')
+    }
+
+    // specific delete for the product itself
     const { error } = await supabase.from('products').delete().eq('id', id)
 
     if (error) throw new Error(error.message)

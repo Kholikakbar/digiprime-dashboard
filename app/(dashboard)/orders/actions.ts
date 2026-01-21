@@ -44,14 +44,29 @@ export async function createOrder(formData: FormData) {
     const stock_account_id = formData.get('stock_account_id') as string
     const fulfillment_info = formData.get('fulfillment_info') as string
 
+    // Warranty Fields
+    const is_warranty = formData.get('is_warranty') === 'on'
+    const replacement_email = formData.get('replacement_email') as string
+    const replacement_password = formData.get('replacement_password') as string
+    const warranty_note = formData.get('warranty_note') as string
+
     if (!shopee_order_no || !buyer_username || !product_id) {
         return { error: 'Missing required fields' }
+    }
+
+    let final_buyer_username = buyer_username
+    let final_fulfillment_info = fulfillment_info
+
+    if (is_warranty) {
+        final_buyer_username = `[WARRANTY] ${buyer_username}`
+        const warranty_details = `Rep: ${replacement_email} | Pass: ${replacement_password} | Note: ${warranty_note}`
+        final_fulfillment_info = final_fulfillment_info ? `${final_fulfillment_info} | ${warranty_details}` : warranty_details
     }
 
     // Prepare Insert Data
     const insertData: any = {
         shopee_order_no,
-        buyer_username: fulfillment_info ? `${buyer_username} (Ref: ${fulfillment_info})` : buyer_username,
+        buyer_username: final_fulfillment_info ? `${final_buyer_username} (Info: ${final_fulfillment_info})` : final_buyer_username,
         product_id,
         total_price: Number(total_price),
         status,

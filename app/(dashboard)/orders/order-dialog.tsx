@@ -35,6 +35,7 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
     const [mounted, setMounted] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
     const [availableStocks, setAvailableStocks] = useState<any[]>([])
+    const [isWarranty, setIsWarranty] = useState(false)
 
     useEffect(() => {
         setMounted(true)
@@ -46,6 +47,7 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
     const handleProductChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const prod = products.find(p => p.id === e.target.value) || null
         setSelectedProduct(prod)
+        setIsWarranty(false) // Reset warranty toggle when product changes
 
         if (prod) {
             const priceInput = document.getElementById('price-input') as HTMLInputElement
@@ -152,24 +154,82 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                             </div>
                         </div>
 
+                        {/* Warranty Toggle */}
                         {selectedProduct?.type === 'ACCOUNT' && !isEditing && (
-                            <div className="col-span-1 md:col-span-2 space-y-2 animate-in fade-in slide-in-from-top-2">
-                                <label className="text-sm font-medium flex items-center gap-2 text-foreground">
-                                    <Package className="h-3.5 w-3.5 text-muted-foreground" /> Select Stock (Auto-Assign)
+                            <div className="col-span-1 md:col-span-2 flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                                <input
+                                    type="checkbox"
+                                    id="is_warranty"
+                                    name="is_warranty"
+                                    checked={isWarranty}
+                                    onChange={(e) => setIsWarranty(e.target.checked)}
+                                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                />
+                                <label htmlFor="is_warranty" className="text-sm font-medium text-yellow-600 dark:text-yellow-400 cursor-pointer select-none">
+                                    Is Warranty Replacement? (Garansi)
                                 </label>
-                                <select
-                                    name="stock_account_id"
-                                    className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80 cursor-pointer"
-                                >
-                                    <option value="">Auto-select oldest available</option>
-                                    {availableStocks.map(stock => (
-                                        <option key={stock.id} value={stock.id}>
-                                            {stock.email} {stock.additional_info ? `(${stock.additional_info})` : ''}
-                                        </option>
-                                    ))}
-                                </select>
-                                <p className="text-[10px] text-muted-foreground">Found {availableStocks.length} available accounts.</p>
                             </div>
+                        )}
+
+                        {/* Warranty Fields */}
+                        {isWarranty ? (
+                            <div className="col-span-1 md:col-span-2 space-y-4 animate-in fade-in slide-in-from-top-2 p-4 border border-yellow-500/20 rounded-lg bg-yellow-500/5">
+                                <h4 className="text-sm font-bold text-yellow-600 dark:text-yellow-400 border-b border-yellow-500/10 pb-2 mb-2">
+                                    Replacement Account Details (Manual Input)
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Replacement Email</label>
+                                        <input
+                                            name="replacement_email"
+                                            type="email"
+                                            required={isWarranty}
+                                            className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/30 focus:border-yellow-500 outline-none"
+                                            placeholder="new.account@example.com"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Replacement Password</label>
+                                        <input
+                                            name="replacement_password"
+                                            type="text"
+                                            required={isWarranty}
+                                            className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/30 focus:border-yellow-500 outline-none"
+                                            placeholder="password123"
+                                        />
+                                    </div>
+                                    <div className="col-span-1 md:col-span-2 space-y-2">
+                                        <label className="text-sm font-medium">Warranty Note</label>
+                                        <textarea
+                                            name="warranty_note"
+                                            rows={2}
+                                            className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500/30 focus:border-yellow-500 outline-none"
+                                            placeholder="Reason for replacement (e.g. Incorrect password, Account locked)"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            /* Normal Stock Selection */
+                            selectedProduct?.type === 'ACCOUNT' && !isEditing && (
+                                <div className="col-span-1 md:col-span-2 space-y-2 animate-in fade-in slide-in-from-top-2">
+                                    <label className="text-sm font-medium flex items-center gap-2 text-foreground">
+                                        <Package className="h-3.5 w-3.5 text-muted-foreground" /> Select Stock (Auto-Assign)
+                                    </label>
+                                    <select
+                                        name="stock_account_id"
+                                        className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80 cursor-pointer"
+                                    >
+                                        <option value="">Auto-select oldest available</option>
+                                        {availableStocks.map(stock => (
+                                            <option key={stock.id} value={stock.id}>
+                                                {stock.email} {stock.additional_info ? `(${stock.additional_info})` : ''}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="text-[10px] text-muted-foreground">Found {availableStocks.length} available accounts.</p>
+                                </div>
+                            )
                         )}
 
                         {selectedProduct?.type === 'CREDIT' && (

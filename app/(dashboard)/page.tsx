@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { DollarSign, Package, ShoppingCart, Activity, TrendingUp, Users } from 'lucide-react'
 
@@ -256,7 +257,7 @@ export default async function DashboardPage() {
                 <div className="col-span-4 rounded-2xl border border-border/40 bg-card p-6 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-lg">Recent Orders</h3>
-                        <button className="text-sm text-primary hover:underline">View All</button>
+                        <Link href="/orders" className="text-sm text-primary hover:underline">View All</Link>
                     </div>
                     <div className="space-y-4">
                         {recentOrders.length === 0 ? (
@@ -311,9 +312,9 @@ export default async function DashboardPage() {
                                     <p className="text-xs text-red-600/80 dark:text-red-300">
                                         {product.name} is running low ({product.stock_count} left).
                                     </p>
-                                    <button className="mt-3 text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1.5 rounded-lg font-medium transition-colors dark:bg-red-900/40 dark:text-red-300">
+                                    <Link href="/stock" className="mt-3 inline-block text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1.5 rounded-lg font-medium transition-colors dark:bg-red-900/40 dark:text-red-300">
                                         Replenish Stock
-                                    </button>
+                                    </Link>
                                 </div>
                             ))
                         )}

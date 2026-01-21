@@ -19,6 +19,7 @@ import {
     LabelList
 } from 'recharts'
 import { TrendingUp, Package, PieChart as PieIcon, Activity, Flame, ChevronRight } from 'lucide-react'
+import Link from 'next/link'
 
 const COLORS = [
     '#6366f1', // Indigo
@@ -201,9 +202,9 @@ export function DashboardCharts({
                             <p className="text-xs text-slate-500">Top selling digital assets</p>
                         </div>
                     </div>
-                    <button className="text-xs font-bold text-slate-400 flex items-center gap-1 hover:text-emerald-600 transition-colors">
+                    <Link href="/orders" className="text-xs font-bold text-slate-400 flex items-center gap-1 hover:text-emerald-600 transition-colors">
                         FULL REPORT <ChevronRight className="h-3 w-3" />
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="h-[350px] w-full mt-4">

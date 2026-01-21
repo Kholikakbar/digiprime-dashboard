@@ -13,6 +13,8 @@ import {
     Settings
 } from 'lucide-react'
 
+import Image from 'next/image'
+
 const routes = [
     { label: 'Overview', icon: LayoutDashboard, href: '/', color: 'text-indigo-500', bgColor: 'bg-indigo-500/10' },
     { label: 'Products', icon: Package, href: '/products', color: 'text-violet-500', bgColor: 'bg-violet-500/10' },
@@ -31,8 +33,14 @@ export function Sidebar() {
         <div className="space-y-4 py-4 flex flex-col h-full bg-card/80 backdrop-blur-xl border-r border-border/40 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.05)] w-64 hidden md:flex z-50 transition-all duration-300">
             <div className="px-3 py-2 flex-1">
                 <Link href="/" className="flex items-center pl-3 mb-10 mt-2 group">
-                    <div className="relative w-9 h-9 mr-3 bg-gradient-to-br from-primary to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform duration-300">
-                        <span className="text-white font-bold text-sm">DP</span>
+                    <div className="relative w-10 h-10 mr-3 animate-in zoom-in-50 duration-500">
+                        <Image
+                            src="/logo.png"
+                            alt="DigiPrime"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                     <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 group-hover:opacity-80 transition-opacity">
                         DigiPrime

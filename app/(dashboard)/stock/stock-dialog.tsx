@@ -121,18 +121,30 @@ export function StockDialog({ products, item, initialType = 'ACCOUNT', trigger, 
                             </div>
 
                             {isEditing && (
-                                <div>
-                                    <label className="text-sm font-medium mb-2 block text-foreground">Status</label>
-                                    <select
-                                        name="status"
-                                        required
-                                        defaultValue={item?.status}
-                                        className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80 cursor-pointer"
-                                    >
-                                        <option value="AVAILABLE">AVAILABLE</option>
-                                        <option value="SOLD">SOLD</option>
-                                    </select>
-                                </div>
+                                <>
+                                    <div>
+                                        <label className="text-sm font-medium mb-2 block text-foreground">Status</label>
+                                        <select
+                                            name="status"
+                                            required
+                                            defaultValue={item?.status}
+                                            className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80 cursor-pointer"
+                                        >
+                                            <option value="AVAILABLE">AVAILABLE</option>
+                                            <option value="SOLD">SOLD</option>
+                                        </select>
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <label className="text-sm font-medium mb-2 block text-foreground">Buyer / Assigned To</label>
+                                        <input
+                                            name="buyer_name"
+                                            type="text"
+                                            defaultValue={item?.buyer_name}
+                                            className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80"
+                                            placeholder="e.g. buyer_username or Customer Name (Optional)"
+                                        />
+                                    </div>
+                                </>
                             )}
                         </div>
 

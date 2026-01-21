@@ -19,6 +19,8 @@ interface StockItem {
     // Credit fields
     amount?: number
     code?: string
+    // Common
+    buyer_name?: string
 }
 
 interface ViewStockDialogProps {
@@ -133,6 +135,13 @@ export function ViewStockDialog({ item, onClose }: ViewStockDialogProps) {
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    )}
+
+                    {item.buyer_name && (
+                        <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-700">
+                            <p className="text-[10px] uppercase font-bold tracking-wider mb-1 opacity-70">Assigned To / Buyer</p>
+                            <p className="font-semibold text-sm">{item.buyer_name}</p>
                         </div>
                     )}
 

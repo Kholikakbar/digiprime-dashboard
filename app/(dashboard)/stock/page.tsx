@@ -45,8 +45,12 @@ export default async function StockPage() {
                                         accounts.map((item: any) => (
                                             <tr key={item.id} className="hover:bg-muted/30 transition-colors group">
                                                 <td className="px-4 py-3 font-medium">{item.products?.name}</td>
-                                                <td className="px-4 py-3 text-muted-foreground break-all max-w-[150px] truncate">{item.email}</td>
+                                                <td className="px-4 py-3 text-muted-foreground break-all max-w-[150px] truncate">
+                                                    <div>{item.email}</div>
+                                                    {item.buyer_name && <div className="text-[10px] text-blue-600 font-semibold mt-0.5">Ordered by: {item.buyer_name}</div>}
+                                                </td>
                                                 <td className="px-4 py-3 text-right">
+
                                                     <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${item.status === 'AVAILABLE' ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'}`}>
                                                         {item.status}
                                                     </span>
@@ -91,7 +95,10 @@ export default async function StockPage() {
                                         credits.map((item: any) => (
                                             <tr key={item.id} className="hover:bg-muted/30 transition-colors group">
                                                 <td className="px-4 py-3 font-medium">{item.products?.name}</td>
-                                                <td className="px-4 py-3 font-mono">{item.amount}</td>
+                                                <td className="px-4 py-3 font-mono">
+                                                    <div>{item.amount}</div>
+                                                    {item.buyer_name && <div className="text-[10px] text-blue-600 font-semibold mt-0.5">Ordered by: {item.buyer_name}</div>}
+                                                </td>
                                                 <td className="px-4 py-3 text-right">
                                                     <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${item.status === 'AVAILABLE' ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'}`}>
                                                         {item.status}

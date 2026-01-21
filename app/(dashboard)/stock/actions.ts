@@ -40,7 +40,8 @@ export async function addStockAccount(prevState: any, formData: FormData) {
         email,
         password,
         additional_info,
-        status: 'AVAILABLE'
+        status: 'AVAILABLE',
+        buyer_name: '' // Default empty
     })
 
     // Update product stock count (denormalized)
@@ -62,7 +63,8 @@ export async function addStockCredit(prevState: any, formData: FormData) {
         product_id,
         amount,
         code,
-        status: 'AVAILABLE'
+        status: 'AVAILABLE',
+        buyer_name: '' // Default empty
     })
 
     if (error) return { error: error.message }
@@ -86,7 +88,8 @@ export async function updateStockAccount(id: string, formData: FormData) {
             email,
             password,
             additional_info,
-            status
+            status,
+            buyer_name: formData.get('buyer_name') as string
         })
         .eq('id', id)
 
@@ -109,7 +112,8 @@ export async function updateStockCredit(id: string, formData: FormData) {
             product_id,
             amount,
             code,
-            status
+            status,
+            buyer_name: formData.get('buyer_name') as string
         })
         .eq('id', id)
 

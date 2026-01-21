@@ -4,6 +4,7 @@ import { DollarSign, Package, ShoppingCart, Activity, TrendingUp, Users } from '
 
 import { DashboardCharts } from '@/components/dashboard/dashboard-charts'
 import { DownloadReportButton } from '@/components/dashboard/download-button'
+import { RealTimeClock } from '@/components/dashboard/real-time-clock'
 
 export const dynamic = 'force-dynamic'
 
@@ -169,10 +170,7 @@ export default async function DashboardPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="hidden md:flex flex-col items-end mr-2">
-                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Server Time</span>
-                        <span className="font-mono text-sm">{new Date().toLocaleTimeString()}</span>
-                    </div>
+                    <RealTimeClock />
                     <DownloadReportButton />
                 </div>
             </div>
@@ -329,6 +327,6 @@ export default async function DashboardPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

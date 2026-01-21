@@ -12,20 +12,7 @@ export default function LoginPage() {
 
             <div className="w-full max-w-md z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <div className="glass-panel p-8 rounded-[2.5rem] border border-white/20 dark:border-white/10 shadow-2xl space-y-8">
-                    <div className="flex flex-col space-y-2 text-center">
-                        <div className="relative w-20 h-20 mx-auto mb-4 group">
-                            <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl group-hover:bg-primary/30 transition-all duration-500 scale-75" />
-                            <div className="relative glass-card w-full h-full rounded-2xl flex items-center justify-center border border-white/40 dark:border-white/20 p-2">
-                                <Image
-                                    src="/logo.png"
-                                    alt="DigiPrime"
-                                    width={64}
-                                    height={64}
-                                    className="object-contain"
-                                    priority
-                                />
-                            </div>
-                        </div>
+                    <div className="flex flex-col space-y-2 text-center pb-2">
                         <h1 className="text-4xl font-black tracking-tight text-foreground bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70">
                             DigiPrime Admin
                         </h1>

@@ -28,7 +28,7 @@ export function Sidebar() {
     const pathname = usePathname()
 
     return (
-        <div className="space-y-4 py-4 flex flex-col h-full bg-card border-r border-border/40 shadow-xl w-64 hidden md:flex z-50 transition-all duration-300">
+        <div className="space-y-4 py-4 flex flex-col h-full bg-card/80 backdrop-blur-xl border-r border-border/40 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.05)] w-64 hidden md:flex z-50 transition-all duration-300">
             <div className="px-3 py-2 flex-1">
                 <Link href="/" className="flex items-center pl-3 mb-10 mt-2 group">
                     <div className="relative w-9 h-9 mr-3 bg-gradient-to-br from-primary to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform duration-300">
@@ -46,14 +46,14 @@ export function Sidebar() {
                                 key={route.href}
                                 href={route.href}
                                 className={`text-sm group flex p-3 w-full justify-start font-semibold cursor-pointer rounded-xl transition-all duration-300 relative overflow-hidden ${isActive
-                                        ? `${route.bgColor} ${route.color} shadow-sm translate-x-1`
-                                        : 'text-muted-foreground hover:bg-muted/60 hover:translate-x-1'
+                                    ? `${route.bgColor} ${route.color} shadow-sm translate-x-1 ring-1 ring-inset ring-black/5 dark:ring-white/5`
+                                    : 'text-muted-foreground hover:bg-muted/60 hover:translate-x-1'
                                     }`}
                             >
                                 <div className="flex items-center flex-1 relative z-10 transition-transform duration-300 group-active:scale-95">
                                     <route.icon className={`h-5 w-5 mr-3 transition-all duration-300 ${isActive
-                                            ? `${route.color} scale-110`
-                                            : 'text-muted-foreground group-hover:text-foreground group-hover:scale-110'
+                                        ? `${route.color} scale-110 drop-shadow-sm`
+                                        : 'text-muted-foreground group-hover:text-foreground group-hover:scale-110'
                                         }`} />
                                     {route.label}
                                 </div>

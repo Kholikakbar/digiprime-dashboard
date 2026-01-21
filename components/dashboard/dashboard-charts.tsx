@@ -87,18 +87,18 @@ export function DashboardCharts({
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
                 {/* 1. REVENUE TREND - Smooth & Elegant */}
-                <div className="md:col-span-1 lg:col-span-2 rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                <div className="md:col-span-1 lg:col-span-2 glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="flex items-center justify-between mb-8 relative z-10">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                            <div className="h-10 w-10 bg-indigo-500/10 text-indigo-500 rounded-xl flex items-center justify-center">
                                 <TrendingUp className="h-5 w-5" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-slate-800">Revenue Performance</h3>
-                                <p className="text-xs text-slate-500">Weekly financial overview</p>
+                                <h3 className="font-bold text-foreground">Revenue Performance</h3>
+                                <p className="text-xs text-muted-foreground">Weekly financial overview</p>
                             </div>
                         </div>
-                        <div className="hidden sm:flex items-center gap-1 text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-full uppercase tracking-tighter">
+                        <div className="hidden sm:flex items-center gap-1 text-[10px] font-bold text-indigo-600 bg-indigo-500/10 px-2 py-1 rounded-full uppercase tracking-tighter">
                             <Activity className="h-3 w-3" /> Growth +12%
                         </div>
                     </div>
@@ -144,14 +144,14 @@ export function DashboardCharts({
                 </div>
 
                 {/* 2. ORDER DISTRIBUTION - Modern Donut */}
-                <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col group">
+                <div className="glass-panel p-6 rounded-3xl flex flex-col group hover:-translate-y-1 transition-all duration-300">
                     <div className="flex items-center gap-3 mb-8">
-                        <div className="h-10 w-10 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center">
+                        <div className="h-10 w-10 bg-rose-500/10 text-rose-500 rounded-xl flex items-center justify-center">
                             <PieIcon className="h-5 w-5" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-slate-800">Order Flux</h3>
-                            <p className="text-xs text-slate-500">Breakdown by status</p>
+                            <h3 className="font-bold text-foreground">Order Flux</h3>
+                            <p className="text-xs text-muted-foreground">Breakdown by status</p>
                         </div>
                     </div>
 
@@ -191,18 +191,18 @@ export function DashboardCharts({
             </div>
 
             {/* 3. PRODUCT VELOCITY - Vertical Arrow Bars */}
-            <div className="rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300 group">
+            <div className="glass-panel p-6 rounded-3xl group hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                        <div className="h-10 w-10 bg-emerald-500/10 text-emerald-500 rounded-xl flex items-center justify-center">
                             <Flame className="h-5 w-5" />
                         </div>
                         <div>
-                            <h3 className="font-bold text-slate-800">Market Leaderboards</h3>
-                            <p className="text-xs text-slate-500">Top selling digital assets</p>
+                            <h3 className="font-bold text-foreground">Market Leaderboards</h3>
+                            <p className="text-xs text-muted-foreground">Top selling digital assets</p>
                         </div>
                     </div>
-                    <Link href="/orders" className="text-xs font-bold text-slate-400 flex items-center gap-1 hover:text-emerald-600 transition-colors">
+                    <Link href="/orders" className="text-xs font-bold text-muted-foreground flex items-center gap-1 hover:text-emerald-500 transition-colors">
                         FULL REPORT <ChevronRight className="h-3 w-3" />
                     </Link>
                 </div>

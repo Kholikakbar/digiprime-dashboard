@@ -160,18 +160,26 @@ export default async function DashboardPage() {
     return (
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">Dashboard Overview</h2>
-                    <p className="text-muted-foreground mt-1">Real-time updates for DigiPrime store performance.</p>
+                <div className="relative">
+                    <h2 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary via-purple-500 to-pink-500 animate-in fade-in slide-in-from-bottom-2">
+                        Dashboard Overview
+                    </h2>
+                    <p className="text-muted-foreground mt-2 max-w-lg text-lg">
+                        Real-time updates for <span className="font-semibold text-foreground">DigiPrime</span> store performance.
+                    </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
+                    <div className="hidden md:flex flex-col items-end mr-2">
+                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Server Time</span>
+                        <span className="font-mono text-sm">{new Date().toLocaleTimeString()}</span>
+                    </div>
                     <DownloadReportButton />
                 </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 {/* Card 1 */}
-                <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
+                <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
                         <span className="text-sm font-medium text-muted-foreground">Total Revenue (Month)</span>
@@ -192,7 +200,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Card 2 */}
-                <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
+                <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
                         <span className="text-sm font-medium text-muted-foreground mr-2">Active Orders</span>
@@ -209,7 +217,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Card 3 */}
-                <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
+                <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
                         <span className="text-sm font-medium text-muted-foreground mr-2">Account Stock</span>
@@ -227,7 +235,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Card 4 */}
-                <div className="p-6 rounded-2xl bg-card border border-border/40 shadow-sm hover:shadow-md transition-all group overflow-hidden relative">
+                <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
                         <span className="text-sm font-medium text-muted-foreground mr-2">Credit Stock</span>
@@ -253,8 +261,8 @@ export default async function DashboardPage() {
             />
 
             {/* Recent Activity / Charts Section */}
-            <div className="grid gap-6 md:grid-cols-7">
-                <div className="col-span-4 rounded-2xl border border-border/40 bg-card p-6 shadow-sm">
+            <div className="grid gap-6 grid-cols-1 lg:grid-cols-7">
+                <div className="col-span-1 lg:col-span-4 rounded-3xl border border-white/20 bg-white/60 dark:bg-card/50 backdrop-blur-md p-6 shadow-lg">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="font-semibold text-lg">Recent Orders</h3>
                         <Link href="/orders" className="text-sm text-primary hover:underline">View All</Link>
@@ -289,7 +297,7 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="col-span-3 rounded-2xl border border-border/40 bg-card p-6 shadow-sm">
+                <div className="col-span-1 lg:col-span-3 rounded-3xl border border-white/20 bg-white/60 dark:bg-card/50 backdrop-blur-md p-6 shadow-lg">
                     <h3 className="font-semibold text-lg mb-4">Stock Alerts</h3>
                     <div className="space-y-4">
                         {lowStockProducts.length === 0 ? (

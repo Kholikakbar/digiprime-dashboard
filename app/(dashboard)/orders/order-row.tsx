@@ -35,7 +35,60 @@ export function OrderRow({ order, products }: OrderRowProps) {
         <>
             <tr className="hover:bg-muted/30 transition-colors group">
                 <td className="px-6 py-4 font-mono font-medium">{order.shopee_order_no}</td>
-                <td className="px-6 py-4">{order.buyer_username}</td>
+                <td className="px-6 py-4">
+                    {(() => {
+                        const raw = order.buyer_username || ''
+
+                        // 1. Warranty Case
+                        if (raw.includes('(Info:')) {
+                            const [mainPart, infoPart] = raw.split('(Info:')
+                            const cleanName = mainPart.replace('[WARRANTY]', '').trim()
+                            const details = infoPart.slice(0, -1) // remove trailing ')'
+                            const items = details.split('|').map((s: string) => s.trim())
+
+                            return (
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-500/10 text-yellow-600 border border-yellow-500/20 shadow-sm">
+                                            WARRANTY
+                                        </span>
+                                        <span className="font-semibold">{cleanName}</span>
+                                    </div>
+                                    <div className="bg-muted/40 p-2.5 rounded-lg border border-border/50 text-xs space-y-1.5 min-w-[240px]">
+                                        {items.map((item: string, i: number) => {
+                                            const [label, ...valParts] = item.split(':')
+                                            const val = valParts.join(':').trim()
+                                            return (
+                                                <div key={i} className="grid grid-cols-[35px_1fr] gap-2">
+                                                    <span className="font-mono text-[10px] text-muted-foreground uppercase">{label}</span>
+                                                    <span className="font-medium break-all select-all">{val}</span>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            )
+                        }
+
+                        // 2. Fulfillment/Ref Case
+                        if (raw.includes('(Ref:')) {
+                            const [mainPart, refPart] = raw.split('(Ref:')
+                            const ref = refPart.slice(0, -1).trim()
+                            return (
+                                <div>
+                                    <div className="font-semibold">{mainPart.trim()}</div>
+                                    <div className="flex items-center gap-1.5 mt-1">
+                                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">REF</span>
+                                        <code className="bg-blue-500/10 text-blue-600 px-1.5 py-0.5 rounded text-[11px] border border-blue-500/20">{ref}</code>
+                                    </div>
+                                </div>
+                            )
+                        }
+
+                        // 3. Normal Case
+                        return <span className="font-semibold">{raw}</span>
+                    })()}
+                </td>
                 <td className="px-6 py-4">{order.products?.name || 'Unknown Product'}</td>
                 <td className="px-6 py-4 text-center">
                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${order.status === 'COMPLETED' ? 'bg-green-500/10 text-green-700' :

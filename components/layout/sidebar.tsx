@@ -43,7 +43,7 @@ export function Sidebar() {
 
     return (
         <div className="py-4 flex flex-col h-full bg-card/80 backdrop-blur-xl border-r border-border/40 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.05)] w-64 hidden md:flex z-50 transition-all duration-300">
-            <div className="px-3 py-2 flex-1 overflow-y-auto custom-scrollbar">
+            <div className="px-3 py-2 flex-1">
                 <Link href="/" className="flex items-center pl-3 mb-10 mt-2 group">
                     <div className="relative w-12 h-12 mr-3 animate-in zoom-in-50 duration-500">
                         <Image

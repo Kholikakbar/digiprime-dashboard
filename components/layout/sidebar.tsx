@@ -11,8 +11,11 @@ import {
     Send,
     Receipt,
     Users,
-    Settings
+    Settings,
+    LogOut
 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
 
 import Image from 'next/image'
 
@@ -29,6 +32,14 @@ const routes = [
 
 export function Sidebar() {
     const pathname = usePathname()
+    const router = useRouter()
+    const supabase = createClient()
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut()
+        router.refresh()
+        router.push('/login')
+    }
 
     return (
         <div className="space-y-4 py-4 flex flex-col h-full bg-card/80 backdrop-blur-xl border-r border-border/40 shadow-[4px_0_24px_-4px_rgba(0,0,0,0.05)] w-64 hidden md:flex z-50 transition-all duration-300">
@@ -55,8 +66,8 @@ export function Sidebar() {
                                 key={route.href}
                                 href={route.href}
                                 className={`relative flex items-center p-3 w-full text-sm font-medium rounded-xl transition-all duration-200 group overflow-hidden ${isActive
-                                        ? route.color
-                                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                                    ? route.color
+                                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                                     }`}
                             >
                                 {isActive && (
@@ -77,7 +88,7 @@ export function Sidebar() {
                     })}
                 </div>
             </div>
-            <div className="px-3 pb-4">
+            <div className="px-3 pb-6 space-y-4">
                 <div className="bg-gradient-to-br from-muted/50 to-muted/10 rounded-2xl p-4 border border-border/50 backdrop-blur-sm group hover:shadow-inner transition-all duration-500">
                     <h3 className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest mb-2 px-1">System Health</h3>
                     <div className="flex items-center gap-2 px-1">
@@ -88,6 +99,14 @@ export function Sidebar() {
                         <span className="text-[11px] font-bold text-slate-600">OPERATIONAL</span>
                     </div>
                 </div>
+
+                <button
+                    onClick={handleLogout}
+                    className="flex items-center p-3 w-full text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all duration-200 group"
+                >
+                    <LogOut className="h-5 w-5 mr-3 group-hover:scale-110 transition-transform" />
+                    Sign Out
+                </button>
             </div>
         </div>
     )

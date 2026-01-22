@@ -155,13 +155,6 @@ export function Navbar({ user }: { user: any }) {
                         </div>
                     </div>
 
-                    <button
-                        onClick={handleLogout}
-                        className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-xl transition-all ml-1"
-                        title="Sign out"
-                    >
-                        <LogOut className="h-5 w-5" />
-                    </button>
                 </div>
             </div>
         </>

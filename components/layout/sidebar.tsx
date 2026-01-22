@@ -72,7 +72,7 @@ export function Sidebar() {
             </div>
 
             {/* Navigation Menu */}
-            <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto no-scrollbar relative z-10 pt-2">
+            <nav className="flex-1 px-4 space-y-1.5 overflow-y-hidden relative z-10 pt-2">
                 <p className="px-4 pb-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Main Menu</p>
                 {routes.map((route) => {
                     const isActive = pathname === route.href
@@ -81,8 +81,8 @@ export function Sidebar() {
                             key={route.href}
                             href={route.href}
                             className={`group relative flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 overflow-hidden ${isActive
-                                    ? 'shadow-lg shadow-black/5 ring-1 ring-slate-200/50 dark:ring-slate-700/50'
-                                    : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400'
+                                ? 'shadow-lg shadow-black/5 ring-1 ring-slate-200/50 dark:ring-slate-700/50'
+                                : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400'
                                 }`}
                         >
                             <AnimatePresence>
@@ -99,8 +99,8 @@ export function Sidebar() {
 
                             <div className="flex items-center gap-3.5 relative z-10">
                                 <div className={`p-2 rounded-xl transition-all duration-300 ${isActive
-                                        ? `${route.bgColor} text-white shadow-lg shadow-${route.bgColor}/30 scale-110`
-                                        : `bg-slate-100 dark:bg-slate-800/60 ${route.color} group-hover:scale-110`
+                                    ? `${route.bgColor} text-white shadow-lg shadow-${route.bgColor}/30 scale-110`
+                                    : `bg-slate-100 dark:bg-slate-800/60 ${route.color} group-hover:scale-110`
                                     }`}>
                                     <route.icon className="h-5 w-5" />
                                 </div>
@@ -111,8 +111,8 @@ export function Sidebar() {
                             </div>
 
                             <ChevronRight className={`h-4 w-4 transition-all duration-500 ${isActive
-                                    ? 'opacity-100 translate-x-0'
-                                    : 'opacity-0 -translate-x-2 group-hover:opacity-40 group-hover:translate-x-0'
+                                ? 'opacity-100 translate-x-0'
+                                : 'opacity-0 -translate-x-2 group-hover:opacity-40 group-hover:translate-x-0'
                                 } ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} />
 
                             {/* Active Indicator Line */}

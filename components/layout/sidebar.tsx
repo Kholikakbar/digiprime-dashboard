@@ -90,16 +90,7 @@ export function Sidebar() {
             </div>
 
             <div className="px-3 mt-auto pt-4 border-t border-border/40 space-y-4">
-                <div className="bg-gradient-to-br from-muted/50 to-muted/10 rounded-2xl p-4 border border-border/50 backdrop-blur-sm group hover:shadow-inner transition-all duration-500">
-                    <h3 className="font-bold text-[10px] text-muted-foreground uppercase tracking-widest mb-2 px-1">System Health</h3>
-                    <div className="flex items-center gap-2 px-1">
-                        <div className="relative">
-                            <div className="h-2 w-2 rounded-full bg-green-500 animate-ping absolute inset-0 opacity-75"></div>
-                            <div className="h-2 w-2 rounded-full bg-green-500 shadow-lg shadow-green-500/50 relative"></div>
-                        </div>
-                        <span className="text-[11px] font-bold text-slate-600">OPERATIONAL</span>
-                    </div>
-                </div>
+
 
                 <button
                     onClick={handleLogout}

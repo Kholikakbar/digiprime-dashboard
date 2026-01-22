@@ -193,10 +193,10 @@ export function DashboardCharts({
                     </div>
                 </div>
 
-                {/* Stock Status */}
+                {/* Stock Status -> Now Order Status */}
                 <div className="bg-white dark:bg-card border border-border/50 rounded-2xl p-6 shadow-sm flex flex-col">
-                    <h3 className="text-lg font-bold text-foreground mb-1">Stock Status</h3>
-                    <p className="text-sm text-muted-foreground mb-6">Inventory overview</p>
+                    <h3 className="text-lg font-bold text-foreground mb-1">Order Status</h3>
+                    <p className="text-sm text-muted-foreground mb-6">Overview of order processing</p>
 
                     <div className="flex-1 min-h-[300px]">
                         <ResponsiveContainer width="100%" height="100%">

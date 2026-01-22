@@ -158,3 +158,36 @@ export async function getProductDistributionData() {
         .sort((a, b) => b.value - a.value)
         .slice(0, 5) // Top 5
 }
+
+export async function getOrderStatusData() {
+    const supabase = await createClient()
+
+    // Fetch all orders with their status
+    const { data } = await supabase
+        .from('orders')
+        .select('status')
+
+    // Group by status
+    const statusMap = new Map<string, number>()
+    // Initialize standard statuses to ensure consistent colors/order
+    statusMap.set('PENDING', 0)
+    statusMap.set('PROCESSING', 0)
+    statusMap.set('COMPLETED', 0)
+    statusMap.set('CANCELLED', 0)
+
+    data?.forEach((order: any) => {
+        const status = order.status
+        statusMap.set(status, (statusMap.get(status) || 0) + 1)
+    })
+
+    const chartData = [
+        { name: 'Pending', value: statusMap.get('PENDING') || 0, fill: '#f59e0b' },    // Amber
+        { name: 'Processing', value: statusMap.get('PROCESSING') || 0, fill: '#3b82f6' }, // Blue
+        { name: 'Completed', value: statusMap.get('COMPLETED') || 0, fill: '#10b981' }, // Emerald
+        { name: 'Cancelled', value: statusMap.get('CANCELLED') || 0, fill: '#ef4444' }  // Red
+    ]
+
+    // Return only statuses that have values or keep all for consistency? 
+    // Keeping all for a nice bar chart comparison.
+    return chartData
+}

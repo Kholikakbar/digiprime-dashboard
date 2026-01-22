@@ -39,8 +39,14 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
 
     useEffect(() => {
         setMounted(true)
+        if (order?.product_id && isOpen) {
+            const prod = products.find(p => p.id === order.product_id) || null
+            setSelectedProduct(prod)
+        }
         return () => setMounted(false)
-    }, [])
+    }, [isOpen, order?.product_id, products])
+
+    const maxQuota = selectedProduct?.type === 'ACCOUNT' ? 10 : 1
 
     const isEditing = !!order?.id
 
@@ -305,7 +311,7 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                                             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Quota Usage</p>
                                             <div className="flex items-baseline gap-1">
                                                 <span className="text-2xl font-bold text-foreground">0</span>
-                                                <span className="text-sm text-muted-foreground">/10</span>
+                                                <span className="text-sm text-muted-foreground">/{maxQuota}</span>
                                             </div>
                                         </div>
                                         <div className="bg-green-500/10 text-green-600 px-2.5 py-1 rounded-full text-[10px] font-bold border border-green-500/20 flex items-center gap-1.5 leading-none">

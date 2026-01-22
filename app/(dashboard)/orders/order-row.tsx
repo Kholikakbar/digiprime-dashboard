@@ -98,6 +98,17 @@ export function OrderRow({ order, products }: OrderRowProps) {
                         {order.status}
                     </span>
                 </td>
+                <td className="px-6 py-4 text-center">
+                    <div className="flex flex-col items-center gap-1">
+                        <span className="text-[11px] font-bold text-green-500 uppercase tracking-tight">Active</span>
+                        <div className="flex flex-col items-center">
+                            <span className="text-[10px] text-muted-foreground mb-1">0/10</span>
+                            <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden border border-border/30">
+                                <div className="h-full bg-green-500/20 w-0 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
                 <td className="px-6 py-4 text-right text-muted-foreground">
                     {new Date(order.order_date).toLocaleDateString()}
                 </td>

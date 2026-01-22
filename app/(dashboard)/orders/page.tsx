@@ -43,6 +43,7 @@ export default async function OrdersPage() {
                                 <th className="px-6 py-4 text-left">Buyer</th>
                                 <th className="px-6 py-4 text-left">Product</th>
                                 <th className="px-6 py-4 text-center">Status</th>
+                                <th className="px-6 py-4 text-center">Warranty</th>
                                 <th className="px-6 py-4 text-right">Date</th>
                                 <th className="px-6 py-4 text-right">Actions</th>
                             </tr>

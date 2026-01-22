@@ -8,7 +8,7 @@ export async function getOrders() {
 
     const { data } = await supabase
         .from('orders')
-        .select('*, products(name)')
+        .select('*, products(name, type)')
         .order('order_date', { ascending: false })
 
     return data || []

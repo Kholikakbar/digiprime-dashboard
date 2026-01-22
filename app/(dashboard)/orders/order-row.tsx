@@ -101,13 +101,26 @@ export function OrderRow({ order, products }: OrderRowProps) {
                 <td className="px-6 py-4 text-center">
                     {(() => {
                         const maxQuota = order.products?.type === 'ACCOUNT' ? 10 : 1
+                        let currentRefills = 0
+                        try {
+                            const parsed = order.notes ? JSON.parse(order.notes) : []
+                            currentRefills = Array.isArray(parsed) ? parsed.length : 0
+                        } catch (e) {
+                            currentRefills = 0
+                        }
+
+                        const percentage = Math.min((currentRefills / maxQuota) * 100, 100)
+
                         return (
                             <div className="flex flex-col items-center gap-1">
                                 <span className="text-[11px] font-bold text-green-500 uppercase tracking-tight">Active</span>
                                 <div className="flex flex-col items-center">
-                                    <span className="text-[10px] text-muted-foreground mb-1">0/{maxQuota}</span>
+                                    <span className="text-[10px] text-muted-foreground mb-1">{currentRefills}/{maxQuota}</span>
                                     <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden border border-border/30">
-                                        <div className="h-full bg-green-500/20 w-0 rounded-full"></div>
+                                        <div
+                                            className="h-full bg-green-500/40 rounded-full transition-all duration-500"
+                                            style={{ width: `${percentage}%` }}
+                                        ></div>
                                     </div>
                                 </div>
                             </div>

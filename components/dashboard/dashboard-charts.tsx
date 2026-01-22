@@ -130,11 +130,12 @@ export function DashboardCharts({
                             <Line
                                 type="monotone"
                                 dataKey="revenue"
-                                stroke="hsl(var(--primary))"
+                                stroke="#0ea5e9"
                                 strokeWidth={3}
-                                dot={{ r: 4, fill: '#fff', stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
-                                activeDot={{ r: 6, strokeWidth: 0, fill: 'hsl(var(--primary))' }}
+                                dot={{ r: 4, fill: '#fff', stroke: '#0ea5e9', strokeWidth: 2 }}
+                                activeDot={{ r: 6, strokeWidth: 0, fill: '#0ea5e9' }}
                                 animationDuration={1000}
+                                connectNulls
                             />
                         </LineChart>
                     </ResponsiveContainer>

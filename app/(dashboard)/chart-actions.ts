@@ -7,27 +7,31 @@ export type TimeRange = '7d' | '30d' | '1y'
 export async function getRevenueData(range: TimeRange) {
     const supabase = await createClient()
 
-    // Helper to get Date object shifted to WIB (UTC+7)
-    // We use this to reliably determine "YYYY-MM-DD" in Jakarta time
-    const getWIBDate = (date: Date) => {
-        // Create date from input, convert to Jakarta time string, then parse back
-        const jakartaStr = date.toLocaleString('en-US', { timeZone: 'Asia/Jakarta' })
-        return new Date(jakartaStr)
-    }
-
     const formatDateKey = (date: Date) => {
-        const d = getWIBDate(date)
-        const year = d.getFullYear()
-        const month = String(d.getMonth() + 1).padStart(2, '0')
-        const day = String(d.getDate()).padStart(2, '0')
-        return `${year}-${month}-${day}`
+        // More robust way to get WIB date parts
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Jakarta',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).formatToParts(date);
+
+        const year = parts.find(p => p.type === 'year')?.value;
+        const month = parts.find(p => p.type === 'month')?.value;
+        const day = parts.find(p => p.type === 'day')?.value;
+        return `${year}-${month}-${day}`;
     }
 
     const formatMonthKey = (date: Date) => {
-        const d = getWIBDate(date)
-        const year = d.getFullYear()
-        const month = String(d.getMonth() + 1).padStart(2, '0')
-        return `${year}-${month}`
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Jakarta',
+            year: 'numeric',
+            month: '2-digit'
+        }).formatToParts(date);
+
+        const year = parts.find(p => p.type === 'year')?.value;
+        const month = parts.find(p => p.type === 'month')?.value;
+        return `${year}-${month}`;
     }
 
     const now = new Date()
@@ -176,8 +180,10 @@ export async function getOrderStatusData() {
     statusMap.set('CANCELLED', 0)
 
     data?.forEach((order: any) => {
-        const status = order.status
-        statusMap.set(status, (statusMap.get(status) || 0) + 1)
+        const status = (order.status || '').toUpperCase()
+        if (statusMap.has(status)) {
+            statusMap.set(status, (statusMap.get(status) || 0) + 1)
+        }
     })
 
     const chartData = [

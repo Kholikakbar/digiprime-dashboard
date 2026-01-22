@@ -131,7 +131,27 @@ export async function updateOrder(id: string, formData: FormData) {
         return { error: error.message }
     }
 
+    // IF COMPLETED, Log Transaction automatically
+    if (status === 'COMPLETED') {
+        // Check if transaction already exists to avoid duplicates
+        const { data: existing } = await supabase
+            .from('transactions')
+            .select('id')
+            .eq('order_id', id)
+            .limit(1)
+
+        if (!existing || existing.length === 0) {
+            await supabase.from('transactions').insert({
+                order_id: id,
+                type: 'INCOME',
+                amount: Number(total_price),
+                description: `Income from Shopee Order: ${shopee_order_no}`
+            })
+        }
+    }
+
     revalidatePath('/orders')
+    revalidatePath('/transactions')
     revalidatePath('/')
     return { success: true }
 }

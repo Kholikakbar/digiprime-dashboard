@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { motion } from 'framer-motion'
 import {
     LayoutDashboard,
     Package,
@@ -53,23 +54,24 @@ export function Sidebar() {
                             <Link
                                 key={route.href}
                                 href={route.href}
-                                className={`text-sm group flex p-3 w-full justify-start font-semibold cursor-pointer rounded-xl transition-all duration-300 relative overflow-hidden ${isActive
-                                    ? `${route.bgColor} ${route.color} shadow-sm translate-x-1 ring-1 ring-inset ring-black/5 dark:ring-white/5`
-                                    : 'text-muted-foreground hover:bg-muted/60 hover:translate-x-1'
+                                className={`relative flex items-center p-3 w-full text-sm font-medium rounded-xl transition-all duration-200 group overflow-hidden ${isActive
+                                        ? route.color
+                                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                                     }`}
                             >
-                                <div className="flex items-center flex-1 relative z-10 transition-transform duration-300 group-active:scale-95">
-                                    <route.icon className={`h-5 w-5 mr-3 transition-all duration-300 ${isActive
-                                        ? `${route.color} scale-110 drop-shadow-sm`
-                                        : 'text-muted-foreground group-hover:text-foreground group-hover:scale-110'
-                                        }`} />
-                                    {route.label}
-                                </div>
                                 {isActive && (
-                                    <div
-                                        className={`absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full ${route.color.replace('text', 'bg')} transition-all duration-500`}
+                                    <motion.div
+                                        layoutId="sidebar-active-tab"
+                                        className={`absolute inset-0 rounded-xl ${route.bgColor} border border-border/50`}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
                                     />
                                 )}
+                                <div className="flex items-center flex-1 relative z-10">
+                                    <route.icon className={`h-5 w-5 mr-3 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'scale-110' : ''}`} />
+                                    {route.label}
+                                </div>
                             </Link>
                         )
                     })}

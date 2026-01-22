@@ -1,10 +1,12 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
 
 export type TimeRange = '7d' | '30d' | '1y'
 
 export async function getRevenueData(range: TimeRange) {
+    revalidatePath('/') // Ensure dashboard data is fresh
     const supabase = await createClient()
     const now = new Date()
     let startDate = new Date()

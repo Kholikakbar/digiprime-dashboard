@@ -35,7 +35,7 @@ export async function getRevenueData(range: TimeRange) {
         for (let i = days - 1; i >= 0; i--) {
             const d = new Date()
             d.setDate(d.getDate() - i)
-            const key = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+            const key = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', timeZone: 'Asia/Jakarta' })
             dataMap.set(key, 0)
         }
     } else {
@@ -43,7 +43,7 @@ export async function getRevenueData(range: TimeRange) {
         for (let i = 11; i >= 0; i--) {
             const d = new Date()
             d.setMonth(d.getMonth() - i)
-            const key = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' })
+            const key = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit', timeZone: 'Asia/Jakarta' })
             dataMap.set(key, 0)
         }
     }
@@ -52,9 +52,9 @@ export async function getRevenueData(range: TimeRange) {
         const d = new Date(order.order_date)
         let key = ''
         if (range === '1y') {
-            key = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' })
+            key = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit', timeZone: 'Asia/Jakarta' })
         } else {
-            key = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
+            key = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', timeZone: 'Asia/Jakarta' })
         }
 
         if (dataMap.has(key)) {

@@ -152,11 +152,19 @@ async function getStockAlerts() {
     return data || []
 }
 
+import { getRevenueData, getStockStatusData, getProductDistributionData } from './chart-actions'
+
+// ... existing imports
+
 export default async function DashboardPage() {
     const stats = await getStats()
     const recentOrders = await getRecentOrders()
     const lowStockProducts = await getStockAlerts()
-    const chartsData = await getChartsData()
+
+    // Initial Chart Data (7 Days default)
+    const revenueData = await getRevenueData('7d')
+    const stockStatusData = await getStockStatusData()
+    const productDistributionData = await getProductDistributionData()
 
     return (
         <div className="space-y-8">
@@ -253,9 +261,9 @@ export default async function DashboardPage() {
 
             {/* CHARTS SECTION */}
             <DashboardCharts
-                revenueData={chartsData.revenueData}
-                salesByProductData={chartsData.salesByProductData}
-                orderStatusData={chartsData.orderStatusData}
+                initialRevenueData={revenueData}
+                initialProductData={productDistributionData}
+                initialStockData={stockStatusData}
             />
 
             {/* Recent Activity / Charts Section */}

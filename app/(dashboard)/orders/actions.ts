@@ -152,3 +152,61 @@ export async function deleteOrder(id: string) {
     revalidatePath('/orders')
     revalidatePath('/')
 }
+
+export async function processRefill(orderId: string, data: { email?: string; password?: string; referral_code?: string }) {
+    const supabase = await createClient()
+
+    // 1. Fetch current order to get existing notes (for history) and buyer_username
+    const { data: order, error: fetchError } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('id', orderId)
+        .single()
+
+    if (fetchError || !order) return { error: 'Order not found' }
+
+    // 2. Parse existing refill history from notes
+    let refillHistory = []
+    try {
+        refillHistory = order.notes ? JSON.parse(order.notes) : []
+        if (!Array.isArray(refillHistory)) refillHistory = []
+    } catch (e) {
+        refillHistory = []
+    }
+
+    // 3. Add new refill to history
+    const newRefill = {
+        id: crypto.randomUUID(),
+        date: new Date().toISOString(),
+        ...data
+    }
+    refillHistory.push(newRefill)
+
+    // 4. Update order with new history and potentially update buyer_username display
+    // We'll keep the historic buyer_username but update the Info part to the latest refill for display
+    const rawBuyer = order.buyer_username || ''
+    const mainName = rawBuyer.includes('[WARRANTY]')
+        ? rawBuyer.split(')')[0].split('(')[0].trim()
+        : rawBuyer.split('(')[0].trim()
+
+    const infoParts = []
+    if (data.email) infoParts.push(`Rep: ${data.email}`)
+    if (data.password) infoParts.push(`Pass: ${data.password}`)
+    if (data.referral_code) infoParts.push(`Ref: ${data.referral_code}`)
+
+    const newBuyerUsername = `${mainName} (Info: ${infoParts.join(' | ')})`
+
+    const { error: updateError } = await supabase
+        .from('orders')
+        .update({
+            notes: JSON.stringify(refillHistory),
+            buyer_username: newBuyerUsername
+        })
+        .eq('id', orderId)
+
+    if (updateError) return { error: updateError.message }
+
+    revalidatePath('/orders')
+    revalidatePath('/')
+    return { success: true, history: refillHistory }
+}

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Plus, Loader2, Package, X, Calendar, User, Hash, Wallet, ShieldCheck, RefreshCw, History, CheckCircle2 } from 'lucide-react'
-import { createOrder, updateOrder } from './actions'
+import { Plus, Loader2, Package, X, Calendar, User, Hash, Wallet, ShieldCheck, RefreshCw, History, CheckCircle2, ChevronRight, Mail, Key } from 'lucide-react'
+import { createOrder, updateOrder, processRefill } from './actions'
 import { getAvailableStockAccounts } from '../stock/actions'
 
 interface Product {
@@ -20,6 +20,7 @@ interface Order {
     product_id: string
     total_price: number
     status: string
+    notes?: string
 }
 
 interface OrderDialogProps {
@@ -36,6 +37,20 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
     const [availableStocks, setAvailableStocks] = useState<any[]>([])
     const [isWarranty, setIsWarranty] = useState(false)
+    const [isRefillModalOpen, setIsRefillModalOpen] = useState(false)
+    const [refillLoading, setRefillLoading] = useState(false)
+    const [refills, setRefills] = useState<any[]>([])
+
+    useEffect(() => {
+        if (order?.notes) {
+            try {
+                const parsed = JSON.parse(order.notes)
+                if (Array.isArray(parsed)) setRefills(parsed)
+            } catch (e) {
+                setRefills([])
+            }
+        }
+    }, [order?.notes])
 
     useEffect(() => {
         setMounted(true)
@@ -67,6 +82,29 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
             }
         } else {
             setAvailableStocks([])
+        }
+    }
+
+    const handleRefillSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if (!order?.id) return
+
+        setRefillLoading(true)
+        const formData = new FormData(e.currentTarget)
+        const data = {
+            email: formData.get('refill_email') as string,
+            password: formData.get('refill_password') as string,
+            referral_code: formData.get('refill_referral') as string
+        }
+
+        const res = await processRefill(order.id, data)
+        setRefillLoading(false)
+
+        if (res?.error) {
+            alert(res.error)
+        } else {
+            if (res.history) setRefills(res.history)
+            setIsRefillModalOpen(false)
         }
     }
 
@@ -310,7 +348,7 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                                         <div className="space-y-1">
                                             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Quota Usage</p>
                                             <div className="flex items-baseline gap-1">
-                                                <span className="text-2xl font-bold text-foreground">0</span>
+                                                <span className="text-2xl font-bold text-foreground">{refills.length}</span>
                                                 <span className="text-sm text-muted-foreground">/{maxQuota}</span>
                                             </div>
                                         </div>
@@ -321,7 +359,10 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                                     </div>
 
                                     <div className="h-2 w-full bg-muted rounded-full overflow-hidden border border-border/20">
-                                        <div className="h-full bg-primary/20 w-0 rounded-full"></div>
+                                        <div
+                                            className="h-full bg-primary/40 rounded-full transition-all duration-1000"
+                                            style={{ width: `${(refills.length / maxQuota) * 100}%` }}
+                                        ></div>
                                     </div>
 
                                     <p className="text-[11px] text-muted-foreground flex items-center gap-1.5">
@@ -332,6 +373,7 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                                 {/* Process Refill Button */}
                                 <button
                                     type="button"
+                                    onClick={() => setIsRefillModalOpen(true)}
                                     className="w-full flex items-center justify-center gap-3 p-4 bg-white dark:bg-muted/10 border-2 border-dashed border-primary/30 hover:border-primary hover:bg-primary/5 rounded-2xl transition-all group font-semibold text-primary"
                                 >
                                     <div className="bg-primary/10 p-2 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors">
@@ -345,10 +387,46 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                                     <div className="flex items-center gap-2 text-sm font-semibold text-foreground italic">
                                         <History className="h-4 w-4" /> Refill History
                                     </div>
-                                    <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dotted border-border rounded-xl bg-muted/20 text-muted-foreground">
-                                        <History className="h-8 w-8 mb-2 opacity-20" />
-                                        <p className="text-xs">No refills yet.</p>
-                                    </div>
+                                    {refills.length === 0 ? (
+                                        <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dotted border-border rounded-xl bg-muted/20 text-muted-foreground">
+                                            <History className="h-8 w-8 mb-2 opacity-20" />
+                                            <p className="text-xs">No refills yet.</p>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                                            {refills.map((refill, i) => (
+                                                <div key={refill.id || i} className="p-3 bg-muted/30 border border-border/50 rounded-xl space-y-2 text-[11px] relative group hover:bg-muted/50 transition-colors">
+                                                    <div className="flex items-center justify-between text-muted-foreground border-b border-border/20 pb-1.5 mb-1.5">
+                                                        <span className="flex items-center gap-1 font-mono">
+                                                            <Calendar className="h-3 w-3" />
+                                                            {new Date(refill.date).toLocaleDateString()} {new Date(refill.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        </span>
+                                                        <span className="px-1.5 py-0.5 bg-primary/10 text-primary rounded font-bold">#{refills.length - i}</span>
+                                                    </div>
+                                                    <div className="grid grid-cols-1 gap-1.5">
+                                                        {refill.email && (
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-muted-foreground w-10">Email:</span>
+                                                                <span className="font-medium text-foreground select-all">{refill.email}</span>
+                                                            </div>
+                                                        )}
+                                                        {refill.password && (
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-muted-foreground w-10">Pass:</span>
+                                                                <span className="font-medium text-foreground select-all">{refill.password}</span>
+                                                            </div>
+                                                        )}
+                                                        {refill.referral_code && (
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-muted-foreground w-10">Ref:</span>
+                                                                <span className="font-medium text-blue-600 dark:text-blue-400 select-all">{refill.referral_code}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )).reverse()}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -376,6 +454,78 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
         </div>
     ) : null
 
+    const refillModal = isRefillModalOpen && mounted ? (
+        <div className="fixed inset-0 z-[9999999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-card w-full max-w-md rounded-2xl shadow-[0_20px_70px_rgba(0,0,0,0.5)] border border-border animate-in zoom-in-95 duration-300 overflow-hidden">
+                <div className="bg-gradient-to-r from-primary to-blue-600 p-4 flex items-center justify-between text-white">
+                    <h3 className="font-bold flex items-center gap-2">
+                        <RefreshCw className="h-4 w-4" /> Process Refill
+                    </h3>
+                    <button onClick={() => setIsRefillModalOpen(false)} className="hover:bg-white/20 p-1 rounded-full transition-colors">
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+                <form onSubmit={handleRefillSubmit} className="p-6 space-y-4">
+                    {selectedProduct?.type === 'ACCOUNT' && (
+                        <>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-2">
+                                    <Mail className="h-3 w-3" /> New Email
+                                </label>
+                                <input
+                                    name="refill_email"
+                                    required
+                                    placeholder="new.email@example.com"
+                                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-2">
+                                    <Key className="h-3 w-3" /> New Password
+                                </label>
+                                <input
+                                    name="refill_password"
+                                    required
+                                    placeholder="••••••••"
+                                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                />
+                            </div>
+                        </>
+                    )}
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-2">
+                            <Hash className="h-3 w-3" /> Referral Code / Target ID
+                        </label>
+                        <input
+                            name="refill_referral"
+                            required
+                            placeholder="e.g. REF123456"
+                            className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                        />
+                    </div>
+
+                    <div className="flex gap-3 pt-4">
+                        <button
+                            type="button"
+                            onClick={() => setIsRefillModalOpen(false)}
+                            className="flex-1 px-4 py-3 text-sm font-bold bg-muted hover:bg-muted/80 rounded-xl transition-all"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={refillLoading}
+                            className="flex-1 px-4 py-3 text-sm font-bold bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all shadow-lg shadow-primary/30 flex items-center justify-center gap-2 disabled:opacity-50"
+                        >
+                            {refillLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+                            Confirm
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    ) : null
+
     return (
         <>
             <div onClick={() => setIsOpen(true)}>
@@ -387,6 +537,7 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                 )}
             </div>
             {mounted && dialogContent && createPortal(dialogContent, document.body)}
+            {mounted && refillModal && createPortal(refillModal, document.body)}
         </>
     )
 }

@@ -1,8 +1,9 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { usePathname, useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import {
     LayoutDashboard,
     Package,
@@ -14,21 +15,36 @@ import {
     Settings,
     LogOut,
     ChevronRight,
-    Sparkles
+    HelpCircle
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
-const routes = [
-    { label: 'Overview', icon: LayoutDashboard, href: '/', color: 'text-primary', activeColor: 'text-white', bgColor: 'bg-primary' },
-    { label: 'Products', icon: Package, href: '/products', color: 'text-violet-500', activeColor: 'text-white', bgColor: 'bg-violet-600' },
-    { label: 'Stock', icon: Layers, href: '/stock', color: 'text-pink-600', activeColor: 'text-white', bgColor: 'bg-pink-600' },
-    { label: 'Orders', icon: ShoppingCart, href: '/orders', color: 'text-amber-600', activeColor: 'text-white', bgColor: 'bg-amber-600' },
-    { label: 'Distribution', icon: Send, href: '/distribution', color: 'text-emerald-500', activeColor: 'text-white', bgColor: 'bg-emerald-600' },
-    { label: 'Transactions', icon: Receipt, href: '/transactions', color: 'text-green-600', activeColor: 'text-white', bgColor: 'bg-green-600' },
-    { label: 'Users', icon: Users, href: '/users', color: 'text-blue-600', activeColor: 'text-white', bgColor: 'bg-blue-600' },
-    { label: 'Settings', icon: Settings, href: '/settings', color: 'text-gray-500', activeColor: 'text-white', bgColor: 'bg-slate-600' },
+const navigation = [
+    {
+        name: 'Overview',
+        items: [
+            { label: 'Dashboard', icon: LayoutDashboard, href: '/' },
+            { label: 'Products', icon: Package, href: '/products' },
+            { label: 'Stock Management', icon: Layers, href: '/stock' },
+            { label: 'Orders', icon: ShoppingCart, href: '/orders' },
+        ]
+    },
+    {
+        name: 'Operations',
+        items: [
+            { label: 'Distribution', icon: Send, href: '/distribution' },
+            { label: 'Transactions', icon: Receipt, href: '/transactions' },
+            { label: 'User Access', icon: Users, href: '/users' },
+        ]
+    },
+    {
+        name: 'System',
+        items: [
+            { label: 'Settings', icon: Settings, href: '/settings' },
+            { label: 'Help & Support', icon: HelpCircle, href: '/support' },
+        ]
+    }
 ]
 
 export function Sidebar() {
@@ -43,113 +59,91 @@ export function Sidebar() {
     }
 
     return (
-        <div className="flex flex-col h-screen w-72 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800/60 shadow-[0_0_50px_-12px_rgba(0,0,0,0.05)] transition-all duration-500 overflow-hidden relative">
-            {/* Background Accent Glow */}
-            <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-            <div className="absolute top-1/2 -right-32 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl pointer-events-none"></div>
-
-            {/* Logo Section */}
-            <div className="px-5 pt-5 pb-3 flex flex-col gap-1 select-none relative z-10">
-                <Link href="/" className="flex items-center gap-2.5 group">
-                    <div className="relative w-8 h-8 bg-gradient-to-tr from-primary to-purple-600 p-1.5 rounded-xl shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform duration-300">
+        <aside className="group/sidebar flex flex-col h-screen w-[280px] bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 relative z-50">
+            {/* Header / Logo */}
+            <div className="h-16 flex items-center px-6 border-b border-slate-100 dark:border-slate-800/60">
+                <Link href="/" className="flex items-center gap-3">
+                    <div className="relative w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/25">
                         <Image
                             src="/logo.png"
-                            alt="DigiPrime"
-                            fill
-                            className="object-contain p-1 invert brightness-0"
+                            alt="Logo"
+                            width={20}
+                            height={20}
+                            className="object-contain invert brightness-0"
                             priority
                         />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-sm font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                        <span className="text-base font-bold text-slate-900 dark:text-white leading-none tracking-tight">
                             DigiPrime
                         </span>
-                        <span className="text-[8px] font-bold text-primary uppercase tracking-[0.2em] mt-0.5 flex items-center gap-1">
-                            <Sparkles className="h-2 w-2" /> v2.0
+                        <span className="text-[10px] font-medium text-slate-500 uppercase tracking-wider mt-0.5">
+                            Workspace
                         </span>
                     </div>
                 </Link>
             </div>
 
-            {/* Navigation Menu */}
-            <nav className="flex-1 px-2.5 space-y-0.5 overflow-y-hidden relative z-10 pt-1">
-                <p className="px-3 pb-1 text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Main Menu</p>
-                {routes.map((route) => {
-                    const isActive = pathname === route.href
-                    return (
-                        <Link
-                            key={route.href}
-                            href={route.href}
-                            className={`group relative flex items-center justify-between px-3 py-1.5 rounded-xl transition-all duration-300 overflow-hidden ${isActive
-                                ? 'shadow-sm ring-1 ring-slate-200/50 dark:ring-slate-700/50'
-                                : 'hover:bg-slate-50 dark:hover:bg-slate-800/40 text-slate-500 dark:text-slate-400'
-                                }`}
-                        >
-                            <AnimatePresence>
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="active-pill"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        className={`absolute inset-0 ${route.bgColor} opacity-[0.03] dark:opacity-[0.08]`}
-                                    />
-                                )}
-                            </AnimatePresence>
-
-                            <div className="flex items-center gap-2.5 relative z-10">
-                                <div className={`p-1.5 rounded-lg transition-all duration-300 ${isActive
-                                    ? `${route.bgColor} text-white shadow-md shadow-${route.bgColor}/30 scale-105`
-                                    : `bg-slate-100 dark:bg-slate-800/60 ${route.color} group-hover:scale-105`
-                                    }`}>
-                                    <route.icon className="h-3.5 w-3.5" />
-                                </div>
-                                <span className={`text-[12px] font-bold tracking-tight transition-colors duration-300 ${isActive ? 'text-slate-900 dark:text-white' : 'group-hover:text-slate-900 dark:group-hover:text-white'
-                                    }`}>
-                                    {route.label}
-                                </span>
-                            </div>
-
-                            <ChevronRight className={`h-3 w-3 transition-all duration-500 ${isActive
-                                ? 'opacity-100 translate-x-0'
-                                : 'opacity-0 -translate-x-2 group-hover:opacity-40 group-hover:translate-x-0'
-                                } ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`} />
-
-                            {/* Active Indicator Line */}
-                            {isActive && (
-                                <motion.div
-                                    layoutId="active-line"
-                                    className={`absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-3.5 rounded-r-full ${route.bgColor}`}
-                                />
-                            )}
-                        </Link>
-                    )
-                })}
-            </nav>
-
-            {/* Bottom Section - Profile & Logout */}
-            <div className="p-2.5 mt-auto border-t border-slate-100 dark:border-slate-800/60 relative z-10 bg-white/50 dark:bg-slate-950/50 backdrop-blur-md">
-                <div className="mb-1.5 px-2 flex items-center gap-2.5">
-                    <div className="h-7 w-7 rounded-full bg-gradient-to-br from-primary to-purple-600 p-[1px] shadow-sm shadow-primary/20">
-                        <div className="h-full w-full rounded-full bg-slate-900 flex items-center justify-center text-white text-[9px] font-bold ring-1 ring-white dark:ring-slate-950">
-                            AD
+            {/* Navigation */}
+            <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-8 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+                {navigation.map((section) => (
+                    <div key={section.name} className="space-y-2">
+                        <h3 className="px-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                            {section.name}
+                        </h3>
+                        <div className="space-y-1">
+                            {section.items.map((item) => {
+                                const isActive = pathname === item.href
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={`relative flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group ${isActive
+                                            ? "bg-primary text-white shadow-md shadow-primary/20"
+                                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white"
+                                            }`}
+                                    >
+                                        <item.icon className={`w-4 h-4 transition-colors ${isActive ? 'stroke-[2.5px]' : 'stroke-2 group-hover:stroke-slate-900 dark:group-hover:stroke-white'}`} />
+                                        <span className="text-sm font-medium">
+                                            {item.label}
+                                        </span>
+                                        {isActive && (
+                                            <div className="absolute right-2 w-1.5 h-1.5 bg-white rounded-full opacity-50" />
+                                        )}
+                                    </Link>
+                                )
+                            })}
                         </div>
                     </div>
-                    <div className="flex flex-col">
-                        <span className="text-[11px] font-bold text-slate-900 dark:text-white leading-none">Admin Prime</span>
-                        <span className="text-[8px] font-medium text-slate-400 mt-0.5 uppercase tracking-tighter">Full Access</span>
+                ))}
+            </nav>
+
+            {/* User Profile & Logout */}
+            <div className="p-4 border-t border-slate-100 dark:border-slate-800/60 bg-slate-50/50 dark:bg-slate-900/20">
+                <div className="flex items-center gap-3 px-2 mb-3">
+                    <div className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center overflow-hidden border border-white dark:border-slate-700 shadow-sm">
+                        <div className="bg-gradient-to-br from-primary to-indigo-600 w-full h-full flex items-center justify-center text-white text-xs font-bold">
+                            AP
+                        </div>
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                            Admin Prime
+                        </span>
+                        <span className="text-xs text-slate-500 truncate">
+                            admin@digiprime.com
+                        </span>
                     </div>
                 </div>
 
                 <button
                     onClick={handleLogout}
-                    className="flex items-center justify-center gap-2 w-full py-2 rounded-xl text-[10px] font-bold text-red-500 hover:text-white bg-red-500/5 hover:bg-red-500 border border-red-500/10 hover:border-red-500 transition-all duration-300 shadow-sm group"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors"
                 >
-                    <LogOut className="h-3 w-3 group-hover:-translate-x-0.5 transition-transform" />
-                    Sign Out Account
+                    <LogOut className="w-3.5 h-3.5" />
+                    Sign Out
                 </button>
             </div>
-        </div>
+        </aside>
     )
 }
-

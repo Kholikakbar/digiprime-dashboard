@@ -40,7 +40,7 @@ export function AddExpenseDialog() {
             {isOpen && (
                 <>
                     {/* Backdrop */}
-                    <div className="fixed inset-0 bg-black/60 z-50 backdrop-blur-sm" onClick={() => setIsOpen(false)}></div>
+                    <div className="fixed inset-0 bg-black/60 z-50" onClick={() => setIsOpen(false)}></div>
 
                     {/* Dialog */}
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

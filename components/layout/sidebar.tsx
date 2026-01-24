@@ -51,13 +51,13 @@ export function Sidebar() {
             {/* 1. BRAND HEADER */}
             <div className={`flex h-16 items-center shrink-0 transition-all duration-300 ${isCollapsed ? 'justify-center px-0' : 'px-6 justify-between'}`}>
                 <Link href="/" className="flex items-center gap-3 group overflow-hidden">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2563EB] shadow-[0_4px_20px_-4px_rgba(37,99,235,0.4)] transition-all duration-300">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300">
                         <Image
                             src="/logo.png"
                             alt="DigiPrime"
-                            width={20}
-                            height={20}
-                            className="invert brightness-0"
+                            width={32}
+                            height={32}
+                            className="object-contain"
                         />
                     </div>
                     <div className={`flex flex-col transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0 overflow-hidden' : 'w-auto opacity-100'}`}>
@@ -102,8 +102,8 @@ export function Sidebar() {
                             href={route.href}
                             title={isCollapsed ? route.label : ''}
                             className={`group flex items-center justify-between rounded-[14px] py-2.5 transition-all duration-200 ${isActive
-                                    ? 'bg-[#2563EB] text-white shadow-[0_4px_12px_-2px_rgba(37,99,235,0.5)]'
-                                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                                ? 'bg-[#2563EB] text-white shadow-[0_4px_12px_-2px_rgba(37,99,235,0.5)]'
+                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                                 } ${isCollapsed ? 'justify-center px-0' : 'px-4'}`}
                         >
                             <div className="flex items-center gap-3">

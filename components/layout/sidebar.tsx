@@ -3,7 +3,6 @@
 import React from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 import {
     LayoutDashboard,
     Package,
@@ -14,21 +13,20 @@ import {
     Users,
     Settings,
     LogOut,
-    HelpCircle,
     Sparkles
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
 
-// Consolidated navigation without headers to match reference style
+// Professional, minimal route structure
 const routes = [
-    { label: 'Dashboard', icon: LayoutDashboard, href: '/' },
-    { label: 'Products', icon: Package, href: '/products' },
-    { label: 'Stock', icon: Layers, href: '/stock' },
-    { label: 'Orders', icon: ShoppingCart, href: '/orders', badge: '12' }, // Added badge example
+    { label: 'Overview', icon: LayoutDashboard, href: '/' },
+    { label: 'All Products', icon: Package, href: '/products' },
+    { label: 'Inventory', icon: Layers, href: '/stock' },
+    { label: 'Orders', icon: ShoppingCart, href: '/orders', badge: '12' },
     { label: 'Distribution', icon: Send, href: '/distribution' },
-    { label: 'Transactions', icon: Receipt, href: '/transactions', badge: '5' }, // Added badge example
-    { label: 'Users', icon: Users, href: '/users' },
+    { label: 'Transactions', icon: Receipt, href: '/transactions' },
+    { label: 'User Management', icon: Users, href: '/users' },
     { label: 'Settings', icon: Settings, href: '/settings' },
 ]
 
@@ -44,81 +42,90 @@ export function Sidebar() {
     }
 
     return (
-        <aside className="group flex flex-col h-screen w-[260px] bg-[#020412] text-white transition-all duration-300 relative z-50 overflow-hidden font-sans border-r border-white/5">
-            {/* Header / Logo */}
-            <div className="h-24 flex flex-col justify-center px-6 mb-2">
+        <aside className="hidden md:flex h-screen w-[280px] flex-col bg-[#0f172a] text-white border-r border-[#1e293b] select-none">
+            {/* 1. BRAND HEADER - Fixed Height */}
+            <div className="flex h-24 items-center px-8">
                 <Link href="/" className="flex items-center gap-4 group">
-                    <div className="relative w-10 h-10 flex items-center justify-center bg-[#2563EB] rounded-2xl shadow-[0_0_20px_-5px_#2563EB] group-hover:scale-105 transition-transform duration-300">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.5)] transition-transform duration-300 group-hover:scale-110">
                         <Image
                             src="/logo.png"
-                            alt="Logo"
+                            alt="DigiPrime"
                             width={24}
                             height={24}
-                            className="object-contain invert brightness-0"
-                            priority
+                            className="invert brightness-0"
                         />
                     </div>
                     <div>
-                        <h1 className="text-[19px] font-bold tracking-tight text-white leading-none mb-1">
+                        <h1 className="text-xl font-bold tracking-tight text-white">
                             DigiPrime
                         </h1>
-                        <p className="text-[10px] font-medium text-white/40 tracking-wider uppercase">
-                            Admin Space
-                        </p>
+                        <div className="flex items-center gap-1.5 opacity-60">
+                            <Sparkles className="h-3 w-3 text-blue-400" />
+                            <span className="text-[10px] font-medium uppercase tracking-widest text-blue-400">
+                                PRO ADMIN
+                            </span>
+                        </div>
                     </div>
                 </Link>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-1 px-4 space-y-2 overflow-y-hidden">
+            {/* 2. NAVIGATION - Flex Grow to fill space, minimal gap */}
+            <nav className="flex flex-1 flex-col px-4 py-6 gap-1.5 overflow-hidden">
                 {routes.map((route) => {
                     const isActive = pathname === route.href
                     return (
                         <Link
                             key={route.href}
                             href={route.href}
-                            className="block relative"
+                            className={`group flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200 ${isActive
+                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' // Active: Solid Blue + Shadow
+                                    : 'text-slate-400 hover:bg-[#1e293b] hover:text-white' // Inactive: Slate + Dark Hover
+                                }`}
                         >
-                            <div
-                                className={`relative flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group ${isActive
-                                    ? "bg-[#2563EB] text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.4)]"
-                                    : "text-[#8A8F9F] hover:text-white hover:bg-white/5"
-                                    }`}
-                            >
-                                <div className="flex items-center gap-3.5">
-                                    <route.icon className={`w-[20px] h-[20px] transition-transform duration-300 ${isActive ? 'scale-105 stroke-[2.5px]' : 'stroke-2'}`} />
-                                    <span className="text-[14px] font-semibold tracking-wide">
-                                        {route.label}
-                                    </span>
-                                </div>
-
-                                {route.badge && !isActive && (
-                                    <span className="bg-[#1A1F36] text-[#2563EB] text-[10px] font-bold px-2 py-0.5 rounded-full">
-                                        {route.badge}
-                                    </span>
-                                )}
-
-                                {route.badge && isActive && (
-                                    <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                                        {route.badge}
-                                    </span>
-                                )}
+                            <div className="flex items-center gap-3">
+                                <route.icon
+                                    className={`h-5 w-5 transition-transform duration-300 ${isActive ? 'scale-105' : 'group-hover:scale-110'
+                                        }`}
+                                />
+                                <span>{route.label}</span>
                             </div>
+
+                            {/* Optional Badge */}
+                            {route.badge && (
+                                <span
+                                    className={`flex h-5 min-w-[20px] items-center justify-center rounded-md px-1.5 text-[10px] font-bold ${isActive
+                                            ? 'bg-white/20 text-white'
+                                            : 'bg-[#1e293b] text-blue-400'
+                                        }`}
+                                >
+                                    {route.badge}
+                                </span>
+                            )}
                         </Link>
                     )
                 })}
             </nav>
 
-            {/* Bottom Actions */}
-            <div className="p-4 mb-2">
+            {/* 3. FOOTER / LOGOUT - Fixed at bottom */}
+            <div className="p-6">
+                <div className="mb-4 flex items-center gap-3 rounded-2xl bg-[#1e293b]/50 p-3 border border-[#1e293b]">
+                    <div className="h-10 w-10 overflow-hidden rounded-full bg-blue-600 p-0.5">
+                        <div className="flex h-full w-full items-center justify-center rounded-full bg-[#0f172a] text-xs font-bold text-white">
+                            AD
+                        </div>
+                    </div>
+                    <div>
+                        <p className="text-sm font-bold text-white">Admin Prime</p>
+                        <p className="text-[10px] text-slate-400">Full Access</p>
+                    </div>
+                </div>
+
                 <button
                     onClick={handleLogout}
-                    className="group flex w-full items-center gap-3 px-4 py-3.5 rounded-2xl text-[13px] font-semibold text-[#8A8F9F] hover:text-white hover:bg-white/5 transition-all duration-200"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 py-3 text-xs font-bold text-red-500 transition-all hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-900/20"
                 >
-                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#2563EB] transition-colors">
-                        <LogOut className="w-4 h-4" />
-                    </div>
-                    <span>Sign Out</span>
+                    <LogOut className="h-4 w-4" />
+                    SIGN OUT
                 </button>
             </div>
         </aside>

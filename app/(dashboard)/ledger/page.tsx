@@ -142,7 +142,13 @@ export default async function LedgerPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                                                {entry.category.replace('_', ' ')}
+                                                {entry.category
+                                                    .replace(/_/g, ' ')
+                                                    .toLowerCase()
+                                                    .split(' ')
+                                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                                    .join(' ')
+                                                }
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">

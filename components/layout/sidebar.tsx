@@ -14,6 +14,7 @@ import {
     Settings,
     LogOut,
     Sparkles,
+    Wallet,
     ChevronRight,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -27,6 +28,7 @@ const routes = [
     { label: 'Orders', icon: ShoppingCart, href: '/orders' },
     { label: 'Distribution', icon: Send, href: '/distribution' },
     { label: 'Transactions', icon: Receipt, href: '/transactions' },
+    { label: 'Financial Ledger', icon: Wallet, href: '/ledger' },
     { label: 'User Management', icon: Users, href: '/users' },
     { label: 'Settings', icon: Settings, href: '/settings' },
 ]

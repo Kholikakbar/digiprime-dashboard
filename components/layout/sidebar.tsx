@@ -51,12 +51,12 @@ export function Sidebar() {
             {/* 1. BRAND HEADER */}
             <div className={`flex h-16 items-center shrink-0 transition-all duration-300 ${isCollapsed ? 'justify-center px-0' : 'px-6 justify-between'}`}>
                 <Link href="/" className="flex items-center gap-3 group overflow-hidden">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-300">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300">
                         <Image
                             src="/logo.png"
                             alt="DigiPrime"
-                            width={32}
-                            height={32}
+                            width={44}
+                            height={44}
                             className="object-contain"
                         />
                     </div>

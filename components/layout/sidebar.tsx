@@ -42,7 +42,7 @@ export function Sidebar() {
     }
 
     return (
-    return (
+
         <aside className="hidden md:flex h-screen w-[270px] flex-col bg-[#020410] text-white border-r border-[#1a1f36] select-none font-sans">
             {/* 1. BRAND HEADER - Fixed Height */}
             <div className="flex h-[90px] items-center px-7">
@@ -76,8 +76,8 @@ export function Sidebar() {
                             key={route.href}
                             href={route.href}
                             className={`group flex items-center justify-between rounded-[16px] px-4 py-3.5 text-[13px] font-semibold transition-all duration-300 ${isActive
-                                    ? 'bg-[#2563EB] text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)]'
-                                    : 'text-[#8E94A3] hover:bg-white/[0.04] hover:text-white'
+                                ? 'bg-[#2563EB] text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.5)]'
+                                : 'text-[#8E94A3] hover:bg-white/[0.04] hover:text-white'
                                 }`}
                         >
                             <div className="flex items-center gap-3.5">
@@ -92,8 +92,8 @@ export function Sidebar() {
                             {route.badge && (
                                 <span
                                     className={`flex h-[20px] min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold ${isActive
-                                            ? 'bg-white/20 text-white backdrop-blur-sm'
-                                            : 'bg-[#1a1f36] text-[#2563EB]'
+                                        ? 'bg-white/20 text-white backdrop-blur-sm'
+                                        : 'bg-[#1a1f36] text-[#2563EB]'
                                         }`}
                                 >
                                     {route.badge}

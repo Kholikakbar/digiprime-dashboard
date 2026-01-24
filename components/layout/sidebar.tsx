@@ -49,14 +49,14 @@ export function Sidebar() {
                 }`}
         >
             {/* 1. BRAND HEADER */}
-            <div className={`flex h-16 items-center shrink-0 transition-all duration-300 ${isCollapsed ? 'justify-center px-0' : 'px-6 justify-between'}`}>
+            <div className={`flex h-20 items-center shrink-0 transition-all duration-300 ${isCollapsed ? 'justify-center px-0' : 'px-6 justify-between'}`}>
                 <Link href="/" className="flex items-center gap-3 group overflow-hidden">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-all duration-300">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl transition-all duration-300">
                         <Image
                             src="/logo.png"
                             alt="DigiPrime"
-                            width={44}
-                            height={44}
+                            width={56}
+                            height={56}
                             className="object-contain"
                         />
                     </div>

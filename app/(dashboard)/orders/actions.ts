@@ -40,6 +40,7 @@ export async function createOrder(formData: FormData) {
     const product_id = formData.get('product_id') as string
     const total_price = formData.get('total_price') as string
     const status = formData.get('status') as string
+    const order_date = formData.get('order_date') as string // Custom date field
 
     const stock_account_id = formData.get('stock_account_id') as string
     const fulfillment_info = formData.get('fulfillment_info') as string
@@ -71,6 +72,11 @@ export async function createOrder(formData: FormData) {
         total_price: Number(total_price),
         status,
         quantity: 1
+    }
+
+    // Add custom order_date if provided, otherwise use default (now)
+    if (order_date) {
+        insertData.order_date = order_date
     }
 
     // Insert Order

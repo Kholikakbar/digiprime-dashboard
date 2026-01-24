@@ -187,6 +187,18 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                                     />
                                 </div>
 
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium flex items-center gap-2 text-foreground">
+                                        <Calendar className="h-3.5 w-3.5 text-muted-foreground" /> Order Date
+                                    </label>
+                                    <input
+                                        type="datetime-local"
+                                        name="order_date"
+                                        className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80"
+                                    />
+                                    <p className="text-xs text-muted-foreground">Leave empty to use current date/time</p>
+                                </div>
+
                                 <div className="col-span-1 md:col-span-2 space-y-2">
                                     <label className="text-sm font-medium flex items-center gap-2 text-foreground">
                                         <Package className="h-3.5 w-3.5 text-muted-foreground" /> Product

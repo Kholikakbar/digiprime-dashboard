@@ -39,12 +39,19 @@ export function AddExpenseDialog() {
 
             {isOpen && (
                 <>
-                    {/* Backdrop */}
-                    <div className="fixed inset-0 bg-black/60 z-50" onClick={() => setIsOpen(false)}></div>
+                    {/* Backdrop - Full Screen Overlay */}
+                    <div
+                        className="fixed inset-0 bg-black/60 z-[100]"
+                        onClick={() => setIsOpen(false)}
+                        style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+                    ></div>
 
-                    {/* Dialog */}
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+                    {/* Dialog Container */}
+                    <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none">
+                        <div
+                            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg border border-slate-200 animate-in fade-in zoom-in-95 duration-200 pointer-events-auto"
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             {/* Header */}
                             <div className="flex items-center justify-between p-6 border-b border-slate-100">
                                 <div>

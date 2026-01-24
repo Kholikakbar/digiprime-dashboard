@@ -44,20 +44,20 @@ export default async function DistributionPage() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-8 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-                            <div className="flex flex-col items-center min-w-[80px]">
+                        <div className="flex items-center gap-6 sm:gap-10 shrink-0 border-t md:border-t-0 md:border-l border-border/50 pt-6 md:pt-0 md:pl-10 w-full md:w-auto justify-center md:justify-end">
+                            <div className="flex flex-col items-center min-w-[60px]">
                                 <span className="text-3xl font-black text-foreground">{stats.delivered}</span>
-                                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Delivered</span>
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Delivered</span>
                             </div>
-                            <div className="w-px h-10 bg-border"></div>
-                            <div className="flex flex-col items-center min-w-[80px]">
+                            <div className="w-px h-10 bg-border/60"></div>
+                            <div className="flex flex-col items-center min-w-[60px]">
                                 <span className="text-3xl font-black text-amber-500">{stats.pending}</span>
-                                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pending</span>
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Pending</span>
                             </div>
-                            <div className="w-px h-10 bg-border"></div>
-                            <div className="flex flex-col items-center min-w-[80px]">
+                            <div className="w-px h-10 bg-border/60"></div>
+                            <div className="flex flex-col items-center min-w-[60px]">
                                 <span className="text-3xl font-black text-red-500">{stats.failed}</span>
-                                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Failed</span>
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Failed</span>
                             </div>
                         </div>
                     </div>
@@ -104,8 +104,10 @@ export default async function DistributionPage() {
                                             <td className="px-6 py-4 font-bold text-foreground">
                                                 {delivery.shopee_order_no}
                                             </td>
-                                            <td className="px-6 py-4 text-muted-foreground">
-                                                {delivery.products?.name}
+                                            <td className="px-6 py-4 text-muted-foreground max-w-[200px] truncate">
+                                                {Array.isArray(delivery.products)
+                                                    ? delivery.products[0]?.name
+                                                    : delivery.products?.name || 'Unknown Product'}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="px-2 py-1 bg-blue-500/10 text-blue-600 rounded-md text-xs font-bold border border-blue-500/20">

@@ -141,15 +141,22 @@ export default async function LedgerPage() {
                                             <p className="font-semibold text-sm text-slate-900">{entry.description || '-'}</p>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                                                {entry.category
-                                                    .replace(/_/g, ' ')
-                                                    .toLowerCase()
-                                                    .split(' ')
-                                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                                    .join(' ')
-                                                }
-                                            </span>
+                                            {(() => {
+                                                const cat = entry.category.toUpperCase();
+                                                let style = "bg-slate-100 text-slate-700 border-slate-200";
+
+                                                if (cat === 'SALES') style = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                                                if (cat.includes('ADS')) style = "bg-blue-50 text-blue-700 border-blue-200";
+                                                if (cat.includes('STOCK')) style = "bg-amber-50 text-amber-700 border-amber-200";
+                                                if (cat === 'MARKETING') style = "bg-purple-50 text-purple-700 border-purple-200";
+                                                if (cat === 'OPERATIONAL') style = "bg-rose-50 text-rose-700 border-rose-200";
+
+                                                return (
+                                                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${style}`}>
+                                                        {entry.category.replace(/_/g, ' ')}
+                                                    </span>
+                                                );
+                                            })()}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className={`inline-flex items-center gap-1.5 font-black text-sm ${entry.transaction_type === 'INCOME' ? 'text-emerald-600' : 'text-rose-600'

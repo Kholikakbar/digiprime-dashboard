@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { getLedgerStats, getLedgerEntries } from './actions'
 import { AddExpenseDialog } from './add-expense-dialog'
+import { SyncOrdersButton } from './sync-button'
 
 export default async function LedgerPage() {
     const stats = await getLedgerStats()
@@ -25,7 +26,10 @@ export default async function LedgerPage() {
                         Track your business cash flow and manage expenses efficiently.
                     </p>
                 </div>
-                <AddExpenseDialog />
+                <div className="flex gap-3">
+                    <SyncOrdersButton />
+                    <AddExpenseDialog />
+                </div>
             </div>
 
             {/* Stats Cards - Premium Design */}

@@ -13,9 +13,15 @@ async function getStats() {
     const now = new Date()
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
 
-    // 1. Total Revenue (Month) - Sum of completed orders since start of month
-    // Note: In a real app we might use a dedicated Transactions table or RPC for sum.
-    // Here we fetch completed orders for the month and calculate sum in JS (okay for MVP).
+    // 1. Total Revenue (ALL TIME) - Sum of ALL completed orders
+    const { data: allCompletedOrders } = await supabase
+        .from('orders')
+        .select('total_price')
+        .eq('status', 'COMPLETED')
+
+    const totalRevenue = allCompletedOrders?.reduce((sum, order) => sum + (Number(order.total_price) || 0), 0) || 0
+
+    // Revenue this month for comparison
     const { data: monthOrders } = await supabase
         .from('orders')
         .select('total_price')
@@ -30,7 +36,7 @@ async function getStats() {
         .select('*', { count: 'exact', head: true })
         .in('status', ['PENDING', 'PROCESSING'])
 
-    // 3. Completed Orders (All time or Month? Usually all time for "completed orders" stat, but let's stick to total)
+    // 3. Completed Orders (All time)
     const { count: completedOrders } = await supabase
         .from('orders')
         .select('*', { count: 'exact', head: true })
@@ -48,6 +54,7 @@ async function getStats() {
         .eq('status', 'AVAILABLE')
 
     return {
+        totalRevenue,
         salesMonth,
         stockAccounts: stockAccounts || 0,
         stockCredits: stockCredits || 0,
@@ -195,13 +202,13 @@ export default async function DashboardPage() {
                     </div>
                     <div
                         className="text-2xl font-bold mb-1 relative tracking-tight"
-                        title={`Rp ${stats.salesMonth.toLocaleString('id-ID')}`}
+                        title={`Rp ${stats.totalRevenue.toLocaleString('id-ID')}`}
                     >
-                        Rp {stats.salesMonth.toLocaleString('id-ID')}
+                        Rp {stats.totalRevenue.toLocaleString('id-ID')}
                     </div>
                     <p className="text-xs text-green-600 flex items-center font-medium">
                         <TrendingUp className="h-3 w-3 mr-1" />
-                        +0% last month
+                        All-time revenue
                     </p>
                 </div>
 

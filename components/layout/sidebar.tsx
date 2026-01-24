@@ -91,7 +91,7 @@ export function Sidebar() {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto px-5 py-8 space-y-9 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+            <nav className="flex-1 overflow-y-hidden px-5 py-4 space-y-6">
                 {navigation.map((section) => (
                     <div key={section.name} className="space-y-3">
                         <h3 className="px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.15em]">

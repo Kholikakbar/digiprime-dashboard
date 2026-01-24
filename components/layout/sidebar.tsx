@@ -42,12 +42,11 @@ export function Sidebar() {
     }
 
     return (
-
-        <aside className="hidden md:flex h-screen w-[260px] flex-col bg-[#020410] text-white border-r border-[#1a1f36] select-none font-sans">
+        <aside className="hidden md:flex h-screen w-[260px] flex-col bg-white text-slate-900 border-r border-slate-200 select-none font-sans transition-colors duration-300">
             {/* 1. BRAND HEADER - Compact */}
             <div className="flex h-16 items-center px-6 shrink-0">
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2563EB] shadow-[0_4px_20px_-4px_rgba(37,99,235,0.6)] transition-all duration-300 group-hover:scale-105">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2563EB] shadow-[0_4px_20px_-4px_rgba(37,99,235,0.4)] transition-all duration-300 group-hover:scale-105">
                         <Image
                             src="/logo.png"
                             alt="DigiPrime"
@@ -57,10 +56,10 @@ export function Sidebar() {
                         />
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="text-[18px] font-extrabold tracking-tight text-white leading-none">
+                        <h1 className="text-[18px] font-extrabold tracking-tight text-slate-900 leading-none">
                             DigiPrime
                         </h1>
-                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#556987] mt-1">
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mt-1">
                             Workspace
                         </span>
                     </div>
@@ -77,7 +76,7 @@ export function Sidebar() {
                             href={route.href}
                             className={`group flex items-center justify-between rounded-[14px] px-4 py-2.5 text-[13px] font-semibold transition-all duration-200 ${isActive
                                     ? 'bg-[#2563EB] text-white shadow-[0_4px_12px_-2px_rgba(37,99,235,0.5)]'
-                                    : 'text-[#8E94A3] hover:bg-white/[0.04] hover:text-white'
+                                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                                 }`}
                         >
                             <div className="flex items-center gap-3">
@@ -93,7 +92,7 @@ export function Sidebar() {
                                 <span
                                     className={`flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1.5 text-[9px] font-bold ${isActive
                                             ? 'bg-white/20 text-white backdrop-blur-sm'
-                                            : 'bg-[#1a1f36] text-[#2563EB]'
+                                            : 'bg-slate-100 text-[#2563EB]'
                                         }`}
                                 >
                                     {route.badge}
@@ -108,10 +107,10 @@ export function Sidebar() {
             <div className="p-4 shrink-0 mt-auto">
                 <button
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-3 rounded-xl bg-[#121522] border border-[#1e2336] p-3 text-[12px] font-semibold text-[#8E94A3] transition-all duration-300 hover:bg-[#1a1f36] hover:text-white group"
+                    className="flex w-full items-center gap-3 rounded-xl bg-white border border-slate-200 p-3 text-[12px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-red-500 hover:border-red-200 group shadow-sm"
                 >
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1e2336] group-hover:bg-[#2563EB] transition-colors">
-                        <LogOut className="h-3.5 w-3.5" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 group-hover:bg-red-50 transition-colors">
+                        <LogOut className="h-3.5 w-3.5 group-hover:text-red-500 transition-colors" />
                     </div>
                     <span>Sign Out Account</span>
                 </button>

@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/layout/sidebar'
 import { Navbar } from '@/components/layout/navbar'
+import { AIChatbot } from '@/components/ai-chatbot'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 
@@ -29,6 +30,9 @@ export default async function DashboardLayout({
                         {children}
                     </div>
                 </main>
+
+                {/* AI Chatbot - Available on all dashboard pages */}
+                <AIChatbot />
             </div>
         </div>
     )

@@ -15,20 +15,30 @@ export async function getAvailableStockAccounts(productId: string) {
     return data || []
 }
 
-export async function getStocks() {
+export async function getStocks(search?: string) {
     const supabase = await createClient()
 
     // Fetch accounts with product details
-    const { data: accounts } = await supabase
+    let accountQuery = supabase
         .from('stock_accounts')
         .select('*, products(name)')
         .order('created_at', { ascending: false })
 
+    if (search) {
+        accountQuery = accountQuery.or(`email.ilike.%${search}%,buyer_name.ilike.%${search}%,products.name.ilike.%${search}%`)
+    }
+    const { data: accounts } = await accountQuery
+
     // Fetch credits with product details 
-    const { data: credits } = await supabase
+    let creditQuery = supabase
         .from('stock_credits')
         .select('*, products(name)')
         .order('created_at', { ascending: false })
+
+    if (search) {
+        creditQuery = creditQuery.or(`code.ilike.%${search}%,buyer_name.ilike.%${search}%,products.name.ilike.%${search}%`)
+    }
+    const { data: credits } = await creditQuery
 
     // Fetch products for dropdown
     const { data: products } = await supabase

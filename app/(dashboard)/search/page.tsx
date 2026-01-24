@@ -1,103 +1,134 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from '@/lib/supabase/client'
-import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
+import { Package, ShoppingCart, Search as SearchIcon, ArrowRight } from 'lucide-react'
 
-export default async function SearchPage({
-    searchParams,
-}: {
-    searchParams: { q: string }
+export default async function SearchPage(props: {
+    searchParams: Promise<{ q?: string }>
 }) {
-    // Await searchParams in Next.js 15+ (if applicable) or access directly. 
-    // In Next 14 it's not a promise but good practice to treat as potential signal.
+    const searchParams = await props.searchParams
     const query = searchParams.q
 
     if (!query) {
         return (
-            <div className="p-8 text-center bg-card rounded-2xl border border-border/50">
-                <h2 className="text-xl font-semibold mb-2">Search DigiPrime</h2>
-                <p className="text-muted-foreground">Enter a keyword to search for orders or products.</p>
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center bg-white rounded-3xl border border-slate-200 p-12 shadow-sm">
+                <div className="p-4 bg-slate-100 rounded-full mb-4">
+                    <SearchIcon className="h-8 w-8 text-slate-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Search DigiPrime</h2>
+                <p className="text-slate-500 max-w-sm">Enter a keyword in the search bar above to look for orders, products, or stock entries.</p>
             </div>
         )
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Search Products
     const { data: products } = await supabase
         .from('products')
         .select('*')
         .ilike('name', `%${query}%`)
-        .limit(5)
+        .limit(10)
 
     // Search Orders (by ID or Buyer)
-    // Note: PostgREST ilike on multiple columns requires 'or' syntax
     const { data: orders } = await supabase
         .from('orders')
-        .select('*')
+        .select('*, products(name)')
         .or(`shopee_order_no.ilike.%${query}%,buyer_username.ilike.%${query}%`)
-        .limit(5)
+        .order('order_date', { ascending: false })
+        .limit(10)
+
+    const hasResults = (products && products.length > 0) || (orders && orders.length > 0)
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-2xl font-bold">Search Results for "{query}"</h1>
+        <div className="space-y-8 animate-in fade-in duration-500">
+            <div>
+                <h1 className="text-3xl font-black tracking-tight text-slate-900">Search Results</h1>
+                <p className="text-slate-500 mt-1">Showing matches for "<span className="font-bold text-primary">{query}</span>"</p>
+            </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-                {/* Product Results */}
-                <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
-                    <div className="p-4 border-b border-border/50 bg-muted/20">
-                        <h3 className="font-semibold">Products ({products?.length || 0})</h3>
-                    </div>
-                    <div className="p-0">
-                        {(!products || products.length === 0) ? (
-                            <div className="p-4 text-sm text-muted-foreground">No products found.</div>
-                        ) : (
-                            <div className="divide-y divide-border/40">
+            {!hasResults ? (
+                <div className="flex flex-col items-center justify-center min-h-[300px] text-center bg-white rounded-3xl border border-slate-200 p-12">
+                    <p className="text-slate-900 font-bold text-lg">No results found</p>
+                    <p className="text-slate-500 text-sm mt-1">Try different keywords or check for typos.</p>
+                </div>
+            ) : (
+                <div className="grid gap-8 lg:grid-cols-2">
+                    {/* Product Results */}
+                    {products && products.length > 0 && (
+                        <div className="space-y-4">
+                            <h3 className="flex items-center gap-2 font-black text-slate-900 px-2 uppercase tracking-widest text-xs">
+                                <Package className="h-4 w-4 text-primary" />
+                                Products ({products.length})
+                            </h3>
+                            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
                                 {products.map((product) => (
-                                    <div key={product.id} className="p-4 hover:bg-muted/30 transition-colors flex justify-between items-center">
-                                        <div>
-                                            <div className="font-medium text-sm">{product.name}</div>
-                                            <div className="text-xs text-muted-foreground capitalize">{product.type.toLowerCase()}</div>
+                                    <Link
+                                        key={product.id}
+                                        href={`/products`} // We don't have individual product pages yet, so go to list
+                                        className="flex items-center justify-between p-5 hover:bg-slate-50 transition-colors group"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-12 w-12 rounded-2xl bg-slate-100 flex items-center justify-center group-hover:bg-white transition-colors">
+                                                <Package className="h-6 w-6 text-slate-400 group-hover:text-primary transition-colors" />
+                                            </div>
+                                            <div>
+                                                <div className="font-bold text-slate-900 group-hover:text-primary transition-colors">{product.name}</div>
+                                                <div className="text-xs text-slate-500 font-medium uppercase tracking-tighter">{product.type} • Stock: {product.stock_count}</div>
+                                            </div>
                                         </div>
-                                        <div className="text-sm font-semibold">
-                                            Rp {Number(product.price).toLocaleString('id-ID')}
+                                        <div className="text-right">
+                                            <div className="font-black text-slate-900">Rp {Number(product.price).toLocaleString('id-ID')}</div>
+                                            <div className="text-[10px] text-slate-400 font-bold uppercase">Price per unit</div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))}
                             </div>
-                        )}
-                    </div>
-                </div>
+                        </div>
+                    )}
 
-                {/* Order Results */}
-                <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
-                    <div className="p-4 border-b border-border/50 bg-muted/20">
-                        <h3 className="font-semibold">Orders ({orders?.length || 0})</h3>
-                    </div>
-                    <div className="p-0">
-                        {(!orders || orders.length === 0) ? (
-                            <div className="p-4 text-sm text-muted-foreground">No orders found.</div>
-                        ) : (
-                            <div className="divide-y divide-border/40">
+                    {/* Order Results */}
+                    {orders && orders.length > 0 && (
+                        <div className="space-y-4">
+                            <h3 className="flex items-center gap-2 font-black text-slate-900 px-2 uppercase tracking-widest text-xs">
+                                <ShoppingCart className="h-4 w-4 text-orange-500" />
+                                Orders ({orders.length})
+                            </h3>
+                            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden divide-y divide-slate-100">
                                 {orders.map((order) => (
-                                    <div key={order.id} className="p-4 hover:bg-muted/30 transition-colors">
-                                        <div className="flex justify-between mb-1">
-                                            <span className="font-medium text-sm">#{order.shopee_order_no}</span>
-                                            <span className={`text-xs px-2 py-0.5 rounded-full ${order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
-                                                    order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-700'
+                                    <Link
+                                        key={order.id}
+                                        href={`/orders`}
+                                        className="block p-5 hover:bg-slate-50 transition-colors group"
+                                    >
+                                        <div className="flex justify-between items-start mb-2">
+                                            <div>
+                                                <span className="font-black text-slate-900 group-hover:text-primary transition-colors">#{order.shopee_order_no}</span>
+                                                <p className="text-xs font-bold text-slate-400 mt-0.5">{order.buyer_username}</p>
+                                            </div>
+                                            <span className={`text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider border ${order.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                                    order.status === 'PENDING' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                                                        'bg-slate-50 text-slate-700 border-slate-200'
                                                 }`}>{order.status}</span>
                                         </div>
-                                        <div className="flex justify-between text-xs text-muted-foreground">
-                                            <span>{order.buyer_username}</span>
-                                            <span>{new Date(order.order_date).toLocaleDateString('id-ID')}</span>
+                                        <div className="flex justify-between items-end">
+                                            <div className="text-xs text-slate-500">
+                                                {order.products?.name} • {new Date(order.order_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                            </div>
+                                            <div className="font-black text-primary flex items-center gap-1">
+                                                Rp {Number(order.total_price).toLocaleString('id-ID')}
+                                                <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                                            </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))}
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
-            </div>
+            )}
         </div>
     )
 }
+

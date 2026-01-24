@@ -3,13 +3,19 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function getOrders() {
+export async function getOrders(search?: string) {
     const supabase = await createClient()
 
-    const { data } = await supabase
+    let query = supabase
         .from('orders')
         .select('*, products(name, type)')
         .order('order_date', { ascending: false })
+
+    if (search) {
+        query = query.or(`shopee_order_no.ilike.%${search}%,buyer_username.ilike.%${search}%`)
+    }
+
+    const { data } = await query
 
     return data || []
 }

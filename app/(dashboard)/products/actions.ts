@@ -3,12 +3,19 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function getProducts() {
+export async function getProducts(search?: string) {
     const supabase = await createClient()
-    const { data, error } = await supabase
+
+    let query = supabase
         .from('products')
         .select('*')
         .order('created_at', { ascending: false })
+
+    if (search) {
+        query = query.ilike('name', `%${search}%`)
+    }
+
+    const { data, error } = await query
 
     if (error) throw new Error(error.message)
     return data

@@ -2,18 +2,26 @@ import { getStocks } from './actions'
 import { StockDialog } from './stock-dialog'
 import { Mail, CircleDollarSign } from 'lucide-react'
 import { StockActions } from './stock-actions'
+import { SearchFilter } from '@/components/dashboard/search-filter'
 
-export default async function StockPage() {
-    const { accounts, credits, products } = await getStocks()
+export default async function StockPage(props: {
+    searchParams: Promise<{ q?: string }>
+}) {
+    const searchParams = await props.searchParams
+    const query = searchParams.q
+    const { accounts, credits, products } = await getStocks(query)
 
     return (
-        <div className="space-y-8">
-            <div className="flex items-center justify-between">
+        <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600">Stock Management</h2>
+                    <h2 className="text-3xl font-black tracking-tight text-slate-900">Stock Management</h2>
                     <p className="text-muted-foreground mt-1">Monitor and replenish your digital inventory.</p>
                 </div>
-                <StockDialog products={products} />
+                <div className="flex items-center gap-3">
+                    <SearchFilter placeholder="Search stock..." className="w-full md:w-80" />
+                    <StockDialog products={products} />
+                </div>
             </div>
 
             <div className="grid gap-8 lg:grid-cols-2">

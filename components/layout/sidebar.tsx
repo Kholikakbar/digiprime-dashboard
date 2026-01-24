@@ -23,7 +23,7 @@ const routes = [
     { label: 'Overview', icon: LayoutDashboard, href: '/' },
     { label: 'All Products', icon: Package, href: '/products' },
     { label: 'Inventory', icon: Layers, href: '/stock' },
-    { label: 'Orders', icon: ShoppingCart, href: '/orders', badge: '12' },
+    { label: 'Orders', icon: ShoppingCart, href: '/orders' },
     { label: 'Distribution', icon: Send, href: '/distribution' },
     { label: 'Transactions', icon: Receipt, href: '/transactions' },
     { label: 'User Management', icon: Users, href: '/users' },
@@ -75,8 +75,8 @@ export function Sidebar() {
                             key={route.href}
                             href={route.href}
                             className={`group flex items-center justify-between rounded-[14px] px-4 py-2.5 text-[13px] font-semibold transition-all duration-200 ${isActive
-                                    ? 'bg-[#2563EB] text-white shadow-[0_4px_12px_-2px_rgba(37,99,235,0.5)]'
-                                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                                ? 'bg-[#2563EB] text-white shadow-[0_4px_12px_-2px_rgba(37,99,235,0.5)]'
+                                : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                                 }`}
                         >
                             <div className="flex items-center gap-3">
@@ -87,17 +87,7 @@ export function Sidebar() {
                                 <span>{route.label}</span>
                             </div>
 
-                            {/* Optional Badge */}
-                            {route.badge && (
-                                <span
-                                    className={`flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1.5 text-[9px] font-bold ${isActive
-                                            ? 'bg-white/20 text-white backdrop-blur-sm'
-                                            : 'bg-slate-100 text-[#2563EB]'
-                                        }`}
-                                >
-                                    {route.badge}
-                                </span>
-                            )}
+
                         </Link>
                     )
                 })}

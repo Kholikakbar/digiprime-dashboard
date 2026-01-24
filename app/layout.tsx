@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SplashScreen } from "@/components/layout/splash-screen";
-import NextTopLoader from 'nextjs-toploader';
+import NextTopLoader from "nextjs-toploader";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,8 +11,8 @@ export const metadata: Metadata = {
   title: "DigiPrime Dashboard",
   description: "Admin dashboard for DigiPrime digital products",
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: "/logo.png",
+    apple: "/logo.png",
   },
 };
 
@@ -22,7 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-background text-foreground antialiased`}>
+      <body
+        className={`${inter.className} bg-background text-foreground antialiased`}
+      >
         <NextTopLoader
           color="#ec4899"
           initialPosition={0.08}
@@ -34,8 +37,12 @@ export default function RootLayout({
           speed={200}
           shadow="0 0 10px #ec4899,0 0 5px #ec4899"
         />
+
         <SplashScreen />
         {children}
+
+        {/* ✅ Vercel Speed Insights */}
+        <SpeedInsights />
       </body>
     </html>
   );

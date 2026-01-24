@@ -49,3 +49,30 @@ export async function getLedgerEntries() {
 
     return (data as LedgerEntry[]) || []
 }
+
+export async function addExpense(formData: FormData) {
+    const supabase = await createClient()
+
+    const amount = parseFloat(formData.get('amount') as string)
+    const description = formData.get('description') as string
+    const category = formData.get('category') as string
+
+    if (!amount || amount <= 0) {
+        return { error: 'Invalid amount' }
+    }
+
+    const { error } = await supabase
+        .from('financial_ledger')
+        .insert({
+            transaction_type: 'EXPENSE',
+            amount,
+            description,
+            category,
+        })
+
+    if (error) {
+        return { error: error.message }
+    }
+
+    return { success: true }
+}

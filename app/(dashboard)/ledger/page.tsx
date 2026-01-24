@@ -6,6 +6,7 @@ import {
     TrendingUp
 } from 'lucide-react'
 import { getLedgerStats, getLedgerEntries } from './actions'
+import { AddExpenseDialog } from './add-expense-dialog'
 
 export default async function LedgerPage() {
     const stats = await getLedgerStats()
@@ -14,13 +15,16 @@ export default async function LedgerPage() {
     return (
         <div className="space-y-6 animate-in fade-in duration-500">
             {/* Header */}
-            <div>
-                <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
-                    Financial Ledger
-                </h2>
-                <p className="text-slate-500 mt-1">
-                    Complete history of your business cash flow and transactions.
-                </p>
+            <div className="flex items-start justify-between">
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                        Financial Ledger
+                    </h2>
+                    <p className="text-slate-500 mt-1">
+                        Complete history of your business cash flow and transactions.
+                    </p>
+                </div>
+                <AddExpenseDialog />
             </div>
 
             {/* Stats Cards */}

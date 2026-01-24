@@ -27,7 +27,6 @@ const routes = [
     { label: 'Inventory', icon: Layers, href: '/stock' },
     { label: 'Orders', icon: ShoppingCart, href: '/orders' },
     { label: 'Distribution', icon: Send, href: '/distribution' },
-    { label: 'Transactions', icon: Receipt, href: '/transactions' },
     { label: 'Financial Ledger', icon: Wallet, href: '/ledger' },
     { label: 'User Management', icon: Users, href: '/users' },
     { label: 'Settings', icon: Settings, href: '/settings' },

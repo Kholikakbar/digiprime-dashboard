@@ -8,16 +8,27 @@ export default function SyncPage() {
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState<any>(null)
 
-    // Auto-load data from localStorage if opened from extension
+    // Auto-load data from URL Hash (Cross-domain safe)
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search)
-        if (params.get('auto') === 'true') {
-            const storedData = localStorage.getItem('digiprime_sync_data')
-            if (storedData) {
-                setJsonInput(storedData)
-                localStorage.removeItem('digiprime_sync_data') // Clean up
+        const handleHashChange = () => {
+            const hash = window.location.hash
+            if (hash && hash.startsWith('#data=')) {
+                try {
+                    const jsonStr = decodeURIComponent(hash.substring(6)) // remove '#data='
+                    // Verify it's valid JSON
+                    const parsed = JSON.parse(jsonStr)
+                    setJsonInput(JSON.stringify(parsed, null, 2)) // Pretty print
+
+                    // Clear hash to prevent reloading on refresh
+                    window.history.replaceState(null, '', window.location.pathname)
+                } catch (e) {
+                    console.error("Failed to parse sync data from URL", e)
+                }
             }
         }
+
+        // Run on mount
+        handleHashChange()
     }, [])
 
     const handleSync = async () => {

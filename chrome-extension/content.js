@@ -95,16 +95,17 @@ async function syncOrders() {
 
         console.log('📦 Extracted orders:', orders);
 
-        // Store data in localStorage for the sync page to read
+        // Encode data into URL Hash (Cross-domain safe)
         const syncData = { orders };
-        localStorage.setItem('digiprime_sync_data', JSON.stringify(syncData));
+        const encodedData = encodeURIComponent(JSON.stringify(syncData));
 
-        // Open sync page in new tab
-        window.open('https://digiprime-dashboard.vercel.app/sync?auto=true', '_blank');
+        // Open sync page with data in hash
+        const targetUrl = 'https://digiprime-dashboard.vercel.app/sync#data=' + encodedData;
+        window.open(targetUrl, '_blank');
 
         // Show success message
         setTimeout(() => {
-            alert(`✅ Data ${orders.length} pesanan berhasil diekstrak!\n\nHalaman sync akan terbuka di tab baru.\nKlik tombol "Sync Orders" di sana untuk menyelesaikan.`);
+            alert(`✅ Data ${orders.length} pesanan berhasil diekstrak!\n\nTab baru akan terbuka. Data sudah otomatis terisi.\nSilakan klik tombol "Sync Orders" di sana.`);
         }, 500);
 
     } catch (error) {

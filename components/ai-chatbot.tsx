@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { MessageCircle, X, Send, Bot, User, Sparkles, Loader2 } from 'lucide-react'
+import { MessageCircle, X, Send, Bot, User, Sparkles, Loader2, RefreshCw } from 'lucide-react'
 
 interface Message {
     role: 'user' | 'assistant'
@@ -23,8 +23,10 @@ export function AIChatbot() {
     }, [])
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [messages])
+        if (isOpen) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+        }
+    }, [messages, isOpen])
 
     const sendMessage = async () => {
         if (!input.trim() || isLoading) return
@@ -67,52 +69,62 @@ export function AIChatbot() {
     if (!mounted) return null
 
     const chatWindow = isOpen ? (
-        <div className="fixed bottom-24 right-6 z-[9998] w-[380px] max-w-[calc(100vw-48px)] animate-in slide-in-from-bottom-5 fade-in duration-300">
-            <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col" style={{ height: '550px' }}>
-                {/* Header with Gradient */}
-                <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-4 flex items-center gap-3 text-white shadow-md z-10">
-                    <div className="h-10 w-10 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/20">
+        <div className="fixed bottom-24 right-6 z-[9999] w-[380px] max-w-[calc(100vw-48px)] animate-in slide-in-from-bottom-5 fade-in duration-300 transform transition-all">
+            <div className="bg-white rounded-[24px] shadow-2xl border border-slate-200/60 overflow-hidden flex flex-col h-[600px] max-h-[80vh] relative">
+
+                {/* 1. HEADER SECTION (FIXED AT TOP) */}
+                <div className="bg-slate-900 p-4 flex items-center gap-3 text-white shadow-md z-20 shrink-0 relative overflow-hidden">
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+
+                    <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg relative z-10">
                         <Bot className="h-6 w-6 text-white" />
                     </div>
-                    <div className="flex-1">
-                        <h3 className="font-bold text-sm tracking-wide">AI Business Assistant</h3>
-                        <p className="text-[11px] text-white/80 flex items-center gap-1.5 font-medium">
+
+                    <div className="flex-1 relative z-10">
+                        <h3 className="font-bold text-sm tracking-wide text-white">AI Business Assistant</h3>
+                        <div className="flex items-center gap-1.5 mt-0.5">
                             <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                             </span>
-                            Online & Analyzing
-                        </p>
+                            <span className="text-[11px] text-slate-300 font-medium">Online</span>
+                        </div>
                     </div>
+
+                    {/* CLOSE BUTTON - HIGHLY VISIBLE */}
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="p-2 hover:bg-white/20 rounded-xl transition-colors"
+                        className="relative z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all duration-200 group active:scale-95"
+                        aria-label="Close chat"
                     >
-                        <X className="h-5 w-5" />
+                        <X className="h-5 w-5 text-white/90 group-hover:text-white" />
                     </button>
                 </div>
 
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50 scroll-smooth">
+                {/* 2. MESSAGES AREA (SCROLLABLE) */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-slate-50 scroll-smooth">
                     {messages.length === 0 && (
                         <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mb-6 shadow-inner">
-                                <Bot className="h-10 w-10 text-blue-600" />
+                            <div className="h-20 w-20 rounded-full bg-white shadow-sm flex items-center justify-center mb-6 ring-4 ring-slate-100">
+                                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                                    <Bot className="h-8 w-8 text-white" />
+                                </div>
                             </div>
-                            <h4 className="font-bold text-slate-800 text-lg mb-2">Halo! Saya AI Asisten 👋</h4>
-                            <p className="text-sm text-slate-500 max-w-xs leading-relaxed mb-6">
-                                Saya sudah menganalisis data toko Anda secara real-time. Silakan tanya apa saja tentang performa bisnis Anda!
+                            <h4 className="font-bold text-slate-900 text-lg mb-2">Halo, Boss! 👋</h4>
+                            <p className="text-sm text-slate-500 max-w-[260px] leading-relaxed mb-8">
+                                Saya siap menganalisis data toko Anda. Ada yang bisa saya bantu cek hari ini?
                             </p>
 
-                            <div className="grid grid-cols-1 gap-2 w-full max-w-xs">
-                                {['Analisis pendapatan bulan ini 💰', 'Bagaimana stok saya? 📦', 'Saran strategi penjualan 🚀'].map((suggestion) => (
+                            <div className="grid gap-2.5 w-full">
+                                {['💰 Cek pendapatan bulan ini', '📦 Bagaimana stok saya?', '📈 Saran strategi penjualan'].map((suggestion) => (
                                     <button
                                         key={suggestion}
                                         onClick={() => setInput(suggestion)}
-                                        className="px-4 py-2.5 text-xs font-medium bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-all text-left shadow-sm flex items-center justify-between group"
+                                        className="group px-4 py-3 text-sm font-medium bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-all text-left shadow-sm flex items-center justify-between active:scale-[0.98]"
                                     >
                                         {suggestion}
-                                        <Sparkles className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
+                                        <Sparkles className="h-3.5 w-3.5 text-blue-400 opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-110" />
                                     </button>
                                 ))}
                             </div>
@@ -124,24 +136,25 @@ export function AIChatbot() {
                             key={index}
                             className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
                         >
-                            <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 border-2 border-white shadow-sm ${message.role === 'user'
-                                    ? 'bg-blue-600 text-white'
-                                    : 'bg-gradient-to-br from-purple-500 to-blue-500 text-white'
-                                }`}>
-                                {message.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
-                            </div>
-                            <div className={`max-w-[85%] rounded-2xl px-5 py-3 shadow-sm text-sm leading-relaxed ${message.role === 'user'
-                                    ? 'bg-blue-600 text-white rounded-tr-sm'
-                                    : 'bg-white border border-slate-100 text-slate-700 rounded-tl-sm'
+                            {/* Avatar */}
+                            {message.role === 'assistant' && (
+                                <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 border-2 border-white shadow-sm mt-1">
+                                    <Bot className="h-4 w-4 text-white" />
+                                </div>
+                            )}
+
+                            {/* Bubble */}
+                            <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${message.role === 'user'
+                                    ? 'bg-blue-600 text-white rounded-br-none'
+                                    : 'bg-white border border-slate-100 text-slate-700 rounded-bl-none'
                                 }`}>
                                 <div className="whitespace-pre-wrap">
                                     {message.content.split('\n').map((line, i) => (
-                                        <span key={i}>
+                                        <div key={i} className="min-h-[1em]">
                                             {line.startsWith('**') && line.endsWith('**')
-                                                ? <strong>{line.slice(2, -2)}</strong>
+                                                ? <strong className="font-bold">{line.slice(2, -2)}</strong>
                                                 : line}
-                                            {i < message.content.split('\n').length - 1 && <br />}
-                                        </span>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
@@ -150,17 +163,14 @@ export function AIChatbot() {
 
                     {isLoading && (
                         <div className="flex gap-3">
-                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white shrink-0 border-2 border-white shadow-sm">
-                                <Bot className="h-4 w-4" />
+                            <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 border-2 border-white shadow-sm mt-1">
+                                <Bot className="h-4 w-4 text-white" />
                             </div>
-                            <div className="bg-white border border-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex gap-1">
-                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                        <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
-                                    </div>
-                                    <span className="text-xs text-slate-400 font-medium ml-1">Sedang menganalisis...</span>
+                            <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none px-4 py-3 shadow-sm">
+                                <div className="flex items-center gap-1.5">
+                                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce"></div>
                                 </div>
                             </div>
                         </div>
@@ -169,32 +179,31 @@ export function AIChatbot() {
                     <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input Area */}
-                <div className="p-4 bg-white border-t border-slate-100 z-10">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            placeholder="Ketik pertanyaan Anda..."
-                            disabled={isLoading}
-                            className="w-full pl-5 pr-12 py-3.5 bg-slate-50 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white border border-slate-200 focus:border-blue-400 transition-all disabled:opacity-70 font-medium placeholder:text-slate-400 shadow-sm"
-                        />
+                {/* 3. INPUT AREA (FIXED AT BOTTOM) */}
+                <div className="p-4 bg-white border-t border-slate-100 z-20">
+                    <div className="relative flex items-center gap-2">
+                        <div className="relative flex-1">
+                            <input
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="Ketik pesan..."
+                                disabled={isLoading}
+                                className="w-full pl-4 pr-4 py-3 bg-slate-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white border border-transparent focus:border-blue-300 transition-all placeholder:text-slate-400"
+                            />
+                        </div>
                         <button
                             onClick={sendMessage}
                             disabled={!input.trim() || isLoading}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all disabled:opacity-0 disabled:scale-75 shadow-md active:scale-90"
+                            className="h-[46px] w-[46px] flex items-center justify-center bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
                         >
-                            <Send className="h-4 w-4" />
+                            <Send className="h-5 w-5 ml-0.5" />
                         </button>
                     </div>
-                    <div className="flex justify-center mt-3 gap-4 text-[10px] text-slate-400 font-medium">
-                        <span className="flex items-center gap-1">
-                            <Bot className="h-3 w-3" /> Powered by AI
-                        </span>
-                        <span className="flex items-center gap-1">
-                            <Sparkles className="h-3 w-3" /> Data Real-time
+                    <div className="flex justify-center mt-2">
+                        <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
+                            Powered by DigiPrime AI <Sparkles className="h-2.5 w-2.5" />
                         </span>
                     </div>
                 </div>
@@ -205,10 +214,10 @@ export function AIChatbot() {
     const floatingButton = (
         <button
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-[9997] h-14 w-14 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+            className={`fixed bottom-6 right-6 z-[9997] h-14 w-14 bg-slate-900 hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group ${isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}`}
         >
-            <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
-            <span className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white animate-pulse"></span>
+            <MessageCircle className="h-6 w-6" />
+            <span className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
         </button>
     )
 

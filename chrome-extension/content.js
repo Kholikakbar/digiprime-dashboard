@@ -107,14 +107,61 @@ function extractOrders() {
                 }
 
                 // EXTRACT BUYER
-                // Buyer name often appears near "Chat" button
-                const buyerMatch = text.match(/([^\n]+)\s+Chat/);
-                const buyer = buyerMatch ? buyerMatch[1].trim() : "Shopee Buyer";
+                // Buyer name is usually the first alphanumeric text in the card, or near "Chat"
+                // Strategy: Find the text *immediately before* the word "Chat" inside the card header
+                let buyer = "Shopee Buyer";
+                const lines = text.split('\n');
+                for (let line of lines) {
+                    if (line.includes('Chat')) {
+                        // Usually format is: "Username Chat"
+                        const parts = line.split('Chat');
+                        if (parts[0] && parts[0].trim().length > 2) {
+                            buyer = parts[0].trim();
+                            break;
+                        }
+                    }
+                }
+
+                // Fallback: simple username regex
+                if (buyer === "Shopee Buyer") {
+                    const userMatch = text.match(/^([a-zA-Z0-9_]{3,15})/m);
+                    if (userMatch) buyer = userMatch[1];
+                }
+
+                // EXTRACT ITEM NAME
+                // Strategy: Look for the longest text line that DOES NOT contain "Variasi", "No. Pesanan", or price
+                let product = "Produk Shopee";
+                let maxLen = 0;
+
+                // Use DOM traversal for better product name accuracy
+                // Product name is usually inside an anchor <a> or a specific class
+                const productEl = card.querySelector('a[href*="/product/"], .product-name, .item-name');
+                if (productEl) {
+                    product = productEl.innerText.trim();
+                } else {
+                    // Fallback: Text heuristic
+                    for (let line of lines) {
+                        const cleanLine = line.trim();
+                        // Filter out metadata lines
+                        if (cleanLine.length > 10 &&
+                            !cleanLine.includes('Variasi:') &&
+                            !cleanLine.includes('No. Pesanan') &&
+                            !cleanLine.includes('Total') &&
+                            !cleanLine.includes('Rp') &&
+                            !cleanLine.includes('Chat')) {
+
+                            if (cleanLine.length > maxLen) {
+                                maxLen = cleanLine.length;
+                                product = cleanLine;
+                            }
+                        }
+                    }
+                }
 
                 orders.push({
                     order_sn: sn,
                     buyer_name: buyer,
-                    item_name: 'Produk Shopee', // Detail nama produk sulit diambil karena struktur random, biarkan backend mapping ID
+                    item_name: product,
                     order_status: status,
                     total_amount: price,
                     quantity: 1,

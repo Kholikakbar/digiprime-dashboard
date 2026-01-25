@@ -203,10 +203,10 @@ Ketik pertanyaan Anda! 😊`
             })
         }
 
-        // If Google AI key is available, use Gemini
+        // If Google AI key is available, use Gemini 1.5 Flash (Faster & More Stable)
         if (process.env.GOOGLE_AI_API_KEY) {
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -228,7 +228,24 @@ Ketik pertanyaan Anda! 😊`
             )
 
             const data = await response.json()
-            const aiMessage = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Maaf, saya tidak bisa memproses permintaan Anda saat ini.'
+
+            // Better Error Handling
+            if (data.error) {
+                console.error('Gemini API Error:', data.error)
+                return NextResponse.json({
+                    message: `⚠️ Google AI Error: ${data.error.message || 'Unknown error'}`,
+                    mode: 'gemini-error'
+                })
+            }
+
+            const aiMessage = data.candidates?.[0]?.content?.parts?.[0]?.text
+
+            if (!aiMessage) {
+                return NextResponse.json({
+                    message: '⚠️ AI tidak memberikan respon. Coba pertanyaan lain.',
+                    mode: 'gemini-empty'
+                })
+            }
 
             return NextResponse.json({ message: aiMessage, mode: 'gemini' })
         }

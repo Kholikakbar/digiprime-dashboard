@@ -129,12 +129,20 @@ function extractOrders() {
                 }
 
                 // EXTRACT ITEM NAME
-                // Strategy: Look for the longest text line that DOES NOT contain "Variasi", "No. Pesanan", or price
+                // Strategy: Look for the longest text line that DOES NOT contain metadata
                 let product = "Produk Shopee";
                 let maxLen = 0;
 
+                // Blacklist keywords that seem like UI elements, not product names
+                const ignoreWords = [
+                    'Variasi:', 'No. Pesanan', 'Total', 'Rp', 'Chat',
+                    'Pesanan Saya', 'Daftar Pesanan', 'Manajemen', 'Produk',
+                    'Semua', 'Perlu Dikirim', 'Dikirim', 'Selesai',
+                    'Batalkan', 'Rincian', 'Penilaian', 'Hubungi',
+                    'Jasa Kirim', 'Lacak', 'Paket', 'Hemat', 'Reguler'
+                ];
+
                 // Use DOM traversal for better product name accuracy
-                // Product name is usually inside an anchor <a> or a specific class
                 const productEl = card.querySelector('a[href*="/product/"], .product-name, .item-name');
                 if (productEl) {
                     product = productEl.innerText.trim();
@@ -142,20 +150,23 @@ function extractOrders() {
                     // Fallback: Text heuristic
                     for (let line of lines) {
                         const cleanLine = line.trim();
-                        // Filter out metadata lines
-                        if (cleanLine.length > 10 &&
-                            !cleanLine.includes('Variasi:') &&
-                            !cleanLine.includes('No. Pesanan') &&
-                            !cleanLine.includes('Total') &&
-                            !cleanLine.includes('Rp') &&
-                            !cleanLine.includes('Chat')) {
 
+                        // Check against ignore list
+                        const isIgnored = ignoreWords.some(word => cleanLine.includes(word));
+
+                        // Heuristic: Product names are usually long (> 15 chars) but not a paragraph (< 150)
+                        if (!isIgnored && cleanLine.length > 15 && cleanLine.length < 150) {
                             if (cleanLine.length > maxLen) {
                                 maxLen = cleanLine.length;
                                 product = cleanLine;
                             }
                         }
                     }
+                }
+
+                // Final cleanup for Buyer Name "Manajemen" false positive
+                if (buyer === 'Manajemen' || buyer.includes('Pesanan')) {
+                    buyer = "Shopee Buyer";
                 }
 
                 orders.push({

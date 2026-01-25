@@ -81,7 +81,7 @@ function extractOrders() {
 // Sync orders to dashboard
 async function syncOrders() {
     const btn = document.getElementById('digiprime-sync-btn');
-    btn.innerHTML = '⏳ Syncing...';
+    btn.innerHTML = '⏳ Extracting...';
     btn.disabled = true;
     btn.style.opacity = '0.7';
 
@@ -93,29 +93,23 @@ async function syncOrders() {
             return;
         }
 
-        console.log('📦 Sending orders:', orders);
+        console.log('📦 Extracted orders:', orders);
 
-        const response = await fetch(DASHBOARD_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orders })
-        });
+        // Store data in localStorage for the sync page to read
+        const syncData = { orders };
+        localStorage.setItem('digiprime_sync_data', JSON.stringify(syncData));
 
-        const result = await response.json();
-        console.log('✅ Sync result:', result);
+        // Open sync page in new tab
+        window.open('https://digiprime-dashboard.vercel.app/sync?auto=true', '_blank');
 
-        if (response.ok) {
-            alert(`✅ Sinkronisasi Berhasil!\n\n` +
-                `• Tersinkron: ${result.stats.synced}\n` +
-                `• Dilewati: ${result.stats.skipped}\n` +
-                `• Gagal: ${result.stats.failed}`);
-        } else {
-            throw new Error(result.error || 'Sync failed');
-        }
+        // Show success message
+        setTimeout(() => {
+            alert(`✅ Data ${orders.length} pesanan berhasil diekstrak!\n\nHalaman sync akan terbuka di tab baru.\nKlik tombol "Sync Orders" di sana untuk menyelesaikan.`);
+        }, 500);
 
     } catch (error) {
-        console.error('❌ Sync error:', error);
-        alert('❌ Gagal sync ke Dashboard.\n\nCek koneksi internet Anda.');
+        console.error('❌ Extract error:', error);
+        alert('❌ Gagal mengekstrak data pesanan.\n\nCoba refresh halaman dan ulangi.');
     } finally {
         btn.innerHTML = '🚀 Sync to DigiPrime';
         btn.disabled = false;

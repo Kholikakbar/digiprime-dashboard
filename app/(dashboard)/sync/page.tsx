@@ -1,12 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Upload, CheckCircle, XCircle, Loader2 } from 'lucide-react'
 
 export default function SyncPage() {
     const [jsonInput, setJsonInput] = useState('')
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState<any>(null)
+
+    // Auto-load data from localStorage if opened from extension
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search)
+        if (params.get('auto') === 'true') {
+            const storedData = localStorage.getItem('digiprime_sync_data')
+            if (storedData) {
+                setJsonInput(storedData)
+                localStorage.removeItem('digiprime_sync_data') // Clean up
+            }
+        }
+    }, [])
 
     const handleSync = async () => {
         setLoading(true)
@@ -105,8 +117,8 @@ export default function SyncPage() {
                 {/* Result */}
                 {result && (
                     <div className={`rounded-2xl shadow-sm border p-6 ${result.error
-                            ? 'bg-red-50 border-red-200'
-                            : 'bg-green-50 border-green-200'
+                        ? 'bg-red-50 border-red-200'
+                        : 'bg-green-50 border-green-200'
                         }`}>
                         <div className="flex items-start gap-3">
                             {result.error ? (

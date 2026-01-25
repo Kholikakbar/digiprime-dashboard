@@ -112,9 +112,30 @@ export async function POST(request: NextRequest) {
         const systemPrompt = buildSystemPrompt(analytics)
         const userMessage = messages[messages.length - 1].content
 
-        // TRY 1: GEMINI PRO (Available everywhere)
+        // DYNAMIC MODEL DISCOVERY
+        // 1. Ask Google what models are available for this key
+        const modelsParams = new URLSearchParams()
+        modelsParams.append('key', apiKey)
+        const modelsRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?${modelsParams.toString()}`)
+        const modelsData = await modelsRes.json()
+
+        let targetModel = 'models/gemini-1.5-flash' // Default fallback
+
+        if (modelsData.models) {
+            // Find first model that supports generateContent
+            const availableModel = modelsData.models.find((m: any) =>
+                m.supportedGenerationMethods?.includes('generateContent') &&
+                (m.name.includes('gemini') || m.name.includes('1.5') || m.name.includes('pro'))
+            )
+            if (availableModel) {
+                targetModel = availableModel.name
+                console.log("Auto-discovered Model:", targetModel)
+            }
+        }
+
+        // 2. Use the discovered model
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/${targetModel}:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

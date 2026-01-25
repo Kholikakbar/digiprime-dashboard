@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { MessageCircle, X, Send, Bot, User, Sparkles, Loader2, RefreshCw } from 'lucide-react'
+import { MessageCircle, X, Send, Bot, User, Sparkles, Loader2, Minus, Maximize2 } from 'lucide-react'
 
 interface Message {
     role: 'user' | 'assistant'
@@ -28,12 +28,12 @@ export function AIChatbot() {
         }
     }, [messages, isOpen])
 
-    const sendMessage = async () => {
-        if (!input.trim() || isLoading) return
+    const sendMessage = async (text?: string) => {
+        const messageToSend = text || input.trim()
+        if (!messageToSend || isLoading) return
 
-        const userMessage = input.trim()
         setInput('')
-        setMessages(prev => [...prev, { role: 'user', content: userMessage }])
+        setMessages(prev => [...prev, { role: 'user', content: messageToSend }])
         setIsLoading(true)
 
         try {
@@ -41,7 +41,7 @@ export function AIChatbot() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    messages: [...messages, { role: 'user', content: userMessage }]
+                    messages: [...messages, { role: 'user', content: messageToSend }]
                 })
             })
 
@@ -53,7 +53,7 @@ export function AIChatbot() {
                 setMessages(prev => [...prev, { role: 'assistant', content: data.message }])
             }
         } catch (error) {
-            setMessages(prev => [...prev, { role: 'assistant', content: '❌ Gagal terhubung ke server. Coba lagi.' }])
+            setMessages(prev => [...prev, { role: 'assistant', content: '❌ Gagal terhubung ke server. Coba lagi nanti.' }])
         } finally {
             setIsLoading(false)
         }
@@ -69,92 +69,89 @@ export function AIChatbot() {
     if (!mounted) return null
 
     const chatWindow = isOpen ? (
-        <div className="fixed bottom-24 right-6 z-[9999] w-[380px] max-w-[calc(100vw-48px)] animate-in slide-in-from-bottom-5 fade-in duration-300 transform transition-all">
-            <div className="bg-white rounded-[24px] shadow-2xl border border-slate-200/60 overflow-hidden flex flex-col h-[600px] max-h-[80vh] relative">
+        <div className="fixed bottom-24 right-6 z-[9999] w-[360px] max-w-[calc(100vw-32px)] animate-in slide-in-from-bottom-5 fade-in duration-300 origin-bottom-right">
+            <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col h-[550px] max-h-[80vh]">
 
-                {/* 1. HEADER SECTION (FIXED AT TOP) */}
-                <div className="bg-slate-900 p-4 flex items-center gap-3 text-white shadow-md z-20 shrink-0 relative overflow-hidden">
-                    {/* Background decoration */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
-
-                    <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg relative z-10">
-                        <Bot className="h-6 w-6 text-white" />
-                    </div>
-
-                    <div className="flex-1 relative z-10">
-                        <h3 className="font-bold text-sm tracking-wide text-white">AI Business Assistant</h3>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                            </span>
-                            <span className="text-[11px] text-slate-300 font-medium">Online</span>
+                {/* 1. COMPACT HEADER */}
+                <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-4 flex items-center justify-between shadow-sm shrink-0">
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <div className="h-9 w-9 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
+                                <Bot className="h-5 w-5 text-white" />
+                            </div>
+                            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 bg-green-500 rounded-full border-2 border-indigo-600"></span>
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-white text-sm leading-tight">DigiPrime AI</h3>
+                            <p className="text-[11px] text-white/80 font-medium">Business Assistant</p>
                         </div>
                     </div>
-
-                    {/* CLOSE BUTTON - HIGHLY VISIBLE */}
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="relative z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all duration-200 group active:scale-95"
-                        aria-label="Close chat"
-                    >
-                        <X className="h-5 w-5 text-white/90 group-hover:text-white" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="p-1.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                        >
+                            <X className="h-5 w-5" />
+                        </button>
+                    </div>
                 </div>
 
-                {/* 2. MESSAGES AREA (SCROLLABLE) */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-slate-50 scroll-smooth">
+                {/* 2. CHAT AREA */}
+                <div className="flex-1 overflow-y-auto bg-slate-50 p-4 space-y-4">
+                    {/* Welcome Screen */}
                     {messages.length === 0 && (
-                        <div className="flex flex-col items-center justify-center h-full text-center p-4">
-                            <div className="h-20 w-20 rounded-full bg-white shadow-sm flex items-center justify-center mb-6 ring-4 ring-slate-100">
-                                <div className="h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                                    <Bot className="h-8 w-8 text-white" />
-                                </div>
+                        <div className="mt-4 flex flex-col items-center text-center animate-in fade-in zoom-in-95 duration-500">
+                            <div className="h-16 w-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mb-4">
+                                <Bot className="h-8 w-8 text-indigo-600" />
                             </div>
-                            <h4 className="font-bold text-slate-900 text-lg mb-2">Halo, Boss! 👋</h4>
-                            <p className="text-sm text-slate-500 max-w-[260px] leading-relaxed mb-8">
-                                Saya siap menganalisis data toko Anda. Ada yang bisa saya bantu cek hari ini?
+                            <h3 className="font-bold text-slate-900 text-lg">Halo, Bos! 👋</h3>
+                            <p className="text-sm text-slate-500 mt-2 max-w-[240px] leading-relaxed">
+                                Saya siap membantu menganalisis performa toko Anda hari ini.
                             </p>
 
-                            <div className="grid gap-2.5 w-full">
-                                {['💰 Cek pendapatan bulan ini', '📦 Bagaimana stok saya?', '📈 Saran strategi penjualan'].map((suggestion) => (
+                            <div className="grid grid-cols-1 gap-2 mt-8 w-full">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-left pl-1 mb-1">Coba tanyakan:</p>
+                                {[
+                                    { text: 'Analisis pendapatan 💰', prompt: 'Berikan analisis pendapatan total saya' },
+                                    { text: 'Cek stok menipis 📉', prompt: 'Apakah ada stok yang menipis?' },
+                                    { text: 'Strategi marketing 🚀', prompt: 'Berikan saran strategi marketing' }
+                                ].map((item, idx) => (
                                     <button
-                                        key={suggestion}
-                                        onClick={() => setInput(suggestion)}
-                                        className="group px-4 py-3 text-sm font-medium bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-all text-left shadow-sm flex items-center justify-between active:scale-[0.98]"
+                                        key={idx}
+                                        onClick={() => sendMessage(item.prompt)}
+                                        className="text-left px-4 py-3 bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 rounded-xl text-sm text-slate-600 hover:text-indigo-700 transition-all shadow-sm active:scale-[0.98]"
                                     >
-                                        {suggestion}
-                                        <Sparkles className="h-3.5 w-3.5 text-blue-400 opacity-0 group-hover:opacity-100 transition-all transform group-hover:scale-110" />
+                                        {item.text}
                                     </button>
                                 ))}
                             </div>
                         </div>
                     )}
 
+                    {/* Chat Messages */}
                     {messages.map((message, index) => (
                         <div
                             key={index}
-                            className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
+                            className={`flex gap-2.5 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
                         >
-                            {/* Avatar */}
                             {message.role === 'assistant' && (
-                                <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 border-2 border-white shadow-sm mt-1">
-                                    <Bot className="h-4 w-4 text-white" />
+                                <div className="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center shrink-0 mt-1">
+                                    <Bot className="h-3.5 w-3.5 text-indigo-600" />
                                 </div>
                             )}
 
-                            {/* Bubble */}
-                            <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${message.role === 'user'
-                                    ? 'bg-blue-600 text-white rounded-br-none'
-                                    : 'bg-white border border-slate-100 text-slate-700 rounded-bl-none'
+                            <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm shadow-sm ${message.role === 'user'
+                                    ? 'bg-indigo-600 text-white rounded-br-sm'
+                                    : 'bg-white border border-slate-100 text-slate-700 rounded-tl-sm'
                                 }`}>
-                                <div className="whitespace-pre-wrap">
+                                <div className="leading-relaxed whitespace-pre-wrap">
                                     {message.content.split('\n').map((line, i) => (
-                                        <div key={i} className="min-h-[1em]">
+                                        <span key={i}>
                                             {line.startsWith('**') && line.endsWith('**')
-                                                ? <strong className="font-bold">{line.slice(2, -2)}</strong>
+                                                ? <strong>{line.slice(2, -2)}</strong>
                                                 : line}
-                                        </div>
+                                            {i < message.content.split('\n').length - 1 && <br />}
+                                        </span>
                                     ))}
                                 </div>
                             </div>
@@ -162,49 +159,48 @@ export function AIChatbot() {
                     ))}
 
                     {isLoading && (
-                        <div className="flex gap-3">
-                            <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center shrink-0 border-2 border-white shadow-sm mt-1">
-                                <Bot className="h-4 w-4 text-white" />
+                        <div className="flex gap-2.5">
+                            <div className="h-6 w-6 rounded-full bg-indigo-100 flex items-center justify-center shrink-0 mt-1">
+                                <Bot className="h-3.5 w-3.5 text-indigo-600" />
                             </div>
-                            <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none px-4 py-3 shadow-sm">
-                                <div className="flex items-center gap-1.5">
-                                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce"></div>
+                            <div className="bg-white border border-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                                <div className="flex gap-1">
+                                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></span>
                                 </div>
                             </div>
                         </div>
                     )}
-
                     <div ref={messagesEndRef} />
                 </div>
 
-                {/* 3. INPUT AREA (FIXED AT BOTTOM) */}
-                <div className="p-4 bg-white border-t border-slate-100 z-20">
-                    <div className="relative flex items-center gap-2">
-                        <div className="relative flex-1">
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                onKeyPress={handleKeyPress}
-                                placeholder="Ketik pesan..."
-                                disabled={isLoading}
-                                className="w-full pl-4 pr-4 py-3 bg-slate-100 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white border border-transparent focus:border-blue-300 transition-all placeholder:text-slate-400"
-                            />
-                        </div>
+                {/* 3. INPUT AREA */}
+                <div className="p-3 bg-white border-t border-slate-100">
+                    <form
+                        onSubmit={(e) => { e.preventDefault(); sendMessage(); }}
+                        className="flex items-center gap-2 bg-slate-100 rounded-full px-4 py-2 border border-transparent focus-within:border-indigo-300 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+                    >
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Ketik pesan..."
+                            className="flex-1 bg-transparent outline-none text-sm placeholder:text-slate-400"
+                            disabled={isLoading}
+                        />
                         <button
-                            onClick={sendMessage}
+                            type="submit"
                             disabled={!input.trim() || isLoading}
-                            className="h-[46px] w-[46px] flex items-center justify-center bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-95"
+                            className="p-1.5 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:opacity-50 disabled:hover:bg-indigo-600 transition-colors shrink-0"
                         >
-                            <Send className="h-5 w-5 ml-0.5" />
+                            <Send className="h-4 w-4" />
                         </button>
-                    </div>
-                    <div className="flex justify-center mt-2">
-                        <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
-                            Powered by DigiPrime AI <Sparkles className="h-2.5 w-2.5" />
-                        </span>
+                    </form>
+                    <div className="text-center mt-2">
+                        <p className="text-[10px] text-slate-400 flex items-center justify-center gap-1">
+                            <Sparkles className="h-2 w-2" /> AI Powered by DigiPrime
+                        </p>
                     </div>
                 </div>
             </div>
@@ -214,10 +210,10 @@ export function AIChatbot() {
     const floatingButton = (
         <button
             onClick={() => setIsOpen(true)}
-            className={`fixed bottom-6 right-6 z-[9997] h-14 w-14 bg-slate-900 hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group ${isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}`}
+            className={`fixed bottom-6 right-6 z-[9997] h-14 w-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center group ${isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}`}
         >
-            <MessageCircle className="h-6 w-6" />
-            <span className="absolute -top-1 -right-1 h-3.5 w-3.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+            <MessageCircle className="h-7 w-7" />
+            <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 border-2 border-white rounded-full"></span>
         </button>
     )
 

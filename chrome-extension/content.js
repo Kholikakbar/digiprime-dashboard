@@ -42,40 +42,78 @@ function addSyncButton() {
     console.log('✅ DigiPrime Sync button added!');
 }
 
-// Extract orders from page
+// Extract orders from page (Smart Scraper Logic)
 function extractOrders() {
     const orders = [];
 
-    // Get all text content
-    const bodyText = document.body.innerText;
+    // Strategy: Find all elements containing "No. Pesanan" (Order SN)
+    // This allows us to find the specific "Card" for each order
+    const allDivs = document.querySelectorAll('div, span, p');
+    const processedNodes = new Set(); // Prevent duplicates
 
-    // Find order numbers (pattern: alphanumeric 10+ chars)
-    const orderMatches = bodyText.matchAll(/\b([A-Z0-9]{10,})\b/g);
-    const orderSNs = new Set();
+    allDivs.forEach(el => {
+        // Check if element has "No. Pesanan" text directly
+        if (el.innerText && el.innerText.includes('No. Pesanan') && !processedNodes.has(el)) {
 
-    for (const match of orderMatches) {
-        orderSNs.add(match[1]);
-    }
+            // Try to find the parent container (The Order Card)
+            // We traverse up 5 levels to find the comprehensive wrapper
+            let card = el.parentElement;
+            let foundCard = false;
 
-    // For each unique order SN, try to extract details
-    orderSNs.forEach((sn, idx) => {
-        // Find price near this order number
-        const priceRegex = new RegExp(`${sn}[\\s\\S]{0,200}Rp\\s*([\\d.,]+)`, 'i');
-        const priceMatch = bodyText.match(priceRegex);
-        const price = priceMatch ? parseFloat(priceMatch[1].replace(/[.,]/g, '')) : 0;
+            // Heuristic: The card usually contains the Product Name and Price too
+            for (let i = 0; i < 6; i++) {
+                if (!card) break;
+                if (card.innerText.includes('Rp') || card.innerText.includes('Total')) {
+                    foundCard = true;
+                    break;
+                }
+                card = card.parentElement;
+            }
 
-        orders.push({
-            order_sn: sn,
-            buyer_name: `Buyer-${idx + 1}`,
-            item_name: 'Produk Shopee',
-            order_status: 'PENDING',
-            total_amount: price,
-            quantity: 1,
-            create_time: Math.floor(Date.now() / 1000)
-        });
+            if (foundCard && card) {
+                const text = card.innerText;
+
+                // EXTRACT SN
+                const snMatch = text.match(/No\.\s*Pesanan\s*([A-Z0-9]{10,})/i);
+                if (!snMatch) return;
+                const sn = snMatch[1];
+
+                // Prevent duplicate scanning of the same card
+                if (orders.find(o => o.order_sn === sn)) return;
+
+                // EXTRACT PRICE
+                const priceMatch = text.match(/Rp\s*([0-9.]+)/) || text.match(/Total\s*.*?([0-9.]+)/);
+                const price = priceMatch ? parseFloat(priceMatch[1].replace(/\./g, '')) : 0;
+
+                // EXTRACT STATUS
+                // We determine status based on keywords found IN THIS CARD ONLY
+                let status = 'PENDING'; // Default
+                if (text.includes('Selesai') || text.includes('Nilai')) status = 'COMPLETED';
+                else if (text.includes('Batal') || text.includes('Pengajuan')) status = 'CANCELLED';
+                else if (text.includes('Telah Dikirim') || text.includes('Sedang Dikirim') || text.includes('Dikirim')) status = 'SHIPPED';
+                else if (text.includes('Perlu diproses') || text.includes('Perlu Dikirim')) status = 'TO_SHIP';
+
+                // EXTRACT BUYER
+                // Buyer name often appears near "Chat" button
+                const buyerMatch = text.match(/([^\n]+)\s+Chat/);
+                const buyer = buyerMatch ? buyerMatch[1].trim() : "Shopee Buyer";
+
+                orders.push({
+                    order_sn: sn,
+                    buyer_name: buyer,
+                    item_name: 'Produk Shopee', // Detail nama produk sulit diambil karena struktur random, biarkan backend mapping ID
+                    order_status: status,
+                    total_amount: price,
+                    quantity: 1,
+                    create_time: Math.floor(Date.now() / 1000)
+                });
+
+                processedNodes.add(el);
+            }
+        }
     });
 
-    return orders.slice(0, 50); // Limit to 50 orders
+    return orders;
 }
 
 // Sync orders to dashboard

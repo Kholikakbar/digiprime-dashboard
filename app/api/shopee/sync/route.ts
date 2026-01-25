@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
+// CORS Headers
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+}
+
+// Handle OPTIONS preflight request
+export async function OPTIONS() {
+    return NextResponse.json({}, { headers: corsHeaders })
+}
+
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json()
         const { orders } = body
 
         if (!Array.isArray(orders)) {
-            return NextResponse.json({ error: 'Invalid data format. Expected array of orders.' }, { status: 400 })
+            return NextResponse.json({ error: 'Invalid data format. Expected array of orders.' }, { status: 400, headers: corsHeaders })
         }
 
         const supabase = await createClient()
@@ -108,10 +120,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
             message: 'Sync process completed',
             stats: results
-        })
+        }, { headers: corsHeaders })
 
     } catch (error: any) {
         console.error('Sync API Error:', error)
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500, headers: corsHeaders })
     }
 }

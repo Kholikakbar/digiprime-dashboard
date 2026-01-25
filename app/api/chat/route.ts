@@ -205,64 +205,57 @@ Ketik pertanyaan Anda! 😊`
 
         // SMART FALLBACK STRATEGY
         // Google AI models change availability often. We try the best free models in order.
+        // GOOGLE AI (Via OpenAI Compatibility Layer)
+        // This is often more stable than the native API for standard chat
         if (process.env.GOOGLE_AI_API_KEY) {
 
-            const modelsToTry = [
-                'gemini-1.5-flash', // Fastest, newest free tier standard
-                'gemini-pro',       // Classic standard
-                'gemini-1.0-pro'    // Legacy stable
-            ];
+            // Ensure key is clean
+            const apiKey = process.env.GOOGLE_AI_API_KEY.trim();
 
-            let lastError = null;
+            console.log("Using Google AI via OpenAI Compatibility Layer...");
 
-            for (const model of modelsToTry) {
-                try {
-                    console.log(`Trying AI Model: ${model}...`);
-
-                    const response = await fetch(
-                        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
-                        {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                contents: [
-                                    { role: 'user', parts: [{ text: systemPrompt }] },
-                                    { role: 'model', parts: [{ text: 'Siap! Saya AI Asisten DigiPrime. Saya sudah menganalisis data toko dan siap membantu Anda. Ada yang bisa saya bantu?' }] },
-                                    ...messages.map((m: any) => ({
-                                        role: m.role === 'assistant' ? 'model' : 'user',
-                                        parts: [{ text: m.content }]
-                                    }))
-                                ],
-                                generationConfig: {
-                                    temperature: 0.7,
-                                    maxOutputTokens: 1024
-                                }
-                            })
-                        }
-                    );
-
-                    const data = await response.json();
-
-                    if (!data.error) {
-                        const aiMessage = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                        if (aiMessage) {
-                            return NextResponse.json({ message: aiMessage, mode: `gemini (${model})` });
-                        }
-                    } else {
-                        console.warn(`Model ${model} failed:`, data.error.message);
-                        lastError = data.error.message;
-                    }
-                } catch (e: any) {
-                    console.error(`Error with model ${model}:`, e);
-                    lastError = e.message;
+            const response = await fetch(
+                'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gemini-1.5-flash',
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            { role: 'assistant', content: 'Siap! Saya AI Asisten DigiPrime. Saya sudah menganalisis data toko dan siap membantu Anda. Ada yang bisa saya bantu?' },
+                            ...messages
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 1000
+                    })
                 }
+            );
+
+            const data = await response.json();
+
+            // Error Handling
+            if (data.error) {
+                console.error('Gemini (OpenAI-Compat) Error:', data.error);
+                return NextResponse.json({
+                    message: `⚠️ Google AI Error: ${data.error.message || JSON.stringify(data.error)}`,
+                    mode: 'gemini-compat-error'
+                });
             }
 
-            // If all models fail
-            return NextResponse.json({
-                message: `⚠️ AI Error (All models failed): ${lastError}`,
-                mode: 'gemini-error'
-            });
+            const aiMessage = data.choices?.[0]?.message?.content;
+
+            if (!aiMessage) {
+                return NextResponse.json({
+                    message: '⚠️ AI tidak memberikan respon. Silakan coba lagi.',
+                    mode: 'gemini-compat-empty'
+                });
+            }
+
+            return NextResponse.json({ message: aiMessage, mode: 'gemini-1.5-flash' });
         }
 
         // If OpenAI key is available

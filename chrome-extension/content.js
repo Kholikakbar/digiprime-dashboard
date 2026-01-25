@@ -87,11 +87,13 @@ function extractOrders() {
 
                 // EXTRACT STATUS
                 // We determine status based on keywords found IN THIS CARD ONLY
+                // IMPORTANT: Check 'Perlu Dikirim' BEFORE 'Dikirim' because 'Perlu Dikirim' contains 'Dikirim'
                 let status = 'PENDING'; // Default
+
                 if (text.includes('Selesai') || text.includes('Nilai')) status = 'COMPLETED';
                 else if (text.includes('Batal') || text.includes('Pengajuan')) status = 'CANCELLED';
-                else if (text.includes('Telah Dikirim') || text.includes('Sedang Dikirim') || text.includes('Dikirim')) status = 'SHIPPED';
                 else if (text.includes('Perlu diproses') || text.includes('Perlu Dikirim')) status = 'TO_SHIP';
+                else if (text.includes('Telah Dikirim') || text.includes('Sedang Dikirim') || text.includes('Dikirim')) status = 'SHIPPED';
 
                 // EXTRACT BUYER
                 // Buyer name often appears near "Chat" button

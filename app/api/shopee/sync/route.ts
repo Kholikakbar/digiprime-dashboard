@@ -53,13 +53,17 @@ export async function POST(request: NextRequest) {
                     .single()
 
                 // Map Shopee Status to Our Status
-                // Shopee: UNPAID, READY_TO_SHIP, SHIPPED, COMPLETED, CANCELLED, TO_CONFIRM_RECEIVE
-                let ourStatus = 'PENDING'
+                // Requested Mapping:
+                // 'Perlu Dikirim' (TO_SHIP) -> 'PROCESSING'
+                // 'Dikirim' (SHIPPED) -> 'PENDING'
 
+                let ourStatus = 'PENDING' // Default fallback
                 const sStatus = order.order_status?.toUpperCase() || ''
+
                 if (sStatus === 'COMPLETED') ourStatus = 'COMPLETED'
                 else if (sStatus === 'CANCELLED') ourStatus = 'CANCELLED'
-                else if (['READY_TO_SHIP', 'SHIPPED', 'TO_SHIP', 'PROCESSED'].includes(sStatus)) ourStatus = 'PENDING'
+                else if (['TO_SHIP', 'READY_TO_SHIP', 'PROCESSED'].includes(sStatus)) ourStatus = 'PROCESSING'
+                else if (sStatus === 'SHIPPED') ourStatus = 'PENDING'
 
                 if (existing) {
                     // UPDATE existing order status if changed

@@ -86,14 +86,25 @@ function extractOrders() {
                 const price = priceMatch ? parseFloat(priceMatch[1].replace(/\./g, '')) : 0;
 
                 // EXTRACT STATUS
-                // We determine status based on keywords found IN THIS CARD ONLY
-                // IMPORTANT: Check 'Perlu Dikirim' BEFORE 'Dikirim' because 'Perlu Dikirim' contains 'Dikirim'
-                let status = 'PENDING'; // Default
+                // Priority: Check specific status keywords strictly
+                let status = 'PENDING'; // Default fallback
 
-                if (text.includes('Selesai') || text.includes('Nilai')) status = 'COMPLETED';
-                else if (text.includes('Batal') || text.includes('Pengajuan')) status = 'CANCELLED';
-                else if (text.includes('Perlu diproses') || text.includes('Perlu Dikirim')) status = 'PROCESSING';
-                else if (text.includes('Telah Dikirim') || text.includes('Sedang Dikirim') || text.includes('Dikirim')) status = 'PENDING';
+                // 1. Check PROCESSING first (Perlu Dikirim)
+                if (text.includes('Perlu diproses') || text.includes('Perlu Dikirim') || text.includes('Sedang Dikemas')) {
+                    status = 'PROCESSING';
+                }
+                // 2. Check PENDING (Dikirim)
+                else if (text.includes('Telah Dikirim') || text.includes('Sedang Dikirim') || text.includes('Dikirim')) {
+                    status = 'PENDING';
+                }
+                // 3. Check COMPLETED (Selesai/Dinilai)
+                else if (text.includes('Selesai') || text.includes('Telah Dinilai')) {
+                    status = 'COMPLETED';
+                }
+                // 4. Check CANCELLED
+                else if (text.includes('Batal') || text.includes('Pengajuan')) {
+                    status = 'CANCELLED';
+                }
 
                 // EXTRACT BUYER
                 // Buyer name often appears near "Chat" button

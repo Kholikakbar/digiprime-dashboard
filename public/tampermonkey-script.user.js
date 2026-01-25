@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         DigiPrime Shopee Auto Sync
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Automatically sync Shopee orders to DigiPrime Dashboard
 // @author       DigiPrime
-// @match        https://seller.shopee.co.id/portal/sale/order*
+// @match        https://seller.shopee.co.id/*
 // @grant        GM_xmlhttpRequest
 // @connect      digiprime-dashboard.vercel.app
 // ==/UserScript==

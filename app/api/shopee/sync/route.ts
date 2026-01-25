@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
 
                 if (sStatus === 'COMPLETED') ourStatus = 'COMPLETED'
                 else if (sStatus === 'CANCELLED') ourStatus = 'CANCELLED'
-                else if (['TO_SHIP', 'READY_TO_SHIP', 'PROCESSED'].includes(sStatus)) ourStatus = 'PROCESSING'
-                else if (sStatus === 'SHIPPED') ourStatus = 'PENDING'
+                else if (['TO_SHIP', 'READY_TO_SHIP', 'PROCESSED', 'PROCESSING'].includes(sStatus)) ourStatus = 'PROCESSING'
+                else if (['SHIPPED', 'PENDING'].includes(sStatus)) ourStatus = 'PENDING'
 
                 if (existing) {
                     // UPDATE existing order status if changed

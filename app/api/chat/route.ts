@@ -203,51 +203,66 @@ Ketik pertanyaan Anda! 😊`
             })
         }
 
-        // If Google AI key is available, use Gemini Pro (v1 Stable Endpoint)
+        // SMART FALLBACK STRATEGY
+        // Google AI models change availability often. We try the best free models in order.
         if (process.env.GOOGLE_AI_API_KEY) {
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [
-                            { role: 'user', parts: [{ text: systemPrompt }] },
-                            { role: 'model', parts: [{ text: 'Siap! Saya AI Asisten DigiPrime. Saya sudah menganalisis data toko dan siap membantu Anda. Ada yang bisa saya bantu?' }] },
-                            ...messages.map((m: any) => ({
-                                role: m.role === 'assistant' ? 'model' : 'user',
-                                parts: [{ text: m.content }]
-                            }))
-                        ],
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 1024
+
+            const modelsToTry = [
+                'gemini-1.5-flash', // Fastest, newest free tier standard
+                'gemini-pro',       // Classic standard
+                'gemini-1.0-pro'    // Legacy stable
+            ];
+
+            let lastError = null;
+
+            for (const model of modelsToTry) {
+                try {
+                    console.log(`Trying AI Model: ${model}...`);
+
+                    const response = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [
+                                    { role: 'user', parts: [{ text: systemPrompt }] },
+                                    { role: 'model', parts: [{ text: 'Siap! Saya AI Asisten DigiPrime. Saya sudah menganalisis data toko dan siap membantu Anda. Ada yang bisa saya bantu?' }] },
+                                    ...messages.map((m: any) => ({
+                                        role: m.role === 'assistant' ? 'model' : 'user',
+                                        parts: [{ text: m.content }]
+                                    }))
+                                ],
+                                generationConfig: {
+                                    temperature: 0.7,
+                                    maxOutputTokens: 1024
+                                }
+                            })
                         }
-                    })
+                    );
+
+                    const data = await response.json();
+
+                    if (!data.error) {
+                        const aiMessage = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (aiMessage) {
+                            return NextResponse.json({ message: aiMessage, mode: `gemini (${model})` });
+                        }
+                    } else {
+                        console.warn(`Model ${model} failed:`, data.error.message);
+                        lastError = data.error.message;
+                    }
+                } catch (e: any) {
+                    console.error(`Error with model ${model}:`, e);
+                    lastError = e.message;
                 }
-            )
-
-            const data = await response.json()
-
-            // Better Error Handling
-            if (data.error) {
-                console.error('Gemini API Error:', data.error)
-                return NextResponse.json({
-                    message: `⚠️ Google AI Error: ${data.error.message || 'Unknown error'}`,
-                    mode: 'gemini-error'
-                })
             }
 
-            const aiMessage = data.candidates?.[0]?.content?.parts?.[0]?.text
-
-            if (!aiMessage) {
-                return NextResponse.json({
-                    message: '⚠️ AI tidak memberikan respon. Coba pertanyaan lain.',
-                    mode: 'gemini-empty'
-                })
-            }
-
-            return NextResponse.json({ message: aiMessage, mode: 'gemini' })
+            // If all models fail
+            return NextResponse.json({
+                message: `⚠️ AI Error (All models failed): ${lastError}`,
+                mode: 'gemini-error'
+            });
         }
 
         // If OpenAI key is available

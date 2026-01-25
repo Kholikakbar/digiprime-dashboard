@@ -112,9 +112,9 @@ export async function POST(request: NextRequest) {
         const systemPrompt = buildSystemPrompt(analytics)
         const userMessage = messages[messages.length - 1].content
 
-        // TRY 1: GEMINI 1.5 FLASH (Standard)
+        // TRY 1: GEMINI PRO (Available everywhere)
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

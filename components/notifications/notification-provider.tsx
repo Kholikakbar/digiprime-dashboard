@@ -32,10 +32,25 @@ export function useNotifications() {
     return context
 }
 
+const DELETED_NOTIFS_KEY = 'digiprime_deleted_notifications'
+
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
     const [notifications, setNotifications] = useState<Notification[]>([])
     const [toasts, setToasts] = useState<Notification[]>([])
+    const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set())
     const supabase = createClient()
+
+    // Load deleted IDs from localStorage on mount
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem(DELETED_NOTIFS_KEY)
+            if (saved) {
+                setDeletedIds(new Set(JSON.parse(saved)))
+            }
+        } catch (e) {
+            console.error('Failed to load deleted notifications', e)
+        }
+    }, [])
 
     const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
         const newNotification: Notification = {
@@ -111,6 +126,11 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     // Load initial pending orders count
     useEffect(() => {
         async function loadPendingOrders() {
+            if (deletedIds.size === 0 && localStorage.getItem(DELETED_NOTIFS_KEY)) {
+                // Wait for deletedIds to load if key exists
+                return
+            }
+
             const { data } = await supabase
                 .from('orders')
                 .select('id, shopee_order_no, buyer_username, total_price, order_date')
@@ -119,25 +139,35 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                 .limit(10)
 
             if (data && data.length > 0) {
+                const newNotifs: Notification[] = []
+
                 data.forEach(order => {
-                    setNotifications(prev => {
-                        // Don't add duplicates
-                        if (prev.some(n => n.data?.id === order.id)) return prev
-                        return [...prev, {
-                            id: crypto.randomUUID(),
-                            type: 'order' as const,
-                            title: '⏳ Order Pending',
-                            message: `Order #${order.shopee_order_no} menunggu diproses`,
-                            timestamp: new Date(order.order_date),
-                            read: true, // Mark initial ones as read
-                            data: order,
-                        }]
+                    // Skip if this order ID (or a derived ID logic) was deleted
+                    // Since we use random UUIDs for notifs, we need to track by data ID (order ID)
+                    if (deletedIds.has(order.id)) return
+
+                    newNotifs.push({
+                        id: order.id, // Use order ID as notification ID for persistence logic
+                        type: 'order' as const,
+                        title: '⏳ Order Pending',
+                        message: `Order #${order.shopee_order_no} menunggu diproses`,
+                        timestamp: new Date(order.order_date),
+                        read: true,
+                        data: order,
                     })
+                })
+
+                setNotifications(prev => {
+                    // Filter duplicates
+                    const existingIds = new Set(prev.map(n => n.id))
+                    const uniqueNew = newNotifs.filter(n => !existingIds.has(n.id))
+                    return [...prev, ...uniqueNew]
                 })
             }
         }
+
         loadPendingOrders()
-    }, [supabase])
+    }, [supabase, deletedIds])
 
     const markAsRead = useCallback((id: string) => {
         setNotifications(prev =>
@@ -150,8 +180,20 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     }, [])
 
     const clearAll = useCallback(() => {
-        setNotifications([])
-    }, [])
+        setNotifications(prev => {
+            // Add all current notification IDs (which are order IDs for pending ones) to deleted list
+            const newDeleted = new Set(deletedIds)
+            prev.forEach(n => {
+                // If it's a persistent order notification, save its ID (n.id is order.id here)
+                if (n.data?.id) newDeleted.add(n.data.id)
+            })
+
+            setDeletedIds(newDeleted)
+            localStorage.setItem(DELETED_NOTIFS_KEY, JSON.stringify(Array.from(newDeleted)))
+
+            return []
+        })
+    }, [deletedIds])
 
     const unreadCount = notifications.filter(n => !n.read).length
 

@@ -11,16 +11,29 @@ export async function getDistributionStats() {
         .select('*', { count: 'exact', head: true })
         .eq('status', 'COMPLETED')
 
-    // Get processing orders
+    // Get pending orders (waiting to be processed)
     const { count: pendingCount } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'PENDING')
+
+    // Get processing orders (currently being processed)
+    const { count: processingCount } = await supabase
         .from('orders')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'PROCESSING')
 
+    // Get cancelled orders (failed)
+    const { count: cancelledCount } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'CANCELLED')
+
     return {
         delivered: deliveredCount || 0,
         pending: pendingCount || 0,
-        failed: 0 // Mock for now
+        processing: processingCount || 0,
+        failed: cancelledCount || 0
     }
 }
 

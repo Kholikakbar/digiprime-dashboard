@@ -56,6 +56,11 @@ export default async function DistributionPage() {
                             </div>
                             <div className="w-px h-10 bg-border/60"></div>
                             <div className="flex flex-col items-center min-w-[60px]">
+                                <span className="text-3xl font-black text-blue-500">{stats.processing}</span>
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Processing</span>
+                            </div>
+                            <div className="w-px h-10 bg-border/60"></div>
+                            <div className="flex flex-col items-center min-w-[60px]">
                                 <span className="text-3xl font-black text-red-500">{stats.failed}</span>
                                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Failed</span>
                             </div>

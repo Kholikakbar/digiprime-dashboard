@@ -56,10 +56,16 @@ export async function addExpense(formData: FormData) {
     const amount = parseFloat(formData.get('amount') as string)
     const description = formData.get('description') as string
     const category = formData.get('category') as string
+    const expenseDate = formData.get('expense_date') as string
 
     if (!amount || amount <= 0) {
         return { error: 'Invalid amount' }
     }
+
+    // If expense_date is provided, use it; otherwise use current timestamp
+    const createdAt = expenseDate
+        ? new Date(expenseDate + 'T12:00:00').toISOString()
+        : new Date().toISOString()
 
     const { error } = await supabase
         .from('financial_ledger')
@@ -68,6 +74,7 @@ export async function addExpense(formData: FormData) {
             amount,
             description,
             category,
+            created_at: createdAt,
         })
 
     if (error) {

@@ -2,9 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { DollarSign, X, Tag, FileText } from 'lucide-react'
+import { DollarSign, X, Tag, FileText, Calendar } from 'lucide-react'
 import { addExpense } from './actions'
 import { useRouter } from 'next/navigation'
+
+// Helper to get today's date in YYYY-MM-DD format
+function getTodayDate() {
+    const today = new Date()
+    return today.toISOString().split('T')[0]
+}
 
 export function AddExpenseDialog() {
     const [isOpen, setIsOpen] = useState(false)
@@ -90,6 +96,24 @@ export function AddExpenseDialog() {
                                 <option value="STOCK_PURCHASE">Stock Purchase</option>
                                 <option value="OTHER">Other</option>
                             </select>
+                        </div>
+
+                        {/* Expense Date */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium flex items-center gap-2 text-foreground">
+                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" /> Tanggal Pengeluaran
+                            </label>
+                            <input
+                                type="date"
+                                name="expense_date"
+                                defaultValue={getTodayDate()}
+                                max={getTodayDate()}
+                                required
+                                className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80 cursor-pointer"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                Pilih tanggal kapan pengeluaran terjadi
+                            </p>
                         </div>
 
                         {/* Amount */}

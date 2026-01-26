@@ -97,15 +97,14 @@ export function LoginForm() {
                     <button
                         type="button"
                         onClick={() => setRememberMe(!rememberMe)}
-                        className={`flex h-5 w-5 items-center justify-center rounded-md border-2 transition-all ${
-                            rememberMe 
-                                ? 'bg-primary border-primary text-white' 
-                                : 'border-white/40 dark:border-white/20 bg-white/20 dark:bg-black/20'
-                        }`}
+                        className={`flex h-5 w-5 items-center justify-center rounded-md border-2 transition-all ${rememberMe
+                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/30'
+                                : 'border-gray-400 dark:border-gray-500 bg-white dark:bg-gray-800 hover:border-primary/50'
+                            }`}
                     >
                         {rememberMe && <Check className="h-3 w-3" strokeWidth={3} />}
                     </button>
-                    <label 
+                    <label
                         onClick={() => setRememberMe(!rememberMe)}
                         className="text-xs font-medium text-muted-foreground cursor-pointer select-none"
                     >

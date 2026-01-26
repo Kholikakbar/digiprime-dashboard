@@ -74,7 +74,7 @@ export function NotificationBell() {
 
             {/* Dropdown */}
             {isOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-card/95 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute -right-16 sm:right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-96 max-w-[90vw] bg-card/95 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                     {/* Header */}
                     <div className="p-4 border-b border-border/40 flex items-center justify-between bg-gradient-to-r from-primary/5 to-purple-500/5">
                         <h3 className="font-bold text-sm flex items-center gap-2">

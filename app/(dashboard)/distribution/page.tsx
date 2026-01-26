@@ -17,52 +17,55 @@ export default async function DistributionPage() {
             <div className="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-card to-card p-1 shadow-sm overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-32 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-                <div className="bg-card/50 backdrop-blur-xl rounded-[20px] p-6 sm:p-8 relative">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                        <div className="flex items-center gap-6">
-                            <div className="relative">
+                <div className="bg-card/50 backdrop-blur-xl rounded-[20px] p-5 sm:p-8 relative">
+                    <div className="flex flex-col lg:flex-row items-center lg:justify-between gap-8">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6 w-full">
+                            <div className="relative shrink-0">
                                 <div className="absolute inset-0 bg-emerald-500 blur-xl opacity-20 animate-pulse"></div>
-                                <div className="h-20 w-20 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 border border-emerald-500/20 relative z-10">
-                                    <CloudLightning className="h-10 w-10" />
+                                <div className="h-16 w-16 sm:h-20 sm:w-20 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 border border-emerald-500/20 relative z-10">
+                                    <CloudLightning className="h-8 w-8 sm:h-10 sm:w-10" />
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-emerald-500 rounded-full border-[3px] border-card z-20 flex items-center justify-center">
-                                    <Activity className="h-3 w-3 text-white animate-spin-slow" />
+                                <div className="absolute -bottom-1 -right-1 h-5 w-5 sm:h-6 sm:w-6 bg-emerald-500 rounded-full border-[3px] border-card z-20 flex items-center justify-center">
+                                    <Activity className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-white animate-spin-slow" />
                                 </div>
                             </div>
 
-                            <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                    <h3 className="text-xl font-bold text-foreground">Auto-Distribution Engine</h3>
+                            <div className="w-full">
+                                <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-2 mb-2 sm:mb-1">
+                                    <h3 className="text-lg sm:text-xl font-bold text-foreground">Auto-Distribution Engine</h3>
                                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20 flex items-center gap-1">
                                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                         Operational
                                     </span>
                                 </div>
-                                <p className="text-muted-foreground max-w-lg text-sm">
+                                <p className="text-muted-foreground text-xs sm:text-sm max-w-lg mx-auto sm:mx-0">
                                     System is actively polling for new paid orders. Digital products are being assigned and dispatched via chat API with 99.9% uptime.
                                 </p>
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-6 sm:gap-10 shrink-0 border-t md:border-t-0 md:border-l border-border/50 pt-6 md:pt-0 md:pl-10 w-full md:w-auto justify-center md:justify-end">
-                            <div className="flex flex-col items-center min-w-[60px]">
-                                <span className="text-3xl font-black text-foreground">{stats.delivered}</span>
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Delivered</span>
+                        <div className="grid grid-cols-4 gap-2 sm:gap-6 w-full lg:w-auto pt-6 lg:pt-0 border-t lg:border-t-0 lg:border-l border-border/50 lg:pl-10">
+                            <div className="flex flex-col items-center p-2 rounded-xl hover:bg-muted/50 transition-colors">
+                                <span className="text-xl sm:text-3xl font-black text-foreground">{stats.delivered}</span>
+                                <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">Delivered</span>
                             </div>
-                            <div className="w-px h-10 bg-border/60"></div>
-                            <div className="flex flex-col items-center min-w-[60px]">
-                                <span className="text-3xl font-black text-amber-500">{stats.pending}</span>
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Pending</span>
+
+                            <div className="flex flex-col items-center p-2 rounded-xl hover:bg-muted/50 transition-colors relative">
+                                <span className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 w-px h-8 bg-border/60"></span>
+                                <span className="text-xl sm:text-3xl font-black text-amber-500">{stats.pending}</span>
+                                <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">Pending</span>
                             </div>
-                            <div className="w-px h-10 bg-border/60"></div>
-                            <div className="flex flex-col items-center min-w-[60px]">
-                                <span className="text-3xl font-black text-blue-500">{stats.processing}</span>
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Processing</span>
+
+                            <div className="flex flex-col items-center p-2 rounded-xl hover:bg-muted/50 transition-colors relative">
+                                <span className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 w-px h-8 bg-border/60"></span>
+                                <span className="text-xl sm:text-3xl font-black text-blue-500">{stats.processing}</span>
+                                <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">Process</span>
                             </div>
-                            <div className="w-px h-10 bg-border/60"></div>
-                            <div className="flex flex-col items-center min-w-[60px]">
-                                <span className="text-3xl font-black text-red-500">{stats.failed}</span>
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Failed</span>
+
+                            <div className="flex flex-col items-center p-2 rounded-xl hover:bg-muted/50 transition-colors relative">
+                                <span className="hidden sm:block absolute left-0 top-1/2 -translate-y-1/2 w-px h-8 bg-border/60"></span>
+                                <span className="text-xl sm:text-3xl font-black text-red-500">{stats.failed}</span>
+                                <span className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wider mt-1">Failed</span>
                             </div>
                         </div>
                     </div>

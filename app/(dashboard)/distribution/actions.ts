@@ -46,13 +46,14 @@ export async function getRecentDeliveries() {
             id,
             shopee_order_no,
             buyer_username,
-            updated_at,
+            order_date,
+            processed_at,
             status,
             products (name)
         `)
-        .eq('status', 'COMPLETED')
-        .order('updated_at', { ascending: false })
-        .limit(10)
+        .in('status', ['COMPLETED', 'PROCESSING']) // Tampilkan Completed dan Processing
+        .order('order_date', { ascending: false })
+        .limit(20)
 
     return data || []
 }

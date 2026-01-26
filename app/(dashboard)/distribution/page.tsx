@@ -103,7 +103,7 @@ export default async function DistributionPage() {
                                             <td className="px-6 py-4 font-mono text-xs text-muted-foreground">
                                                 <div className="flex items-center gap-2">
                                                     <Clock className="h-3 w-3" />
-                                                    {new Date(delivery.updated_at).toLocaleString('id-ID')}
+                                                    {new Date(delivery.processed_at || delivery.order_date).toLocaleString('id-ID')}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 font-bold text-foreground">
@@ -120,10 +120,17 @@ export default async function DistributionPage() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 shadow-sm">
-                                                    <CheckCircle2 className="h-3 w-3" />
-                                                    Sent
-                                                </span>
+                                                {delivery.status === 'COMPLETED' ? (
+                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 shadow-sm">
+                                                        <CheckCircle2 className="h-3 w-3" />
+                                                        Sent
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20 shadow-sm">
+                                                        <Activity className="h-3 w-3 animate-pulse" />
+                                                        Sending...
+                                                    </span>
+                                                )}
                                             </td>
                                         </tr>
                                     ))

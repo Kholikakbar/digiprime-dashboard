@@ -32,6 +32,9 @@ export async function getCustomers() {
             cleanName = cleanName.split('(Info:')[0].trim()
         }
 
+        // Enforce normalization to merge 'User' and 'user '
+        cleanName = cleanName.trim().toLowerCase()
+
         if (!cleanName) return
 
         if (!customerMap.has(cleanName)) {

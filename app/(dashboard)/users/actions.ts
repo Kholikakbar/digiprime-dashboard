@@ -8,7 +8,7 @@ export async function getCustomers() {
     // Fetch all orders
     const { data: orders, error } = await supabase
         .from('orders')
-        .select('buyer_username, total_price, status, order_date')
+        .select('buyer_username, total_price, status, order_date, shopee_order_no, quantity')
         .order('order_date', { ascending: false })
 
     if (error || !orders) return []
@@ -17,7 +17,8 @@ export async function getCustomers() {
     const customerMap = new Map<string, {
         username: string
         totalSpent: number
-        orderCount: number
+        orderSets: Set<string> // Count unique order IDs
+        totalItems: number
         lastOrder: string
         status: string // 'ACTIVE' | 'INACTIVE'
     }>()
@@ -33,30 +34,38 @@ export async function getCustomers() {
 
         if (!cleanName) return
 
-        const current = customerMap.get(cleanName) || {
-            username: cleanName,
-            totalSpent: 0,
-            orderCount: 0,
-            lastOrder: order.order_date,
-            status: 'ACTIVE'
+        if (!customerMap.has(cleanName)) {
+            customerMap.set(cleanName, {
+                username: cleanName,
+                totalSpent: 0,
+                orderSets: new Set(),
+                totalItems: 0,
+                lastOrder: order.order_date,
+                status: 'ACTIVE'
+            })
         }
+
+        const current = customerMap.get(cleanName)!
 
         if (order.status === 'COMPLETED') {
             current.totalSpent += Number(order.total_price)
         }
 
-        current.orderCount += 1
+        current.orderSets.add(order.shopee_order_no)
+        current.totalItems += (order.quantity || 1)
 
-        // Update last order if this one is newer (though we sorted desc, so first hit is newest usually)
+        // Update last order if this one is newer
         if (new Date(order.order_date) > new Date(current.lastOrder)) {
             current.lastOrder = order.order_date
         }
-
-        customerMap.set(cleanName, current)
     })
 
-    // Convert to array and sort by Order Count (Frequency) then Total Spent
+    // Convert to array and sort by Unique Order Count (Frequency)
     return Array.from(customerMap.values())
+        .map(c => ({
+            ...c,
+            orderCount: c.orderSets.size // Convert Set to number for frontend
+        }))
         .sort((a, b) => {
             if (b.orderCount === a.orderCount) {
                 return b.totalSpent - a.totalSpent

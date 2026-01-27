@@ -73,7 +73,7 @@ export default async function UsersPage(props: {
                         </div>
                         <div className="p-6 rounded-2xl bg-card border border-border/50">
                             <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-1">Active Whales</h3>
-                            <p className="text-3xl font-black">{customers.filter(c => c.totalSpent > 1000000).length}</p>
+                            <p className="text-3xl font-black">{customers.filter(c => c.totalSpent > 500000).length}</p>
                         </div>
                     </div>
 
@@ -95,7 +95,7 @@ export default async function UsersPage(props: {
                                         <tr><td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">No customer data available yet.</td></tr>
                                     ) : (
                                         customers.map((customer, index) => {
-                                            const isWhale = customer.totalSpent > 1000000 // > 1 Juta
+                                            const isWhale = customer.totalSpent > 500000 // > 500 Ribu
                                             const isVip = customer.orderCount > 5
 
                                             return (

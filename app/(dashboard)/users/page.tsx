@@ -51,7 +51,7 @@ export default async function UsersPage(props: {
                     {/* Top Stats */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/20">
-                            <h3 className="text-sm font-medium text-amber-600 uppercase tracking-wider mb-1">Top Spender</h3>
+                            <h3 className="text-sm font-medium text-amber-600 uppercase tracking-wider mb-1">Most Loyal</h3>
                             {customers.length > 0 && (
                                 <div className="flex items-center gap-3">
                                     <div className="h-10 w-10 rounded-full bg-amber-500 text-white flex items-center justify-center">
@@ -59,7 +59,10 @@ export default async function UsersPage(props: {
                                     </div>
                                     <div>
                                         <p className="font-bold text-lg">{customers[0].username}</p>
-                                        <p className="text-xs text-muted-foreground">{formatCurrency(customers[0].totalSpent)}</p>
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <span className="font-bold text-amber-600">{customers[0].orderCount} Orders</span>
+                                            <span className="text-muted-foreground">• {formatCurrency(customers[0].totalSpent)}</span>
+                                        </div>
                                     </div>
                                 </div>
                             )}

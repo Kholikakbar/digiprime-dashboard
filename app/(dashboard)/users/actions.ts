@@ -55,9 +55,14 @@ export async function getCustomers() {
         customerMap.set(cleanName, current)
     })
 
-    // Convert to array and sort by total spent
+    // Convert to array and sort by Order Count (Frequency) then Total Spent
     return Array.from(customerMap.values())
-        .sort((a, b) => b.totalSpent - a.totalSpent)
+        .sort((a, b) => {
+            if (b.orderCount === a.orderCount) {
+                return b.totalSpent - a.totalSpent
+            }
+            return b.orderCount - a.orderCount
+        })
         .slice(0, 50) // Top 50 customers
 }
 

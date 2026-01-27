@@ -3,18 +3,22 @@ import { ShoppingCart, Filter } from 'lucide-react'
 import { OrderDialog } from './order-dialog'
 import { OrderRow } from './order-row'
 import { OrderSearchInput } from './search-input'
+import Link from 'next/link'
 
 export default async function OrdersPage(props: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
     const searchParams = await props.searchParams
     const query = typeof searchParams.q === 'string' ? searchParams.q : undefined
+    const status = typeof searchParams.status === 'string' ? searchParams.status : undefined
 
-    const orders = await getOrders(query)
+    const orders = await getOrders(query, status)
     const products = await getProductsForOrder()
 
+    const statuses = ['ALL', 'PENDING', 'PROCESSING', 'COMPLETED', 'CANCELLED']
+
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600">Orders</h2>
@@ -25,9 +29,6 @@ export default async function OrdersPage(props: {
                     {/* Search & Filter */}
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                         <OrderSearchInput />
-                        <button className="p-2 border border-border bg-card rounded-lg hover:bg-muted shrink-0">
-                            <Filter className="h-4 w-4 text-muted-foreground" />
-                        </button>
                     </div>
 
                     {/* New Order Button */}
@@ -35,6 +36,28 @@ export default async function OrdersPage(props: {
                         <OrderDialog products={products} />
                     </div>
                 </div>
+            </div>
+
+            {/* Status Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                {statuses.map((s) => {
+                    const isActive = (s === 'ALL' && !status) || status === s
+                    return (
+                        <Link
+                            key={s}
+                            href={`/orders?${new URLSearchParams({
+                                ...(query ? { q: query } : {}),
+                                ...(s !== 'ALL' ? { status: s } : {})
+                            }).toString()}`}
+                            className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${isActive
+                                    ? 'bg-orange-600 text-white shadow-md shadow-orange-600/20'
+                                    : 'bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground border border-transparent hover:border-border/50'
+                                }`}
+                        >
+                            {s === 'ALL' ? 'All Orders' : s.charAt(0) + s.slice(1).toLowerCase()}
+                        </Link>
+                    )
+                })}
             </div>
 
             <div className="rounded-xl border border-border/40 bg-card overflow-hidden shadow-sm">

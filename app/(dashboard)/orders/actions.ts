@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function getOrders(search?: string) {
+export async function getOrders(search?: string, status?: string) {
     const supabase = await createClient()
 
     let query = supabase
@@ -13,6 +13,10 @@ export async function getOrders(search?: string) {
 
     if (search) {
         query = query.or(`shopee_order_no.ilike.%${search}%,buyer_username.ilike.%${search}%`)
+    }
+
+    if (status && status !== 'ALL') {
+        query = query.eq('status', status)
     }
 
     const { data } = await query

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, Edit, Trash2 } from 'lucide-react'
+import { Eye, Edit, Trash2, Copy, Check } from 'lucide-react'
 import { deleteOrder } from './actions'
 import { OrderDialog } from './order-dialog'
 import { ViewOrderDialog } from './view-order-dialog'
@@ -14,6 +14,64 @@ interface OrderRowProps {
 export function OrderRow({ order, products }: OrderRowProps) {
     const [showView, setShowView] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
+    const [copied, setCopied] = useState(false)
+
+    const handleCopy = async () => {
+        // Extract buyer name (clean version)
+        let buyerName = order.buyer_username || 'Kak'
+        if (buyerName.includes('[WARRANTY]')) {
+            buyerName = buyerName.split(')')[0].split('(')[0].replace('[WARRANTY]', '').trim()
+        } else if (buyerName.includes('(Info:')) {
+            buyerName = buyerName.split('(Info:')[0].trim()
+        }
+
+        // Extract account details if available
+        let accountDetails = ''
+        const raw = order.buyer_username || ''
+        if (raw.includes('(Info:')) {
+            const infoPart = raw.split('(Info:')[1]?.slice(0, -1) || ''
+            const items = infoPart.split('|').map((s: string) => s.trim())
+            items.forEach((item: string) => {
+                const [label, ...valParts] = item.split(':')
+                const val = valParts.join(':').trim()
+                if (label.toLowerCase().includes('rep') || label.toLowerCase().includes('email')) {
+                    accountDetails += `Email: ${val}\n`
+                } else if (label.toLowerCase().includes('pass')) {
+                    accountDetails += `Password: ${val}\n`
+                }
+            })
+        }
+
+        // Build the template message
+        const productName = order.products?.name || 'Produk Digital'
+        const isWarranty = raw.includes('[WARRANTY]')
+
+        let template = `Halo Kak ${buyerName}! 👋\n\n`
+        template += `Terima kasih sudah order di toko kami! ✨\n\n`
+        template += `📦 Pesanan: ${productName}\n`
+        template += `🔢 No. Order: ${order.shopee_order_no}\n\n`
+
+        if (accountDetails) {
+            template += `🔐 Detail Akun:\n${accountDetails}\n`
+        }
+
+        if (isWarranty) {
+            template += `⚠️ Ini adalah pesanan WARRANTY/Garansi.\n\n`
+        }
+
+        template += `📌 Garansi berlaku sesuai deskripsi produk.\n`
+        template += `⭐ Jangan lupa beri Bintang 5 ya Kak!\n\n`
+        template += `Terima kasih! 🙏`
+
+        try {
+            await navigator.clipboard.writeText(template)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
+        } catch (err) {
+            console.error('Failed to copy:', err)
+            alert('Gagal meng-copy. Silakan coba lagi.')
+        }
+    }
 
     const handleDelete = async () => {
         if (!confirm(`Are you sure you want to delete order ${order.shopee_order_no}? This action cannot be undone.`)) {
@@ -132,6 +190,14 @@ export function OrderRow({ order, products }: OrderRowProps) {
                 </td>
                 <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-1">
+                        <button
+                            onClick={handleCopy}
+                            className={`p-2 rounded-md transition-colors ${copied ? 'bg-green-500/10 text-green-600' : 'hover:bg-emerald-500/10 hover:text-emerald-600 text-muted-foreground'}`}
+                            title="Copy Template Pesanan"
+                        >
+                            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        </button>
+
                         <button
                             onClick={() => setShowView(true)}
                             className="p-2 hover:bg-primary/10 hover:text-primary rounded-md text-muted-foreground transition-colors"

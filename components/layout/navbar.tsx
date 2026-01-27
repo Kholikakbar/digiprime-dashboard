@@ -9,7 +9,7 @@ import { useState } from 'react'
 import {
     LogOut,
     Bell,
-    Search,
+
     Menu,
     X,
     LayoutDashboard,
@@ -119,19 +119,7 @@ export function Navbar({ user }: { user: any }) {
                     <Menu className="h-6 w-6" />
                 </button>
 
-                <form onSubmit={(e) => {
-                    e.preventDefault()
-                    // @ts-ignore
-                    const query = e.target.search.value
-                    if (query) router.push(`/search?q=${query}`)
-                }} className="hidden md:flex items-center bg-white rounded-xl px-4 py-2 border border-slate-200 w-full max-w-md focus-within:ring-2 focus-within:ring-primary/20 transition-all shadow-sm">
-                    <Search className="h-4 w-4 text-slate-400 mr-3" />
-                    <input
-                        name="search"
-                        placeholder="Search orders, products, or stock..."
-                        className="bg-transparent border-none focus:outline-none text-sm w-full placeholder:text-slate-400 text-slate-700"
-                    />
-                </form>
+                <div className="hidden md:block w-full max-w-md"></div>
 
                 <div className="ml-auto flex items-center gap-2 sm:gap-4">
                     <Notifications />

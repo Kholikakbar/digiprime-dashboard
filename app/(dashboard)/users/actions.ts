@@ -25,21 +25,23 @@ export async function getCustomers() {
 
     orders.forEach(order => {
         // Clean username (sometimes has formatting like [WARRANTY])
-        let cleanName = order.buyer_username
-        if (cleanName.includes('[WARRANTY]')) {
-            cleanName = cleanName.split(')')[0].split('(')[0].replace('[WARRANTY]', '').trim()
-        } else if (cleanName.includes('(Info:')) {
-            cleanName = cleanName.split('(Info:')[0].trim()
+        let rawCleaned = order.buyer_username
+        if (rawCleaned.includes('[WARRANTY]')) {
+            rawCleaned = rawCleaned.split(')')[0].split('(')[0].replace('[WARRANTY]', '').trim()
+        } else if (rawCleaned.includes('(Info:')) {
+            rawCleaned = rawCleaned.split('(Info:')[0].trim()
         }
 
+        rawCleaned = rawCleaned.trim()
+
         // Enforce normalization to merge 'User' and 'user '
-        cleanName = cleanName.trim().toLowerCase()
+        const normalizedKey = rawCleaned.toLowerCase()
 
-        if (!cleanName) return
+        if (!normalizedKey) return
 
-        if (!customerMap.has(cleanName)) {
-            customerMap.set(cleanName, {
-                username: cleanName,
+        if (!customerMap.has(normalizedKey)) {
+            customerMap.set(normalizedKey, {
+                username: rawCleaned, // Start with this name (clean but preserves case)
                 totalSpent: 0,
                 orderSets: new Set(),
                 totalItems: 0,
@@ -48,7 +50,13 @@ export async function getCustomers() {
             })
         }
 
-        const current = customerMap.get(cleanName)!
+        const current = customerMap.get(normalizedKey)!
+
+        // PREFER CAPITALIZED DISPLAY NAME
+        // If the current stored name is all lowercase (e.g. 'user') and we find 'User', upgrade it.
+        if (current.username === current.username.toLowerCase() && rawCleaned !== rawCleaned.toLowerCase()) {
+            current.username = rawCleaned
+        }
 
         if (order.status === 'COMPLETED') {
             current.totalSpent += Number(order.total_price)

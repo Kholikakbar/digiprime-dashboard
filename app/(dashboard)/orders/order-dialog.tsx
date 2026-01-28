@@ -21,6 +21,7 @@ interface Order {
     total_price: number
     status: string
     notes?: string
+    order_date: string
 }
 
 interface OrderDialogProps {
@@ -110,6 +111,17 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
 
     const handleSubmit = async (formData: FormData) => {
         setLoading(true)
+
+        // FIX: Convert local time input to UTC ISO String to prevent timezone shifts
+        // The input returns "YYYY-MM-DDTHH:mm" (Local Time)
+        // If we send this directly, Supabase treats it as UTC (shifting it +7 hours for ID users when viewed back)
+        const rawDate = formData.get('order_date') as string
+        if (rawDate) {
+            const dateObj = new Date(rawDate)
+            // Send the exact Moment in Time (UTC)
+            formData.set('order_date', dateObj.toISOString())
+        }
+
         const res = isEditing
             ? await updateOrder(order.id, formData)
             : await createOrder(formData)
@@ -121,6 +133,15 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
             setIsOpen(false)
             if (onClose) onClose()
         }
+    }
+
+    // Helper to format UTC database date to Local "YYYY-MM-DDTHH:mm" for input
+    const getLocalValue = (isoString?: string) => {
+        if (!isoString) return ''
+        const date = new Date(isoString)
+        const offset = date.getTimezoneOffset()
+        const local = new Date(date.getTime() - (offset * 60 * 1000))
+        return local.toISOString().slice(0, 16)
     }
 
     const dialogContent = isOpen && mounted ? (
@@ -194,6 +215,7 @@ export function OrderDialog({ products, order, trigger, onClose }: OrderDialogPr
                                     <input
                                         type="datetime-local"
                                         name="order_date"
+                                        defaultValue={isEditing && order?.notes?.includes('"date"') ? '' : getLocalValue(order?.['order_date'] as any)} // Handle loose typing, check if order_date exists
                                         className="w-full bg-background border-2 border-border rounded-lg px-3.5 py-2.5 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition-all hover:border-border/80"
                                     />
                                     <p className="text-xs text-muted-foreground">Leave empty to use current date/time</p>

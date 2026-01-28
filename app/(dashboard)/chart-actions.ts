@@ -153,7 +153,9 @@ export async function getProductDistributionData() {
 
     data?.forEach((order: any) => {
         const name = order.products?.name || 'Unknown'
-        map.set(name, (map.get(name) || 0) + order.quantity)
+        // FIX: Handle null/undefined quantity - default to 1
+        const qty = Number(order.quantity) || 1
+        map.set(name, (map.get(name) || 0) + qty)
     })
 
     // Transform to chart data

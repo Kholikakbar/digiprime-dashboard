@@ -166,8 +166,8 @@ export function DashboardCharts({
                                         paddingAngle={5}
                                         dataKey="value"
                                     >
-                                        {initialProductData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} strokeWidth={0} />
+                                        {initialProductData.map((entry: any, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.fill || COLORS[index % COLORS.length]} strokeWidth={0} />
                                         ))}
                                     </Pie>
                                     <Tooltip content={<CustomTooltip />} />
@@ -180,7 +180,7 @@ export function DashboardCharts({
                                                 <ul className="flex flex-wrap justify-center gap-4 mt-4">
                                                     {payload?.map((entry: any, index: number) => (
                                                         <li key={`item-${index}`} className="flex items-center text-xs font-medium text-muted-foreground">
-                                                            <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: entry.color }} />
+                                                            <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: entry.payload?.fill || entry.color }} />
                                                             {entry.value}: {initialProductData[index]?.value}
                                                         </li>
                                                     ))}

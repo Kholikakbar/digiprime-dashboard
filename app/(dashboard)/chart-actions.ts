@@ -142,25 +142,41 @@ export async function getProductDistributionData() {
     const supabase = await createClient()
 
     // Get order counts by product for Completed orders
-    // Since we don't have a direct aggregation query in Supabase client without Views or RPC,
-    // we fetch fields and aggregate in JS. For larger apps, use RPC.
+    // Include product type to assign consistent colors
     const { data } = await supabase
         .from('orders')
-        .select('quantity, products(name)')
+        .select('quantity, products(name, type)')
         .eq('status', 'COMPLETED')
 
-    const map = new Map<string, number>()
+    const map = new Map<string, { value: number, type: string }>()
 
     data?.forEach((order: any) => {
         const name = order.products?.name || 'Unknown'
+        const type = order.products?.type || 'UNKNOWN'
         // FIX: Handle null/undefined quantity - default to 1
         const qty = Number(order.quantity) || 1
-        map.set(name, (map.get(name) || 0) + qty)
+
+        if (!map.has(name)) {
+            map.set(name, { value: 0, type })
+        }
+        const current = map.get(name)!
+        current.value += qty
     })
 
-    // Transform to chart data
+    // Transform to chart data with fixed colors per type
+    // CREDIT = Blue (#0ea5e9), ACCOUNT = Pink (#d946ef)
+    const colorMap: Record<string, string> = {
+        'CREDIT': '#0ea5e9',   // Blue
+        'ACCOUNT': '#d946ef',  // Pink/Magenta
+        'UNKNOWN': '#8b5cf6'   // Violet (fallback)
+    }
+
     return Array.from(map)
-        .map(([name, value]) => ({ name, value }))
+        .map(([name, data]) => ({
+            name,
+            value: data.value,
+            fill: colorMap[data.type] || '#8b5cf6'
+        }))
         .sort((a, b) => b.value - a.value)
         .slice(0, 5) // Top 5
 }

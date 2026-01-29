@@ -181,7 +181,7 @@ export function DashboardCharts({
                                                     {payload?.map((entry: any, index: number) => (
                                                         <li key={`item-${index}`} className="flex items-center text-xs font-medium text-muted-foreground">
                                                             <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: entry.payload?.fill || entry.color }} />
-                                                            {entry.value}: {initialProductData[index]?.value}
+                                                            {entry.value}: {entry.payload?.value}
                                                         </li>
                                                     ))}
                                                 </ul>

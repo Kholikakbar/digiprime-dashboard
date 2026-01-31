@@ -34,6 +34,14 @@ export async function getRevenueData(range: TimeRange) {
         return `${year}-${month}`;
     }
 
+    const formatYearKey = (date: Date) => {
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'Asia/Jakarta',
+            year: 'numeric'
+        }).formatToParts(date);
+        return parts.find(p => p.type === 'year')?.value || '';
+    }
+
     const now = new Date()
     let startDate = new Date()
 
@@ -42,7 +50,7 @@ export async function getRevenueData(range: TimeRange) {
     } else if (range === '30d') {
         startDate.setDate(now.getDate() - 30)
     } else if (range === '1y') {
-        startDate.setFullYear(now.getFullYear() - 1)
+        startDate.setFullYear(now.getFullYear() - 5)
     }
 
     // Set to beginning of the day in UTC for query safety, or calculate offset carefully.
@@ -63,10 +71,10 @@ export async function getRevenueData(range: TimeRange) {
 
     // Initialize map
     if (range === '1y') {
-        for (let i = 11; i >= 0; i--) {
+        for (let i = 4; i >= 0; i--) {
             const d = new Date()
-            d.setMonth(d.getMonth() - i)
-            const key = formatMonthKey(d)
+            d.setFullYear(d.getFullYear() - i)
+            const key = formatYearKey(d)
             dataMap.set(key, 0)
         }
     } else {
@@ -83,7 +91,7 @@ export async function getRevenueData(range: TimeRange) {
         const d = new Date(order.order_date)
         let key = ''
         if (range === '1y') {
-            key = formatMonthKey(d)
+            key = formatYearKey(d)
         } else {
             key = formatDateKey(d)
         }
@@ -97,11 +105,8 @@ export async function getRevenueData(range: TimeRange) {
     return Array.from(dataMap).map(([key, revenue]) => {
         let label = ''
         if (range === '1y') {
-            // key is YYYY-MM
-            const [y, m] = key.split('-')
-            // Create date using UTC to avoid shift, then format
-            const d = new Date(Number(y), Number(m) - 1, 1)
-            label = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' })
+            // key is YYYY
+            label = key
         } else {
             // key is YYYY-MM-DD
             const [y, m, d] = key.split('-')

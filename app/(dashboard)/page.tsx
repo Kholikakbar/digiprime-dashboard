@@ -190,9 +190,9 @@ export default async function DashboardPage() {
                 </div>
             </div>
 
-            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 sm:gap-6 grid-cols-2 lg:grid-cols-4">
                 {/* Card 1 */}
-                <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                <div className="glass-panel p-4 sm:p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
                         <span className="text-sm font-medium text-muted-foreground">Total Revenue</span>
@@ -201,7 +201,7 @@ export default async function DashboardPage() {
                         </div>
                     </div>
                     <div
-                        className="text-2xl font-bold mb-1 relative tracking-tight"
+                        className="text-lg sm:text-2xl font-bold mb-1 relative tracking-tight"
                         title={`Rp ${stats.totalRevenue.toLocaleString('id-ID')}`}
                     >
                         Rp {stats.totalRevenue.toLocaleString('id-ID')}
@@ -213,7 +213,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Card 2 */}
-                <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                <div className="glass-panel p-4 sm:p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
                         <span className="text-sm font-medium text-muted-foreground mr-2">Active Orders</span>
@@ -221,7 +221,7 @@ export default async function DashboardPage() {
                             <ShoppingCart className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-2xl font-bold mb-1 relative tracking-tight" title={`${stats.pendingOrders} pending`}>
+                    <div className="text-lg sm:text-2xl font-bold mb-1 relative tracking-tight" title={`${stats.pendingOrders} pending`}>
                         {stats.pendingOrders} <span className="text-sm font-normal text-muted-foreground">pending</span>
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -230,7 +230,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Card 3 */}
-                <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                <div className="glass-panel p-4 sm:p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
                         <span className="text-sm font-medium text-muted-foreground mr-2">Akun Stock</span>
@@ -238,7 +238,7 @@ export default async function DashboardPage() {
                             <Users className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-2xl font-bold mb-1 relative tracking-tight">
+                    <div className="text-lg sm:text-2xl font-bold mb-1 relative tracking-tight">
                         {stats.stockAccounts} <span className="text-sm font-normal text-muted-foreground">units</span>
                     </div>
                     <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">
@@ -248,7 +248,7 @@ export default async function DashboardPage() {
                 </div>
 
                 {/* Card 4 */}
-                <div className="glass-panel p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                <div className="glass-panel p-4 sm:p-6 rounded-3xl relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110" />
                     <div className="flex items-center justify-between space-y-0 pb-3 relative">
                         <span className="text-sm font-medium text-muted-foreground mr-2">Kredit Stock</span>
@@ -256,7 +256,7 @@ export default async function DashboardPage() {
                             <Package className="h-4 w-4" />
                         </div>
                     </div>
-                    <div className="text-2xl font-bold mb-1 relative tracking-tight">
+                    <div className="text-lg sm:text-2xl font-bold mb-1 relative tracking-tight">
                         {stats.stockCredits} <span className="text-sm font-normal text-muted-foreground">units</span>
                     </div>
                     <div className="w-full bg-secondary/50 rounded-full h-1.5 mt-2 overflow-hidden">

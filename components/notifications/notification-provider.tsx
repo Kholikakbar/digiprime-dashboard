@@ -152,7 +152,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
                         title: '⏳ Order Pending',
                         message: `Order #${order.shopee_order_no} menunggu diproses`,
                         timestamp: new Date(order.order_date),
-                        read: true,
+                        read: false,
                         data: order,
                     })
                 })

@@ -50,7 +50,7 @@ export async function getRevenueData(range: TimeRange) {
     } else if (range === '30d') {
         startDate.setDate(now.getDate() - 30)
     } else if (range === '1y') {
-        startDate.setFullYear(now.getFullYear() - 5)
+        startDate.setFullYear(2025, 0, 1)
     }
 
     // Set to beginning of the day in UTC for query safety, or calculate offset carefully.
@@ -71,9 +71,10 @@ export async function getRevenueData(range: TimeRange) {
 
     // Initialize map
     if (range === '1y') {
-        for (let i = 4; i >= 0; i--) {
-            const d = new Date()
-            d.setFullYear(d.getFullYear() - i)
+        const startYear = 2025
+        const currentYear = new Date().getFullYear()
+        for (let y = startYear; y <= currentYear; y++) {
+            const d = new Date(y, 0, 1)
             const key = formatYearKey(d)
             dataMap.set(key, 0)
         }
